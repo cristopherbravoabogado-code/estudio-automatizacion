@@ -1,0 +1,48 @@
+# --- MEDIA: nunca al repo ---
+# Los videos se regeneran; el codigo es lo que hay que guardar.
+# GitHub tiene tope de 100 MB por archivo.
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.aiff
+*.m4a
+*.flac
+
+# --- MODELOS PESADOS ---
+*.onnx
+*.bin
+*.tar.bz2
+*.tar.gz
+*.zst
+*.img
+
+# --- SECRETOS: jamas versionar ---
+# Van en GitHub Secrets (Settings > Secrets and variables > Actions)
+.env
+.env.*
+*.key
+*.pem
+credenciales*
+zernio-config.txt
+secrets.json
+config-local.*
+
+# --- DATOS DE CLIENTES ---
+# Secreto profesional. Ningun escrito con nombres reales.
+escritos-clientes/
+causas/
+*-CONFIDENCIAL*
+
+# --- BASURA ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+_frames/
+_salida/
+_tmp/
+*.log
