@@ -1,0 +1,13 @@
+# Dependencias del motor de video
+# Instalar: pip install -r requirements.txt
+# ffmpeg se instala por apt, no por pip
+
+numpy>=1.26
+scipy>=1.11
+Pillow>=10.0
+
+# TTS local de respaldo (voz2.py). Opcional si se usa ElevenLabs.
+onnxruntime>=1.17
+
+# Cliente ElevenLabs (voz principal). Opcional en local, necesario en Actions.
+requests>=2.31

@@ -1,0 +1,97 @@
+name: Renderizar lote de videos
+
+# Corre en un runner de GitHub con internet SIN proxy.
+# Aqui si funcionan pip, ElevenLabs, los CDN y los bancos de musica.
+#
+# Se lanza a mano desde la pestana Actions > "Renderizar lote de videos"
+# > Run workflow, indicando el lote y (opcional) un rango.
+#
+# Cuota plan Free en repo privado: 2.000 min/mes. Un lote de 100 videos
+# a ~35 s cada uno son ~60 min.
+
+on:
+  workflow_dispatch:
+    inputs:
+      lote:
+        description: 'Carpeta del lote en contenido/ (ej. lote-04)'
+        required: true
+        default: 'lote-04'
+      desde:
+        description: 'Primer video a renderizar (numero)'
+        required: false
+        default: ''
+      hasta:
+        description: 'Ultimo video a renderizar (numero)'
+        required: false
+        default: ''
+      motor:
+        description: 'Motor a usar'
+        required: true
+        default: 'render5'
+        type: choice
+        options:
+          - render5
+          - render6
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    steps:
+      - name: Bajar el repo
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ffmpeg y fuentes
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg fonts-noto-color-emoji
+          mkdir -p motor/fonts
+          curl -sL "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf" -o motor/fonts/Poppins-Bold.ttf
+          curl -sL "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf" -o motor/fonts/Poppins-Regular.ttf
+          curl -sL "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-SemiBold.ttf" -o motor/fonts/Poppins-SemiBold.ttf
+          ffmpeg -version | head -1
+
+      - name: Dependencias Python
+        run: pip install -q -r motor/requirements.txt
+
+      - name: Renderizar
+        working-directory: motor
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
+          LOTE: ${{ inputs.lote }}
+          DESDE: ${{ inputs.desde }}
+          HASTA: ${{ inputs.hasta }}
+          MOTOR: ${{ inputs.motor }}
+        run: |
+          mkdir -p ../_salida
+          if [ ! -f "${MOTOR}.py" ]; then
+            echo "::error::No existe motor/${MOTOR}.py. Sube el motor al repo primero."
+            exit 1
+          fi
+          python "${MOTOR}.py" --lote "../contenido/${LOTE}" --salida ../_salida ${DESDE:+--desde $DESDE} ${HASTA:+--hasta $HASTA}
+
+      - name: Verificar con ffprobe
+        run: |
+          fallos=0
+          for f in _salida/*.mp4; do
+            [ -e "$f" ] || continue
+            if ! ffprobe -v error -select_streams a -show_entries stream=codec_type -of csv=p=0 "$f" | grep -q audio; then
+              echo "::warning::$f sin pista de audio"; fallos=$((fallos+1))
+            fi
+          done
+          echo "Videos: $(ls _salida/*.mp4 2>/dev/null | wc -l) - sin audio: $fallos"
+
+      - name: Subir como artifact (7 dias)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.lote }}-${{ inputs.motor }}
+          path: _salida/*.mp4
+          retention-days: 7
+          if-no-files-found: error
