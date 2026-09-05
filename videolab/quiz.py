@@ -3,7 +3,8 @@
 
 Uso:  python3 quiz.py pieza.json salida.mp4
 pieza.json:
-{ "intro": {"titulo": "...", "sub": "...", "voz": "intro.wav"},            # opcional
+{ "cabecera": "TRIVIA LEGAL", "pie": "Primera consulta gratis · WhatsApp en la descripción",   # opcionales
+  "intro": {"titulo": "...", "sub": "...", "voz": "intro.wav"},            # opcional; v2 NO lleva intro
   "preguntas": [ {"q": "...", "foto": "laboral.png", "op": ["A","B","C"], "ok": 1,
                   "voz_q": "q1.wav", "voz_a": "a1.wav"} , ... ],
   "cierre": {"titulo": "...", "sub": "...", "voz": "out.wav"},
@@ -11,7 +12,9 @@ pieza.json:
 Cada pregunta: tarjeta con efecto máquina de escribir (1 s) + voz que lee la pregunta → opciones entran una a una
 → barra de tiempo con tic-tac (tick_s) → la correcta se pinta verde + "ding" + voz que dice la respuesta.
 Render: Pillow compone cuadros a 30 fps y los manda por tubería a ffmpeg (libx264). Audio: voz + efectos sintetizados con numpy.
-Voces: quiz_voces.py (Kokoro). Probado 05/09/2026: 7 preguntas → 96 s, ~1 min de render en el sandbox.
+Voces: quiz_voces.py (Kokoro). Probado 05/09/2026: 7 preguntas → 96-100 s, ~1 min de render en el sandbox.
+v2 (05/09, criterio de Cristopher): sin intro (la primera pregunta es el gancho desde el segundo 0), sin comuna en pantalla
+("cabecera" y "pie" en el JSON; la dirección y el WhatsApp van en la descripción del post), preguntas de la vida diaria.
 """
 import sys, json, math, subprocess, os
 import numpy as np
@@ -39,15 +42,16 @@ def wrap(draw, text, f, maxw):
     if cur: lines.append(cur)
     return lines
 
-def fondo():
+def fondo(p=None):
+    p = p or {}
     im = Image.new("RGB", (W, H), BG); d = ImageDraw.Draw(im)
     f = font(46)
     for y in range(-40, H, 150):
         for x in range(-40, W, 170):
             d.text((x + (y // 150 % 2) * 85, y), "§", font=f, fill=(236, 216, 196))
     d.rectangle([0, 0, W, 130], fill=TINTA)
-    d.text((W // 2, 65), "TRIVIA LEGAL · SAN BERNARDO", font=font(38), fill=(255, 255, 255), anchor="mm")
-    d.text((W // 2, H - 60), "Estudio Jurídico San Bernardo · primera consulta gratis · WhatsApp en la descripción", font=font(26, False), fill=TINTA, anchor="mm")
+    d.text((W // 2, 65), p.get("cabecera", "TRIVIA LEGAL"), font=font(38), fill=(255, 255, 255), anchor="mm")
+    d.text((W // 2, H - 60), p.get("pie", "Primera consulta gratis · WhatsApp en la descripción"), font=font(28, False), fill=TINTA, anchor="mm")
     return im
 
 def tarjeta_pregunta(base, texto):
@@ -139,8 +143,7 @@ def tono(f, dur, vol=0.5, decay=6.0):
     return (vol * np.sin(2 * math.pi * f * t) * np.exp(-decay * t)).astype(np.float32)
 def tick(dur):
     out = np.zeros(int(SR * dur), np.float32)
-    n = int(dur / 0.5)
-    for k in range(n):
+    for k in range(int(dur / 0.5)):
         s = int(k * 0.5 * SR); c = tono(1500 + 60 * k, 0.05, 0.35, 60)
         out[s:s + len(c)] += c[:len(out) - s]
     return out
@@ -152,6 +155,7 @@ def whoosh(dur=0.25):
     return (noise * env).astype(np.float32)
 
 # ---------- plan ----------
+def T_(p): return float(p.get("tick_s", 3.0))
 def plan(p):
     """Devuelve la línea de tiempo: lista de eventos con cuadros y la pista de audio."""
     ev = []; t = 0.0; audio = []
@@ -159,7 +163,7 @@ def plan(p):
     if p.get("intro"):
         d = max(wav_dur(p["intro"].get("voz", "")) + 0.4, 2.5)
         ev.append(("intro", t, t + d)); put(load(p["intro"].get("voz")), t + 0.2); t += d
-    T = float(p.get("tick_s", 3.0))
+    T = T_(p)
     for i, q in enumerate(p["preguntas"]):
         vq = load(q.get("voz_q")); va = load(q.get("voz_a"))
         dq = len(vq) / SR; da = len(va) / SR
@@ -186,7 +190,7 @@ def render(p, out):
     ev, total, mix = plan(p)
     import soundfile as sf
     sf.write("_quiz_mix.wav", np.clip(mix, -1, 1), SR)
-    base = fondo()
+    base = fondo(p)
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
            "-i", "_quiz_mix.wav", "-af", "loudnorm=I=-15:TP=-1.5:LRA=11", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
            "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", out]
@@ -224,7 +228,7 @@ def render(p, out):
                         for k in range(nops): fr = opcion(fr, k, p["preguntas"][i]["op"][k], "normal")
                     else: fr = c["full"]
                     if rel >= t_bar:
-                        fr = barra(fr.copy(), min(1.0, (rel - t_bar) / float(p.get("tick_s", 3.0))))
+                        fr = barra(fr.copy(), min(1.0, (rel - t_bar) / T_(p)))
                 else:
                     fr = barra(c["rev"].copy(), 1.0)
                 break

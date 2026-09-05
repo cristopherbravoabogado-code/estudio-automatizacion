@@ -1,11 +1,10 @@
-{"_doc": "Preguntas ya usadas en quizzes F12 (no repetir). Piloto 01, publicado 07/09/2026 20:00, Metricool 371526566.",
- "preguntas": [
-  {"materia": "laboral", "fuente": "Código del Trabajo art. 168", "q": "Te despiden y no estás de acuerdo. ¿Cuántos días hábiles tienes para reclamar en tribunales?", "ok": "60 días"},
-  {"materia": "laboral", "fuente": "Código del Trabajo art. 162 (Ley Bustos)", "q": "Te despiden con las cotizaciones impagas. ¿Qué pasa con el despido?", "ok": "No vale: te siguen debiendo el sueldo"},
-  {"materia": "familia", "fuente": "Código Civil art. 332", "q": "Tu hijo estudia una carrera. ¿Hasta qué edad se le debe pensión de alimentos?", "ok": "28 años"},
-  {"materia": "penal", "fuente": "Código Procesal Penal art. 131", "q": "Detienen a un familiar. ¿En cuántas horas máximo debe estar frente a un juez?", "ok": "24 horas"},
-  {"materia": "laboral", "fuente": "Código del Trabajo art. 67", "q": "Llevas un año en tu trabajo. ¿Cuántos días hábiles de vacaciones te corresponden?", "ok": "15 días"},
-  {"materia": "familia", "fuente": "Ley 14.908 art. 3", "q": "Pensión de alimentos por un hijo. ¿Cuál es el mínimo que fija la ley?", "ok": "40% del sueldo mínimo"},
-  {"materia": "penal", "fuente": "Ley 20.931 art. 12", "q": "Carabineros te hace un control de identidad. ¿Cuánto puede durar como máximo?", "ok": "1 hora"}
- ]
-}
+{"_doc":"Preguntas ya usadas en quizzes F12 (no repetir). Piloto 02 (v2), publicado 07/09/2026 20:00, Metricool 371533524. El piloto 01 (control de identidad, 60 días, Ley Bustos, pensión hasta 28, 24 h, 15 días de vacaciones, 40%) NO se publicó: sus preguntas quedan libres, pero eran técnicas.",
+"preguntas":[
+{"materia":"laboral","fuente":"Código del Trabajo arts. 159 N°2 y 163","q":"Tu jefe te dice: 'renuncia y te pago el finiquito al tiro'. ¿Pierdes plata si renuncias?","ok":"Sí: pierdes la indemnización por años de servicio"},
+{"materia":"civil","fuente":"Ley 18.101","q":"Vas a arrendar y el dueño te pide tres meses de garantía. ¿Puede?","ok":"Sí: la ley no fija tope, se negocia"},
+{"materia":"civil","fuente":"Código Civil art. 2320; Ley 18.290 art. 174","q":"Tu hijo de 15 años saca tu auto y choca. ¿Quién paga los daños?","ok":"Tú: respondes por él y por ser dueño del auto"},
+{"materia":"consumidor","fuente":"Ley 19.496 art. 37","q":"Te llaman de cobranza a las diez de la noche. ¿Pueden?","ok":"No: solo entre las 8 de la mañana y las 8 de la noche"},
+{"materia":"laboral","fuente":"Código del Trabajo art. 162","q":"Te despiden por WhatsApp. ¿Vale?","ok":"Está mal hecho: puedes reclamar y cobrar más"},
+{"materia":"consumidor","fuente":"Ley 19.496 arts. 20 y 21","q":"Compras un celular y a los tres días falla. ¿Qué puedes exigir?","ok":"Elegir: cambio, reparación o devolución de la plata"},
+{"materia":"familia","fuente":"Ley 14.908 arts. 14, 16 y 22","q":"Tu ex no paga la pensión de alimentos. ¿Qué le puede pasar?","ok":"Arresto, le retienen los impuestos y Registro de Deudores"}
+]}
