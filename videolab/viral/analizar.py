@@ -5,9 +5,10 @@ Uso:  python3 analizar.py <url_o_archivo> <salida.json>
 - URL de TikTok o YouTube: se baja con yt-dlp (--impersonate chrome para TikTok). Archivo local: se usa tal cual.
 Mide: duración, cortes de escena (ffmpeg scene>0.3) y ritmo de corte, palabras/s, pausas > 0,5 s, loudness,
 transcripción con marcas de tiempo (faster-whisper small), texto de los primeros 3 s (el gancho hablado),
-y una segmentación por bloques (cambios de ritmo/pausas) para leer la ESTRUCTURA.
+y una segmentación por bloques (pausas > 0,8 s) para leer la ESTRUCTURA.
 Salida: JSON con todo + resumen imprimible. Costo: 0. Tiempo: ~1-2 min por video de 2-3 min en CPU.
 Requisitos: pip install -q "yt-dlp[default]" curl_cffi ; faster-whisper ya viene en el sandbox.
+Validado 05/09/2026 con el viral-01: 104 cortes, 4,68 palabras/s, -17,5 dB.
 """
 import sys, json, re, subprocess, os, warnings
 warnings.filterwarnings("ignore")
@@ -36,8 +37,10 @@ def main():
         src, meta = bajar(src)
     dur = float(sh(f'ffprobe -v error -show_entries format=duration -of csv=p=0 "{src}"').stdout.strip())
     wh = sh(f'ffprobe -v error -select_streams v -show_entries stream=width,height -of csv=p=0 "{src}"').stdout.strip()
-    cortes = [float(x) for x in re.findall(r"pts_time:([\d.]+)", sh(f'ffmpeg -i "{src}" -vf "select=\'gt(scene,0.3)\',showinfo" -an -f null - 2>&1').stderr)]
-    vd = sh(f'ffmpeg -i "{src}" -af volumedetect -f null - 2>&1').stderr
+    r = sh(f'ffmpeg -i "{src}" -vf "select=\'gt(scene,0.3)\',showinfo" -an -f null -')
+    cortes = [float(x) for x in re.findall(r"pts_time:([\d.]+)", r.stdout + r.stderr)]
+    r = sh(f'ffmpeg -i "{src}" -af volumedetect -f null -')
+    vd = r.stdout + r.stderr
     mean_db = re.search(r"mean_volume: ([-\d.]+)", vd); max_db = re.search(r"max_volume: ([-\d.]+)", vd)
     sh(f'ffmpeg -v error -y -i "{src}" -vn -ac 1 -ar 16000 viral_a.wav')
     from faster_whisper import WhisperModel
@@ -51,8 +54,7 @@ def main():
     habla = sum(s["t1"] - s["t0"] for s in S) or 1
     gaps = [(words[i+1][0] - words[i][1], words[i][1]) for i in range(len(words) - 1)]
     pausas = [(round(g, 2), round(t, 1)) for g, t in gaps if g > 0.5]
-    gancho = " ".join(w for a, b, w in words if a < 3.0).strip()
-    # bloques: se corta donde hay pausa > 0.8 s (y el bloque anterior duró > 6 s)
+    gancho = " ".join(w.strip() for a, b, w in words if a < 3.0).strip()
     bloques, ini = [], 0.0
     for g, t in gaps:
         if g > 0.8 and t - ini > 6:

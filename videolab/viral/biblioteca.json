@@ -9,18 +9,27 @@
       "id": "viral-01",
       "fecha_analisis": "2026-09-05",
       "origen": "Cristopher lo mandó; repost de @geovanni3.3 (TikTok 7680612321928039694), ensayo tech 'Por qué todos están prefiriendo audífonos con cable', parte 1",
-      "radiografia": {"duracion_s": 150.5, "cortes": 104, "seg_por_corte": 1.45, "palabras_por_s": 3.4, "pausas_mayores_0_5s": 0, "loudness_media_db": -17.5, "cara_narrador": false, "anuncio_s": 36, "anuncio_pct": 24},
+      "radiografia": {"duracion_s": 150.5, "cortes": 104, "seg_por_corte": 1.45, "palabras_por_s": 4.7, "pausas_mayores_0_5s": 0, "loudness_media_db": -17.5, "cara_narrador": false, "anuncio_s": 36, "anuncio_pct": 24, "nota": "palabras/s medido con analizar.py (palabras de whisper / duración)"},
       "plantilla": {
         "gancho": "anécdota en 1ª persona con juicio moral y remate autocrítico (0-14 s)",
         "promesa": "tesis polémica que crea un bando + 'en este video te explico por qué' (14-40 s)",
         "bloques": ["anécdota 0-14", "tesis 14-27", "promesa 27-40", "puente 40-44", "anuncio integrado 44-80", "mitos uno a uno 80-150"],
         "anuncio": "entra como continuación del argumento; beneficio primero, marca y CTA al final del bloque (77-80 s); nunca dice patrocinado",
-        "ritmo": "corte cada 1,45 s; 3,4 palabras/s; sin pausas; loudness alta",
+        "ritmo": "corte cada 1,45 s; 4,7 palabras/s; sin pausas; loudness alta",
         "tono": "coloquial, irónico, se ríe de sí mismo; memes",
         "cierre": "corte a mitad de frase → parte 2 (serie)",
         "por_que_funciono": "historia + bando + promesa en 40 s; el anuncio no interrumpe porque es un argumento; el cliffhanger vende la parte 2"
       },
-      "adaptacion": {"formato": "F11", "tema": "finiquito: firmar rápido es la forma más cara de ser buena persona", "guion": "videolab/piloto-ensayo-01.txt", "video": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/86be10f7-abac-4d0e-b5d2-97396c16caae.mp4", "metricool_id": 371468784, "publicacion": "2026-09-05T21:30 Chile", "parte_2": "videolab/piloto-ensayo-02.txt"},
+      "adaptacion": {
+        "formato": "F11",
+        "tema": "finiquito: firmar rápido es la forma más cara de ser buena persona",
+        "guion": "videolab/piloto-ensayo-01.txt",
+        "video": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/86be10f7-abac-4d0e-b5d2-97396c16caae.mp4",
+        "metricool_id": 371468784,
+        "publicacion": "2026-09-05T21:30 Chile",
+        "parte_2": {"guion": "videolab/piloto-ensayo-02.txt", "video": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/661aae21-4de4-4fc1-ab6d-518795a472ed.mp4", "metricool_id": 371472450, "publicacion": "2026-09-06T21:30 Chile"},
+        "parte_3_pendiente": "prometida al final de la parte 2: el truco de 'te pago en dos cuotas' (producirla en la corrida del Viral Lab del 06/09 y programar el 07/09 21:30)"
+      },
       "resultado_72h": null
     }
   ]
