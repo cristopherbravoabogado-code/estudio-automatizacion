@@ -1,0 +1,14 @@
+{
+  "_doc": "Banco de fotos de gancho 9:16 (1152x2048) alojadas en Higgsfield/CloudFront. La Fábrica elige por materia la foto menos usada; genera UNA nueva por corrida solo si la más antigua de esa materia tiene 3 días o más (818 créditos Eleven cada una). Sin nombres de clientes ni datos reales.",
+  "origen_lote": "lote09 (901-908), generadas con seedream-5-pro via Eleven, 05/09/2026",
+  "fotos": [
+    {"id": "901-laboral-finiquito", "materia": "laboral", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/b513d1fe-18df-49d8-83c9-b00ae1e7c320.png", "creada": "2026-09-05", "descripcion": "manos de hombre con finiquito impreso, vista sobre el hombro", "usos": 1},
+    {"id": "902-familia-pension-impaga", "materia": "familia", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/c1af329f-5130-4c01-b916-bb1bddccf744.png", "creada": "2026-09-05", "descripcion": "mujer de espaldas en mesa de cocina de noche", "usos": 1},
+    {"id": "903-penal-detencion-hijo", "materia": "penal", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/a0a9e3ce-b386-4314-9476-dd9952f0c83b.png", "creada": "2026-09-05", "descripcion": "madre de espaldas en la entrada de una comisaría", "usos": 1},
+    {"id": "904-civil-arriendo-chapa", "materia": "civil", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/eaf433b9-0bb5-4a75-9e86-1e027fbe20a4.png", "creada": "2026-09-05", "descripcion": "mano con llave que no entra en chapa nueva", "usos": 1},
+    {"id": "905-laboral-licencia-descuento", "materia": "laboral", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/bea50e1f-66c7-4009-a808-88fdcb60f6da.png", "creada": "2026-09-05", "descripcion": "persona de espaldas en sofá mirando el teléfono", "usos": 1},
+    {"id": "906-penal-citacion-fiscalia", "materia": "penal", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/1c7d735b-51fd-4755-994b-d52dc0fc2a6d.png", "creada": "2026-09-05", "descripcion": "manos abriendo sobre oficial en la puerta", "usos": 1},
+    {"id": "907-familia-no-ver-hijo", "materia": "familia", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/6682f3cc-fe94-4bcf-bf80-3005729a44c4.png", "creada": "2026-09-05", "descripcion": "hombre solo de espaldas en banca de plaza", "usos": 1},
+    {"id": "908-civil-cobranza-acoso", "materia": "civil", "url_cloudfront": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/41b80e53-54b3-4d4d-b432-5b3ac200aeab.png", "creada": "2026-09-05", "descripcion": "teléfono sonando con número desconocido, mano tensa", "usos": 1}
+  ]
+}

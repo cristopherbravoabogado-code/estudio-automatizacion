@@ -1,7 +1,7 @@
 # MASTER_STATE — Estudio Jurídico San Bernardo
 
 > Archivo cerebro. Todo lo demás cuelga de aquí. Se ACTUALIZA, no se reescribe: cada sesión y cada tarea lo lee primero y lo edita al final (versión nueva en la misma carpeta de Drive, la vieja a la papelera; copia en GitHub cerebro/MASTER_STATE.md).
-> Última actualización: 5 de septiembre de 2026, 02:15 Chile (rev. 3 — fábrica en marcha)
+> Última actualización: 5 de septiembre de 2026, 03:10 Chile (rev. 4 — 6 diarias y banco de fotos)
 
 ## 0. IDENTIDAD Y DOCTRINA
 - Estudio Jurídico San Bernardo · Cristopher Jesús Bravo Cea y Natali Saavedra · Pasaje Juan Rau 611, San Bernardo · L-V 08:00-14:00 · WhatsApp +56 9 9690 5994 · defensapenalsanbernardo.cl
@@ -13,7 +13,7 @@
 ## 1. OBJETIVO
 400 clientes en cartera. Indicador único de éxito: consultas que llegan al WhatsApp y a la agenda.
 
-## 2. EL SISTEMA — estado al 05/09/2026 02:15
+## 2. EL SISTEMA — estado al 05/09/2026 03:10
 ### Cadena 100% nube (validada de punta a punta con el lote 09)
 guiones → voz (Eleven, tts) + imagen 9:16 (Eleven, seedream-5-pro) → render motor.py en sandbox Higgsfield → media_upload Higgsfield (URL CloudFront pública) → Metricool createScheduledPost → TikTok.
 Receta completa: GitHub `motor/RECETA-MOTOR-NUBE.md`. Código: `motor/motor.py`, `motor/render.sh`. Guiones del lote 09: `motor/piezas-lote09.json`.
@@ -22,7 +22,7 @@ Cero pasos manuales. Ni Mac ni Drive en la cadena.
 ### Tareas programadas (todas en la nube)
 | Tarea | id | Cuándo (Chile) | Hace |
 |---|---|---|---|
-| Fábrica de videos | trig_01JUV3SAyCc2ncatq5XfkFum | diaria 06:00 | completa 8 publicaciones hoy y mañana siguiendo la RECETA, reporta 5 líneas |
+| Fábrica de videos | trig_01JUV3SAyCc2ncatq5XfkFum | diaria 06:00 | completa 6 publicaciones hoy y mañana siguiendo la RECETA; foto de gancho desde `motor/ganchos/banco.json` (≤1 foto nueva por corrida, solo si la más antigua de esa materia tiene ≥3 días); reporta 5 líneas |
 | Primera respuesta | trig_01GPaDyBcEj2wEjwYi5LH853 | diaria 08:00 | responde consultas de Gmail ofreciendo 2 horas de Calendar, reporta |
 | Métricas y aprendizaje | trig_01Gk936c2YuxzPyUnskUYCi1 | lunes 09:00 | lee Metricool, mata/duplica formatos, recalcula grilla, actualiza este archivo |
 | Mejora del sistema | trig_01MU1LD9SDfs3nhcrmH6a4PE | diaria 22:00 | verifica lo publicado, implementa UNA mejora, mantiene cerebro/BACKLOG.md |
@@ -44,14 +44,14 @@ Casi todo vacío todavía. Metricool se conectó el 05/09 y devuelve ceros; la p
 No es alcance ni producción: es conversión y medición. De los 7 saltos del embudo (ver video → perfil → web → WhatsApp → agenda → consulta → contrato) se mide uno. Corolario: instrumentar el embudo es la mejora de mayor impacto pendiente.
 
 ## 5. COSTOS Y LÍMITES QUE GOBIERNAN EL VOLUMEN
-- Por pieza: voz ~500 créditos Eleven + imagen ~818 = ~1.320 (≈US$0,24). 8 diarias ≈ 10.500 créditos/día ≈ 317.000/mes.
-- ⚠️ El plan Creator de ElevenLabs trae 100.000 créditos/mes. A 8 diarias se agota en ~10 días. Opciones (decisión de Cristopher, es un pago): subir el plan, o reusar la imagen de gancho por materia (baja a ~4.600/día ≈ 140.000/mes) y bajar a 6 diarias (~100.000/mes).
+- Por pieza: voz ~500 créditos Eleven; imagen de gancho ~818 solo cuando se genera una nueva. Con banco de fotos: 6 diarias ≈ 3.000/día de voz + ~270/día de fotos (1 cada 3 días) ≈ 3.300/día ≈ 100.000/mes → cabe justo en el plan Creator (100.000/mes). Ya gastados ~12.000 el 05/09 en el lote 09 y el banco.
+- Banco de fotos de gancho: `motor/ganchos/banco.json` (8 fotos 9:16 por materia, alojadas en CloudFront, sembradas el 05/09). La Fábrica usa la menos usada de la materia; genera 1 nueva por corrida como máximo. Volver a 8 diarias exige subir el plan de Eleven (decisión de pago de Cristopher).
 - Eleven: máximo 5 generaciones concurrentes por corrida.
 - TikTok por API de terceros: ~25 publicaciones/24 h.
 - Sandbox Higgsfield: 120 s por llamada, 15 min de vida con background:true, 16.000 caracteres por comando.
 
 ## 6. DECISIONES (no volver a discutirlas)
-D-01 marca de estudio · D-02 sin la cara de Cristopher · D-03 entretenido, sin tecnicismos · D-04 noticias rehechas en placa propia · D-05 descripción con teléfono, sitio, CTA y descargo · D-06 Metricool publica (Zernio respaldo) · D-07 autonomía total con regla de las tres vías · D-08 nada de clientes, RUT ni causas en herramientas · D-09 producción en el sandbox de Higgsfield, no en el Mac · D-10 (05/09) 8 publicaciones diarias, ni más ni menos, en la grilla 09:00 10:00 12:00 13:00 14:30 16:00 18:00 20:00
+D-01 marca de estudio · D-02 sin la cara de Cristopher · D-03 entretenido, sin tecnicismos · D-04 noticias rehechas en placa propia · D-05 descripción con teléfono, sitio, CTA y descargo · D-06 Metricool publica (Zernio respaldo) · D-07 autonomía total con regla de las tres vías · D-08 nada de clientes, RUT ni causas en herramientas · D-09 producción en el sandbox de Higgsfield, no en el Mac · D-10 (05/09, revisada 03:10) 6 publicaciones diarias en la grilla 09:00 12:00 13:00 16:00 18:00 20:00, con banco de fotos de gancho; 8 diarias solo si se sube el plan de Eleven
 
 ## 7. APRENDIZAJES TÉCNICOS (no repetir el error)
 - TikTok no acepta carga por navegador; TikTok Studio corta al superar su tope TOTAL de programados (no son 20 por tanda). Con Metricool los videos no aparecen en TikTok Studio: se publican a la hora.
@@ -72,5 +72,5 @@ D-01 marca de estudio · D-02 sin la cara de Cristopher · D-03 entretenido, sin
 ## 9. PRÓXIMOS PASOS
 1. Dom 07/09: primera lectura de datos (tarea programada).
 2. Instrumentar el embudo (tarea nocturna): link rastreable en la bio, conteo de WhatsApp, origen en cada cita.
-3. Resolver el tope de créditos de Eleven (decisión de pago de Cristopher).
+3. Créditos de Eleven: resuelto con 6 diarias + banco de fotos (cabe en el plan). Subir a 8 solo si Cristopher sube el plan.
 4. Karaoke y variantes de formato en el motor (tarea nocturna, una por noche).
