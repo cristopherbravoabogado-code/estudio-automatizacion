@@ -19,6 +19,8 @@ Muestra real de v2 (Kokoro + karaoke + foto del banco): https://d2ol7oe51mr4n9.c
    En `pieza.json` agregar `"subs":"<n>.ass"` y, si existe, `"tramos": <contenido de <n>.mp3.tramos.json>`. `motor.py` v2 quema el karaoke (solo desde el fin del gancho), deja las láminas con título solo y re-encodea (≈15 s por pieza).
 Verificación numérica extra: en 2 cuadros de láminas debe haber píxeles amarillos (R>200,G>200,B<90) entre y=1150 y y=1400 → el karaoke está.
 
+Formato F11 ENSAYO (videolab/ensayo.py, 05/09): guion de 4 párrafos (anécdota / tesis+promesa / puente+estudio / mitos+parte 2), voz con `voz.py guion.txt v.mp3 kokoro`, karaoke, 26-30 fotos (banco + Pollinations de a UNA por vez: el servicio admite 1 petición en cola por IP, ~40 s cada una, reintentar ante 429), `pieza.json` con shots y placas (tiempos sacados de los timestamps de whisper: tesis, GRATIS·PRESENCIAL, MITO 1-3, PARTE 2), `python3 ensayo.py pieza.json salida.mp4` (~45 s). Ver videolab/ANALISIS-viral-01.md.
+
 Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco (saldría un solo tramo y el motor cortaría por silencios de 0,4 s que no existen); no usar edge-tts como primaria (servicio no oficial); no mezclar voces dentro de una pieza.
 
 ## Piezas (v1)
