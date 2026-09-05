@@ -1,0 +1,11 @@
+{"_doc": "Preguntas ya usadas en quizzes F12 (no repetir). Piloto 01, publicado 07/09/2026 20:00, Metricool 371526566.",
+ "preguntas": [
+  {"materia": "laboral", "fuente": "Código del Trabajo art. 168", "q": "Te despiden y no estás de acuerdo. ¿Cuántos días hábiles tienes para reclamar en tribunales?", "ok": "60 días"},
+  {"materia": "laboral", "fuente": "Código del Trabajo art. 162 (Ley Bustos)", "q": "Te despiden con las cotizaciones impagas. ¿Qué pasa con el despido?", "ok": "No vale: te siguen debiendo el sueldo"},
+  {"materia": "familia", "fuente": "Código Civil art. 332", "q": "Tu hijo estudia una carrera. ¿Hasta qué edad se le debe pensión de alimentos?", "ok": "28 años"},
+  {"materia": "penal", "fuente": "Código Procesal Penal art. 131", "q": "Detienen a un familiar. ¿En cuántas horas máximo debe estar frente a un juez?", "ok": "24 horas"},
+  {"materia": "laboral", "fuente": "Código del Trabajo art. 67", "q": "Llevas un año en tu trabajo. ¿Cuántos días hábiles de vacaciones te corresponden?", "ok": "15 días"},
+  {"materia": "familia", "fuente": "Ley 14.908 art. 3", "q": "Pensión de alimentos por un hijo. ¿Cuál es el mínimo que fija la ley?", "ok": "40% del sueldo mínimo"},
+  {"materia": "penal", "fuente": "Ley 20.931 art. 12", "q": "Carabineros te hace un control de identidad. ¿Cuánto puede durar como máximo?", "ok": "1 hora"}
+ ]
+}
