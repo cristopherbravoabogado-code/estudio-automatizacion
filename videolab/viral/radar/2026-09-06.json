@@ -1,0 +1,41 @@
+{
+ "_doc": "Radar global del 06/09/2026, corrido desde el sandbox de Higgsfield a las 14:32 UTC (11:32 Chile) por la verificación manual, porque la corrida programada de las 10:04 quedó PENDING sin producir. Versión compacta: se guardan los 20 temas con ángulo legal, no los 214 crudos. Nota importante: yt-dlp no encontró ningún Short (<=120 s ni <=180 s) para los 4 temas mejor puntuados, así que hoy NO hubo viral que radiografiar; se cae a una plantilla ya validada de la biblioteca.",
+ "fecha": "2026-09-06 14:32:43+00:00",
+ "total_temas": 214,
+ "por_fuente": {"x_twitter": 53, "google_news": 73, "wikipedia": 41, "google_trends": 47},
+ "descartes": [
+  {"tema": "Delincuente condenado por homicidio se fugó tras salir a bautizo (Copiapó)", "score": 10.5, "motivo": "ya producido: Metricool 371638841, lunes 07/09 19:30"},
+  {"tema": "Lindsay Clancy, juicio nulo", "score": 9.0, "motivo": "persona real identificada en una causa penal viva, con hijos víctimas; la regla del estudio prohíbe nombrar personas y opinar sobre causas en curso"},
+  {"tema": "Carabineros comprará 88 radiopatrullas BMW", "score": 6.0, "motivo": "gasto público, sin derecho concreto que enseñarle al espectador"},
+  {"tema": "Cortes de tránsito por la romería de DDHH", "score": 4.5, "motivo": "se agota hoy mismo, sin ángulo replicable"}
+ ],
+ "elegido": {
+  "tema": "Pasajero inmovilizado con cinta en un vuelo (aparece el mismo día en MX e AR)",
+  "score": 1.2,
+  "materia": "consumidor",
+  "angulo_chileno": "derechos del pasajero aéreo: sobreventa, retraso y cancelación (Código Aeronáutico, arts. 133 y 133 A; Ley 20.831)",
+  "motivo": "es el único tema del día que aparece en dos países a la vez, no toca una causa chilena viva, no nombra a nadie y se aterriza a un derecho que el espectador puede usar",
+  "no_publicado_verbatim": "Se dejaron FUERA los montos exactos de compensación en UF del art. 133 B: no se pudieron confirmar contra fuente oficial. Regla del prompt maestro: si dudas de una cifra, no la publiques."
+ },
+ "con_angulo_legal": [
+  {"score": 10.5, "materia": "penal", "pais": "CL", "fuente": "google_news", "tema": "Delincuente condenado por homicidio se fugó tras salir a bautizo de su hijo en Copiapó — Cooperativa", "videos": []},
+  {"score": 9.0, "materia": "familia", "pais": "CL", "fuente": "google_news", "tema": "¿Quedará libre Lindsay Clancy? Admitió matar a sus hijos, pero juez decretó nulo el juicio — BioBioChile", "videos": []},
+  {"score": 6.0, "materia": "penal", "pais": "CL", "fuente": "google_news", "tema": "Carabineros comprará 88 radiopatrullas BMW por más de $4.300 millones — BioBioChile", "videos": []},
+  {"score": 4.5, "materia": "transito", "pais": "CL", "fuente": "google_news", "tema": "Diversos cortes de tránsito en Santiago por romería por los DDHH hacia el Cementerio General — BioBioChile", "videos": []},
+  {"score": 3.0, "materia": "laboral", "pais": "CL", "fuente": "google_trends", "tema": "trabajo", "volumen": "100+"},
+  {"score": 3.0, "materia": "consumidor", "pais": "CL", "fuente": "google_news", "tema": "Acaban de comprar el Hyatt de Vitacura — Diario Financiero"},
+  {"score": 3.0, "materia": "penal", "pais": "CL", "fuente": "google_news", "tema": "PDI decomisa más de $160 millones en droga en La Pintana — BioBioChile"},
+  {"score": 2.4, "materia": "laboral", "pais": "ES", "fuente": "google_trends", "tema": "movistar la liga", "volumen": "200+"},
+  {"score": 1.8, "materia": "laboral", "pais": "MX", "fuente": "google_news", "tema": "Reitera Sheinbaum que no hay división con AMLO — La Jornada"},
+  {"score": 1.5, "materia": "general", "pais": "CL", "fuente": "google_trends", "tema": "flota pesquera", "volumen": "100+"},
+  {"score": 1.2, "materia": "laboral", "pais": "MX", "fuente": "google_news", "tema": "Explosión de pirotecnia en Temascalcingo, Edomex — La Jornada"},
+  {"score": 1.2, "materia": "laboral", "pais": "MX", "fuente": "google_news", "tema": "La UNAM volverá al examen presencial — La Jornada"},
+  {"score": 1.2, "materia": "consumidor", "pais": "MX", "fuente": "google_news", "tema": "Pasajero inmovilizado con cinta adhesiva, aterrizaje de emergencia — Infobae"},
+  {"score": 1.2, "materia": "consumidor", "pais": "AR", "fuente": "google_news", "tema": "Pasajero atacó a la tripulación de American Airlines, lo ataron con precintos — La Nación"},
+  {"score": 1.2, "materia": "transito", "pais": "ES", "fuente": "google_trends", "tema": "franco colapinto", "volumen": "200+"},
+  {"score": 1.2, "materia": "laboral", "pais": "ES", "fuente": "google_trends", "tema": "movistar plus", "volumen": "2000+"},
+  {"score": 1.2, "materia": "penal", "pais": "ES", "fuente": "google_news", "tema": "La Policía vincula la invasión de Ceuta con un consentimiento tácito de Marruecos — Libertad Digital"},
+  {"score": 1.2, "materia": "salud", "pais": "MX", "fuente": "google_news", "tema": "Raúl Castro reaparece en un acto público en Cuba — El Universal"},
+  {"score": 1.2, "materia": "salud", "pais": "ES", "fuente": "google_news", "tema": "El PP de Vigo pedirá que la bandera de Ceuta ondee en el Concello — El Español"}
+ ]
+}
