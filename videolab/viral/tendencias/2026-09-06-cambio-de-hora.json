@@ -1,0 +1,49 @@
+{
+ "_doc": "Tendencia del día del 06/09/2026, producida desde la sesión de verificación tras dos corridas fallidas de la tarea programada.",
+ "tema_del_dia": {
+  "que": "Cambio al horario de verano en Chile: ocurrió anoche, entre el sábado 5 y el domingo 6 de septiembre; los relojes saltaron de las 23:59 a la 01:00 y Chile continental quedó en UTC-3.",
+  "donde_lo_detectamos": "Radar global (Google Trends CL y Google News CL) + el video que la corrida relanzada descargó y radiografió.",
+  "angulo_juridico": "Quien hizo el turno de 22:00 a 06:00 trabajó siete horas de reloj, no ocho. ¿Se la descuentan?"
+ },
+ "radiografia_del_viral": {
+  "duracion_s": 75.8,
+  "resolucion": "1280x720",
+  "cortes": 0,
+  "palabras_por_s": 3.28,
+  "pausas_mayores_0_5s": 0,
+  "loudness_media_db": -26.5,
+  "gancho_3s": "Bueno y pongan mucha mucha",
+  "plantilla_en_8_lineas": [
+   "1. Gancho: apelación directa a la audiencia sin dolor concreto ('pongan mucha atención'). Débil: lo reemplazamos.",
+   "2. Promesa: te explico el cambio de hora y qué tienes que hacer con tus relojes.",
+   "3. Bloques: un solo plano continuo, sin cortes, con gráfica de reloj sobreimpresa en el minuto 0:30.",
+   "4. CTA: ninguno. Es informativo puro.",
+   "5. Ritmo: 3,28 palabras/s sostenidas, sin pausas mayores a medio segundo.",
+   "6. Tono: locutor de servicio público, cercano, sin ironía.",
+   "7. Cierre: recordatorio práctico (revisa el celular, algunos cambian solos y otros no).",
+   "8. Por qué funcionó: llegó el día exacto del hecho y resolvió una duda que todo el país tenía a la vez. La estructura no es el mérito: el timing sí."
+  ],
+  "que_copiamos": "El timing (publicar el mismo día del hecho) y el ritmo sostenido sin pausas. NADA del contenido, ni una frase.",
+  "que_no_copiamos": "El gancho blando y la ausencia de CTA. Nuestro gancho abre con la plata que se pierde y cierra con la consulta gratis."
+ },
+ "adaptacion": {
+  "formato": "F01 (gancho + 3 puntos + cierre), motor.py v2, voz Kokoro em_alex 1.10, karaoke faster-whisper",
+  "gancho": "Anoche perdiste una hora. Si trabajaste el turno de noche, te la pueden descontar.",
+  "puntos": [
+   {"titulo": "Te la pueden descontar", "fuente": "Dictamen 4126/210 de la Dirección del Trabajo, 05/07/1995, vigente: la hora que no se trabajó se puede descontar, salvo que empleador y trabajador hayan pactado otra cosa."},
+   {"titulo": "En abril es al revés", "fuente": "Mismo dictamen: cuando el reloj se atrasa el turno dura una hora más, y esa hora se paga como extraordinaria si excede la jornada pactada."},
+   {"titulo": "Y ojo con el tope", "fuente": "Ley 21.561: jornada ordinaria máxima de 42 horas semanales desde el 26/04/2026."}
+  ],
+  "cierre": "Si te descontaron mal el turno de anoche, tráenos la liquidación.",
+  "honestidad": "El video dice que te la PUEDEN descontar, que es lo que dice la DT, aunque sea la respuesta incómoda. La corrida automática había escrito 'el cambio de hora movió los relojes, no tu contrato', que suena mejor y contradice el dictamen. Se descartó."
+ },
+ "verificacion": {"resolucion": "1080x1920", "duracion_s": 37.0, "mean_volume_db": -15.8, "cuadros_con_karaoke": "3/3"},
+ "publicacion": {"via": "Metricool createScheduledPost", "metricool_id": 371744343, "fecha_hora": "2026-09-06 19:00 America/Santiago", "estado_verificado": "PENDING", "video": "95f0bd15-7290-4170-8031-c038b5f8b120"},
+ "resultado_72h": null,
+ "fallos_del_dia": [
+  "La corrida programada de las 10:04 (trig_012g4GgzsCQusrCuQPD439w3) quedó en ROUTINE_RUN_STATUS_PENDING sin producir nada.",
+  "El relanzamiento manual con fire_trigger a las 11:31 llegó más lejos —radar, radiografía, render de 52,2 s y subida con PUT 200— pero murió antes de programar en Metricool.",
+  "Ningún tema del radar trajo un Short que radiografiar; el video analizado salió de la corrida relanzada.",
+  "Se descartaron los dos temas de mayor puntaje: Copiapó ya estaba producido (371638841) y Lindsay Clancy es una persona real en una causa penal viva."
+ ]
+}
