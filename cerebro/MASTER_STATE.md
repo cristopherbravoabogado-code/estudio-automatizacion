@@ -1,7 +1,45 @@
 # MASTER_STATE — Estudio Jurídico San Bernardo
 
 > Archivo cerebro. Se ACTUALIZA, no se reescribe. La fuente de verdad es la copia de Google Drive (carpeta Cerebro); esta copia de GitHub lista los cambios de cada revisión.
-> Revisión vigente: **rev. 10**, 7 de septiembre de 2026, 09:00 Chile — PRIMERA LECTURA REAL DE MÉTRICAS.
+> Revisión vigente: **rev. 11**, 7 de septiembre de 2026, 09:45 Chile — SEGUNDA LECTURA REAL, VENTANA 04–07/09.
+
+## Cambios de la rev. 11 respecto de la rev. 10
+
+### Verificación de publicación (getScheduledPosts, ventana 04–10/09, leído 07/09 09:40)
+- **19 PUBLISHED · 1 ERROR · 15 PENDING.** El ERROR sigue siendo la pieza de hoy 09:00 (371688560, jornada de 42 horas): *"You have reached your Metricool account limit."*
+- Las siete piezas restantes del lunes **siguen PENDING y ninguna ha vencido todavía** (la primera vence a las 12:00): todavía no se puede decir si caerán por el tope. Las ocho del martes también están PENDING.
+- Detalle publicado: 04/09 dos piezas (20:30 y 21:30) · 05/09 nueve · 06/09 ocho (incluida F11 parte 2, 371472450).
+- **La parte 2 de F11 figura PUBLISHED pero todavía no devuelve datos en la API de analítica**: se relee el 08/09 antes de cerrar H-06.
+
+### HALLAZGO NUEVO — lo que funciona no sale de la cadena automática
+- Las dos piezas que hicieron el 67% de las vistas (taxi sin chofer 06/09 01:21 y video-respuesta 06/09 13:02) **no figuran en el planificador de Metricool**. Tampoco dos piezas largas sin descripción (05/09 11:59, 74 s, 131 vistas; 07/09 08:10, 70 s, 13 vistas).
+- La cadena automática publica el relleno; el producto se está haciendo por fuera. De ahí **D-21: toda pieza de actualidad o respuesta se programa por la cadena, no a mano.**
+
+### §3 MÉTRICAS — segunda lectura real (ventana 04–07/09/2026, hora de Chile)
+- **34 piezas con datos · 13.571 vistas · 314 likes · 22 comentarios · 12 compartidos.** Mediana **147 vistas por pieza**. Seguidores 43.261 → 43.260.
+- Por día: jue 03 (noche) 335 (4 piezas) · vie 04 1.008 (10) · sáb 05 1.601 (10) · **dom 06 10.614 (9)** · lun 07 parcial 13 (1).
+- Las dos piezas de tema: taxi sin chofer **5.469 vistas** (100 likes, 15 comentarios, 11 compartidos, interacción 2,30%) y video-respuesta **3.657** (70 likes, 5 comentarios, interacción 2,05%). Juntas: **9.126 vistas = 67% de la ventana** y 20 de los 22 comentarios.
+- Las otras 32 piezas juntas: 4.445 vistas, mediana 146,5, interacción 1,08%. **32× por pieza a favor de las de tema, y el doble de tasa de interacción.**
+- Peor extremo: evergreen de 22 s de la madrugada del 04/09, mínimo 67 vistas con 0 likes y 0 comentarios.
+- Los números de la rev. 10 se movieron (el domingo pasó de 10.614 a 10.954 en el conector evolution): las vistas siguen subiendo días después, así que toda comparación debe fijar ventana y hora de lectura.
+
+### §3 y §7 Lo que sigue sin poder medirse
+- reach, `fullVideoWatchedRate`, `totalTimeWatched`, tiempo medio visto y las seis fuentes de tráfico vuelven **null en las 34 piezas**, segunda lectura consecutiva. Los campos existen (TKPO11, TKPO13–15, TKPO16–21) y devuelven vacío para esta cuenta. **No se evalúa retención.**
+- `getScheduledPosts` exige fecha ISO con offset (`-03:00`); sin offset da error de parseo, y una semana completa supera el tope de una lectura: hay que procesarla en archivo.
+- `getScheduledPosts` devuelve también lo ya publicado del rango: sirve de verificación de estado real, y **lo que no aparece ahí no salió por Metricool**.
+- Cambio de hora del 05→06/09: los timestamps UTC piden restar **4 h antes** y **3 h después**. Mezclarlos corre las piezas una hora y arruina la comparación por franja.
+
+### §8 Veredictos pedidos en esta lectura
+- **H-01 (el formato con voz IA no retiene) → REFUTADA en su forma actual**, con vistas como sustituto declarado (D-20). La retención no se mide, pero las 34 piezas usan la MISMA voz sintética (D-02) y su rango va de **13 a 5.469 vistas**; dos piezas con esa misma voz hicieron el 67% de las vistas y el doble de interacción. La voz IA no es la variable que limita; el tema y el gancho sí. Se cierra y se reemplaza por H-12. Lo que sí se sostiene: el evergreen abstracto de 22–28 s (F01) tiene techo (mediana 147, casi cero comentarios) y queda como relleno, no como producto.
+- **H-05 (gancho con foto fotorrealista del lote 09) → NO SE PUEDE CONTESTAR: BLOQUEADA POR INSTRUMENTACIÓN.** (1) La métrica que pide —retención— es null en el 100% de las piezas. (2) **No existe la etiqueta de "lote" en ninguna parte**: Metricool no la guarda, no está en las descripciones y buscar "lote" en el repositorio devuelve 0 resultados. Sin saber qué piezas son el lote 09 y cuáles los 6 anteriores, cualquier número sería inventado. Único dato adyacente, que no prueba nada: la grilla del 06/09 (media 213, mediana 172) rindió 33% más que la del 05/09 (media 160, mediana 156), con n=7 y n=8 y temas distintos — ruido de muestra.
+- **H-04 → CONFIRMADA con más margen** (5.469 vistas en la peor franja, 37× la mediana de 147).
+- **H-09 → CONFIRMADA** (32× por pieza). **H-10 → primera evidencia a favor.** **H-06 → provisional negativo, pendiente parte 2.** **H-07 y H-11 → sin datos.**
+- **H-12 (nueva)** lo que separa una pieza de 150 vistas de una de 5.000 es el TEMA, no el formato, la voz ni la hora. Prueba: 7 días, un brazo de tema y un brazo evergreen con el mismo pipeline, voz y franja.
+- **E-01 → BLOQUEADO POR INSTRUMENTACIÓN**, igual que H-05: sin etiqueta al programar, no cierra nunca.
+
+### §6 y §9
+- **D-21 (nueva)**: toda pieza de actualidad o respuesta se programa por la cadena, no a mano.
+- Próximos pasos reordenados: (1) desbloquear el tope de Metricool; (2) rebalancear la grilla a 4 evergreen + 1 actualidad + 1 video-respuesta programadas por la cadena — única palanca que los datos respaldan y además baja el consumo de cuota; (3) **registro propio de piezas al programar** (id, formato, lote, brazo A/B, tema, franja), sin el cual H-05 y E-01 son incontestables para siempre; (4) instrumentar el embudo; (5) releer F11 parte 2 el 08/09.
 
 ## Cambios de la rev. 10 respecto de la rev. 9
 
