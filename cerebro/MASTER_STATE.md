@@ -1,7 +1,38 @@
 # MASTER_STATE — Estudio Jurídico San Bernardo
 
 > Archivo cerebro. Se ACTUALIZA, no se reescribe. La fuente de verdad es la copia de Google Drive (carpeta Cerebro); esta copia de GitHub lista los cambios de cada revisión.
-> Revisión vigente: **rev. 11**, 7 de septiembre de 2026, 09:45 Chile — SEGUNDA LECTURA REAL, VENTANA 04–07/09.
+> Revisión vigente: **rev. 12**, 7 de septiembre de 2026, 10:05 Chile — TERCERA LECTURA, VENTANA 04–07/09.
+
+## Cambios de la rev. 12 respecto de la rev. 11
+
+Lectura de verificación a las 10:02, 17 minutos después de la rev. 11. **No hay datos nuevos: los totales no se movieron.** Lo que aporta esta revisión es una corrección aritmética y dos verificaciones que la rev. 11 dejó abiertas.
+
+### CORRECCIÓN — la rev. 11 publicó un total mal sumado
+- La rev. 11 anotó "**314 likes · 22 comentarios**". Recontado pieza por pieza sobre los mismos datos: **214 likes y 23 comentarios**.
+- El 214 cuadra con la suma del conector evolution por día (2 + 4 + 18 + 189 + 1 = 214); el 314 no cuadra con ninguna fuente.
+- Las conclusiones **no cambian**: con menos likes totales y las dos ganadoras intactas, la brecha entre las piezas de tema y el resto se ensancha, no se achica.
+- De ahí **D-22: todo total que entre al archivo cerebro se recalcula pieza por pieza y se cuadra contra evolution antes de escribirlo.** Un número mal sumado en el cerebro contamina todas las comparaciones que vengan después.
+- Cifras corregidas de la ventana: **34 piezas · 13.571 vistas · 214 likes · 23 comentarios · 12 compartidos · mediana 147 vistas**. Las dos ganadoras se llevan 20 de los 23 comentarios (no 22).
+
+### Verificación de publicación (getScheduledPosts, día 07/09, leído 10:02)
+- La pieza de las 09:00 (371688560, jornada de 42 horas) **sigue en ERROR**: *"You have reached your Metricool account limit."*
+- Las ocho piezas restantes del lunes siguen **PENDING y ninguna ha vencido todavía**. La primera (371688563, Dicom) vence a las **12:00**: ahí se sabe si el tope se lleva el resto del día. A las 10:02 no hay forma de saberlo y no se supone.
+- Sin cambios en el acumulado de la ventana 04–10/09: **19 PUBLISHED · 1 ERROR · 15 PENDING**.
+
+### Verificación de F11 parte 2 (H-06)
+- La parte 2 (371472450, PUBLISHED el 06/09 21:30) **sigue sin devolver datos en la API a las 10:02**: no aparece ninguna fila con timestamp 07/09 00:30 UTC en el conector posts. Se relee el 08/09. H-06 queda en provisional negativo, sin cambios.
+
+### §8 Veredictos ratificados con los datos corregidos
+- **H-01 (el formato con voz IA no retiene) → REFUTADA en su forma actual**, con vistas como sustituto declarado (D-20). La retención es null en 34/34 piezas por tercera lectura consecutiva, así que no se juzga por retención. Pero las 34 piezas usan la MISMA voz sintética (D-02) y su rango va de **13 a 5.469 vistas**; dos piezas con esa misma voz hicieron el 67% de las vistas y **el doble de tasa de interacción** (2,20% contra 1,08%). Si la voz IA fuera el techo, ninguna pieza con esa voz habría hecho 5.469 vistas. La voz IA no es la variable que limita; el tema y el gancho sí. Se cierra y se reemplaza por H-12. Lo que sí se sostiene: el evergreen abstracto de 22–28 s (F01) tiene techo (mediana 147, casi cero comentarios) y queda como relleno, no como producto.
+- **H-05 (gancho con foto fotorrealista del lote 09) → NO SE PUEDE CONTESTAR: BLOQUEADA POR INSTRUMENTACIÓN.** Dos razones duras: (1) la retención que la hipótesis pide es null en el 100% de las piezas, tres lecturas seguidas; (2) **no existe la etiqueta de "lote" en ninguna parte** — Metricool no la guarda, no está en las descripciones y buscar "lote" en el repositorio devuelve 0 resultados. Sin saber qué piezas son el lote 09 y cuáles los 6 anteriores, cualquier número sería inventado. Único dato adyacente, que no prueba nada: la grilla del 06/09 (media 213, mediana 172) rindió 33% más que la del 05/09 (media 160, mediana 156), con n=7 y n=8 y temas distintos — ruido de muestra.
+- **H-04 → CONFIRMADA** (5.469 vistas en la peor franja, 37× la mediana). **H-09 → CONFIRMADA** (32× por pieza). **H-10 → primera evidencia a favor.** **H-06 → provisional negativo.** **H-07 y H-11 → sin datos.** **E-01 → bloqueado por instrumentación**, igual que H-05.
+
+### §7 Aprendizaje añadido
+- **Los totales del archivo cerebro se suman a mano y se equivocan.** Recalcular siempre pieza por pieza y cuadrar contra evolution (D-22).
+- `getScheduledPosts`: pedir **un día a la vez** cuando la semana completa supera el tope de una lectura.
+
+### §9 Próximos pasos
+- Sin reordenar respecto de la rev. 11. Se añade como paso 5: **verificar a las 12:00 si 371688563 (Dicom) publica o cae por el tope** — eso decide si el resto del lunes se salva o se pierde.
 
 ## Cambios de la rev. 11 respecto de la rev. 10
 
@@ -16,9 +47,9 @@
 - La cadena automática publica el relleno; el producto se está haciendo por fuera. De ahí **D-21: toda pieza de actualidad o respuesta se programa por la cadena, no a mano.**
 
 ### §3 MÉTRICAS — segunda lectura real (ventana 04–07/09/2026, hora de Chile)
-- **34 piezas con datos · 13.571 vistas · 314 likes · 22 comentarios · 12 compartidos.** Mediana **147 vistas por pieza**. Seguidores 43.261 → 43.260.
+- **34 piezas con datos · 13.571 vistas · 314 likes · 22 comentarios · 12 compartidos.** *(Corregido en la rev. 12: son 214 likes y 23 comentarios.)* Mediana **147 vistas por pieza**. Seguidores 43.261 → 43.260.
 - Por día: jue 03 (noche) 335 (4 piezas) · vie 04 1.008 (10) · sáb 05 1.601 (10) · **dom 06 10.614 (9)** · lun 07 parcial 13 (1).
-- Las dos piezas de tema: taxi sin chofer **5.469 vistas** (100 likes, 15 comentarios, 11 compartidos, interacción 2,30%) y video-respuesta **3.657** (70 likes, 5 comentarios, interacción 2,05%). Juntas: **9.126 vistas = 67% de la ventana** y 20 de los 22 comentarios.
+- Las dos piezas de tema: taxi sin chofer **5.469 vistas** (100 likes, 15 comentarios, 11 compartidos, interacción 2,30%) y video-respuesta **3.657** (70 likes, 5 comentarios, interacción 2,05%). Juntas: **9.126 vistas = 67% de la ventana**.
 - Las otras 32 piezas juntas: 4.445 vistas, mediana 146,5, interacción 1,08%. **32× por pieza a favor de las de tema, y el doble de tasa de interacción.**
 - Peor extremo: evergreen de 22 s de la madrugada del 04/09, mínimo 67 vistas con 0 likes y 0 comentarios.
 - Los números de la rev. 10 se movieron (el domingo pasó de 10.614 a 10.954 en el conector evolution): las vistas siguen subiendo días después, así que toda comparación debe fijar ventana y hora de lectura.
