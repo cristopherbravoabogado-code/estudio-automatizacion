@@ -1,0 +1,69 @@
+TENDENCIA DEL DIA — 07/09/2026
+
+TEMA (eje 1, radar global): "feriado el 17 de septiembre 2026" — Google Trends Chile, 100+ busquedas,
+titulares asociados: "Como es el avance del proyecto y cuales son sus opciones de ser aprobado" y
+"La respuesta del gobierno ante eventual aprobacion en el Congreso del feriado para el 17".
+
+ESTRUCTURA (eje 2): F13 "Protocolo por escenarios", radiografiada el 06/09 del viral-03
+(YouTube Shorts 5z5jrfVqLKo, NMas, 127.027 vistas, 58 s): pregunta-problema literal en el segundo 0,
+tres ramas por escenario, ritmo lento con pausas, cierre en el dato que da esperanza / el estudio como
+escenario D. Numeros del original: 1,91 palabras/s, un corte cada 4,84 s, 9 pausas > 0,5 s, -17,5 dB.
+Primera produccion de F13 (estaba extraida y sin producir).
+
+Por que no se radiografio hoy un video nuevo: yt-dlp ya no descarga de YouTube desde el sandbox
+("Sign in to confirm you are not a bot"); la busqueda si funciona. Se uso la plantilla ya medida.
+
+HECHOS VERIFICADOS ANTES DE ESCRIBIR (07/09/2026)
+- 18/08/2026: la Camara declaro admisibles tres proyectos para declarar feriado el 17 de septiembre
+  (Olivares 64 votos, Parisi 62, bancada PC 57). Fuente: Emol / BioBioChile / El Dinamo.
+- 02/09/2026: la Comision de Gobierno Interior aprobo EN GENERAL el proyecto de Barraza y Castillo,
+  9 votos a favor y 4 en contra. Fuente: La Tercera / Radio U. de Chile / El Desconcierto.
+- Faltan: discusion en particular en la comision (martes 08/09), Sala de la Camara, tramite completo en
+  el Senado y promulgacion/publicacion. Fuentes de gobierno y oposicion citadas por Emol el 06/09:
+  "es practicamente imposible que el proyecto alcance a ser aprobado a tiempo".
+- El ministro del Interior sostuvo que la iniciativa parlamentaria es inadmisible porque los feriados
+  son materia de iniciativa exclusiva del Ejecutivo.
+- CONCLUSION QUE SE DICE EN EL VIDEO: hoy el 17 NO es feriado. No se predice el resultado del proyecto.
+- Ley 19.973 art. 2 (modificada por leyes 20.215, 20.629 y 20.918): 1 de enero, 1 de mayo, 18 y 19 de
+  septiembre y 25 de diciembre son feriados OBLIGATORIOS E IRRENUNCIABLES para los dependientes del
+  comercio. El derecho no se puede renunciar aunque se ofrezca un pago mayor. Fuente: Direccion del Trabajo.
+- Exceptuados (DT): clubes, restaurantes, espectaculos (cines, discotecas, pubs, cabarets), locales de
+  aeropuertos y aerodromos civiles, casinos y salas de juego autorizadas, estaciones de servicio de
+  combustibles, farmacias de urgencia y de turno, y tiendas de conveniencia de estaciones de servicio.
+- Denuncia: Inspeccion del Trabajo. Multa al empleador: 5 UTM por trabajador afectado; 10 UTM si tiene
+  50 o mas trabajadores; 20 UTM si tiene 200 o mas. Fuente: BCN Ley Facil / Direccion del Trabajo.
+- NO se afirma que exista recargo legal por trabajar un feriado: el recargo de 30% del art. 38 del
+  Codigo del Trabajo es por trabajo en DOMINGO. Por eso no aparece en el guion.
+
+GUION (5 tramos, voz Kokoro em_alex a 0,84 de velocidad = 66,95 s, 153 palabras, 2,29 palabras/s)
+
+[GANCHO 0-9,4 s | placa: la pregunta sobre foto de gancho]
+¿Es feriado el jueves 17 de septiembre? Si ya pediste el dia, o te dijeron que igual trabajas, esto te
+sirve hoy.
+
+[ESCENARIO A 10,1-25,0 s | placa: HOY NO ES FERIADO]
+Si tu jefe te dijo que el 17 se trabaja, por ahora tiene razon. Hay proyectos en el Congreso, pero
+ninguno es ley todavia. Mientras no salga publicado en el Diario Oficial, el 17 es un dia normal.
+
+[ESCENARIO B 25,7-42,8 s | placa: EL 18 Y EL 19 SI, Y NO SE NEGOCIAN]
+Distinto es el comercio. El 18 y el 19 si son feriados obligatorios e irrenunciables, lo dice la ley de
+feriados irrenunciables del comercio. No se negocian: aunque te ofrezcan pagarte el doble, no te pueden
+hacer trabajar.
+
+[ESCENARIO C 43,5-54,3 s | placa: SALVO QUE TRABAJES AQUI]
+Ojo, hay excepciones. Si trabajas en un restoran, una farmacia de turno, un casino, una bencinera o un
+local de aeropuerto, quedas fuera de esa regla.
+
+[ESCENARIO D / CIERRE 55,0-66,9 s | placa de cierre: ¿TE OBLIGAN? SE DENUNCIA + marca, WhatsApp, direccion]
+Y si estas protegido y te obligan igual, se denuncia en la Inspeccion del Trabajo y la ley multa al
+empleador. Si en San Bernardo te pasa esto, traenos tu contrato esta semana.
+
+LIMITES ETICOS APLICADOS
+- No se opina sobre el proyecto ni se predice si sera aprobado.
+- No se nombra a ningun parlamentario, ministro, juez, fiscal ni colega.
+- No se promete resultado alguno: se describe el procedimiento y la sancion que fija la ley.
+- Del viral-03 no se toma ninguna frase, imagen ni musica: solo la arquitectura de escenarios.
+
+RENDER
+voz.py (Kokoro em_alex) -> atempo 0,84 -> karaoke.py (faster-whisper small) -> motor.py v2 con tramos
+exactos y foto de gancho 905-laboral del banco. Sin musica. Verificado por numeros antes de publicar.

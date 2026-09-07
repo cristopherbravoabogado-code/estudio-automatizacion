@@ -1,0 +1,59 @@
+{
+ "_doc": "Foto del RADAR GLOBAL del 07/09/2026, 10:06 Chile. Se guarda el resumen analitico: recuento por fuente, tally por materia y los 20 temas con angulo juridico (con su contexto de titulares). La lista completa de 231 titulares no se archiva: para la serie historica lo que sirve es que materia trendio y con que puntaje.",
+ "fecha": "2026-09-07T10:06-03:00",
+ "total_temas": 231,
+ "legales": 27,
+ "por_fuente": {"google_news": 74, "x_twitter": 67, "google_trends": 50, "wikipedia": 40},
+ "materias_con_score": {"penal": 8, "general": 6, "laboral": 6, "consumidor": 3, "familia": 2, "civil": 1, "transito": 1},
+ "elegido": {
+  "tema": "feriado el 17 de septiembre 2026",
+  "fuente": "google_trends CL",
+  "volumen": "100+",
+  "score_legal": 1.5,
+  "materia_real": "laboral",
+  "por_que": "Los cuatro temas por encima quedaron descartados por las reglas eticas o por falta de angulo chileno: (1) condena a muerte de una presentadora en Egipto (persona identificada, causa penal en curso), (2) paro docente en Buenos Aires, (3) erupcion del Anak Krakatoa, (4) fondo de pensiones extranjero. Este es el primero con angulo juridico chileno, respuesta verificable y produccion sin rostro."
+ },
+ "con_angulo_legal": [
+  {"score": 4.5, "pais": "CL", "fuente": "google_news", "materia": "penal", "tema": "Presentadora de television es condenada a morir en la horca por narcotrafico en Egipto - 24horas", "descartado": "persona identificada + causa penal en curso"},
+  {"score": 3.0, "pais": "CL", "fuente": "google_trends", "materia": "laboral", "tema": "provincia de buenos aires", "volumen": "200+", "contexto": "paro docente de 48 horas, sin clases lunes 7 y martes 8", "descartado": "Argentina, sin angulo para el publico chileno"},
+  {"score": 3.0, "pais": "CL", "fuente": "google_trends", "materia": "consumidor", "tema": "erupcion volcan indonesia", "volumen": "200+", "contexto": "Anak Krakatoa, ocho aeropuertos cerrados, 1.558 vuelos afectados", "descartado": "sin afectacion practica en Chile"},
+  {"score": 3.0, "pais": "CL", "fuente": "google_news", "materia": "familia", "tema": "Como el fondo de pensiones que debia proteger los ahorros triplico su riesgo en dos decadas - BioBioChile", "descartado": "exige opinion sobre politica previsional"},
+  {"score": 2.4, "pais": "ES", "fuente": "google_news", "materia": "laboral", "tema": "El Gobierno pone en marcha el portal Casa 47, buscador de alquileres publicos - Cadena SER"},
+  {"score": 2.4, "pais": "AR", "fuente": "google_news", "materia": "penal", "tema": "Discutio con un playero y apunalo a dos personas en Recoleta: quedo detenido - TN"},
+  {"score": 1.8, "pais": "MX", "fuente": "google_trends", "materia": "penal", "tema": "procuraduria federal del consumidor", "volumen": "100+"},
+  {"score": 1.8, "pais": "ES", "fuente": "google_news", "materia": "penal", "tema": "Peinado cita a Begona Gomez y a su asesora para la audiencia preliminar - rtve.es"},
+  {"score": 1.8, "pais": "ES", "fuente": "google_news", "materia": "penal", "tema": "Ultima hora de la entrada de inmigrantes a Ceuta - EL PAIS"},
+  {"score": 1.5, "pais": "CL", "fuente": "google_trends", "materia": "general/laboral", "tema": "feriado el 17 de septiembre 2026", "volumen": "100+", "contexto": "Como es el avance del proyecto y cuales son sus opciones de ser aprobado / La respuesta del gobierno ante eventual aprobacion en el Congreso", "ELEGIDO": true},
+  {"score": 1.5, "pais": "CL", "fuente": "google_news", "materia": "general", "tema": "AJ Urbana invierte US$ 30 millones en proyecto multifamily en Santiago Centro - Diario Financiero"},
+  {"score": 1.2, "pais": "MX", "fuente": "google_news", "materia": "laboral", "tema": "Encontraron con vida a estudiante ecuatoriana desaparecida en Coyoacan - La Jornada"},
+  {"score": 1.2, "pais": "MX", "fuente": "google_news", "materia": "general", "tema": "Deuda publica presionara las finanzas de Mexico en 2027 - El Economista"},
+  {"score": 1.2, "pais": "MX", "fuente": "google_news", "materia": "penal", "tema": "Jueza dicta prision preventiva para dos presuntos asesinos - EL PAIS"},
+  {"score": 1.2, "pais": "MX", "fuente": "google_news", "materia": "salud", "tema": "Bajan a 23 los medicos residentes hospitalizados por brote de Salmonella - La Jornada"},
+  {"score": 1.2, "pais": "MX", "fuente": "google_news", "materia": "penal", "tema": "Defensa confirma asesinato de guardia nacional en Guerrero - La Jornada"},
+  {"score": 1.2, "pais": "AR", "fuente": "google_trends", "materia": "transito", "tema": "linea roca", "volumen": "200+", "contexto": "demoras por nuevo protocolo de control de alcoholemia"},
+  {"score": 1.2, "pais": "AR", "fuente": "google_trends", "materia": "consumidor", "tema": "erupcion volcan krakatoa", "volumen": "1000+"},
+  {"score": 1.2, "pais": "AR", "fuente": "google_trends", "materia": "penal", "tema": "eluney", "volumen": "500+"},
+  {"score": 1.2, "pais": "AR", "fuente": "google_news", "materia": "general", "tema": "La agenda de Milei: reunira al Gabinete - Perfil"}
+ ],
+ "google_trends_CL_completo": [
+  {"tema": "mariana sepulveda", "volumen": "2000+", "nota": "caso penal con victima identificada: descartado por regla etica"},
+  {"tema": "movistar", "volumen": "1000+", "nota": "Santander Arena reemplaza al Movistar Arena"},
+  {"tema": "cadem", "volumen": "500+"},
+  {"tema": "megatiempo", "volumen": "500+", "nota": "pronostico para Fiestas Patrias"},
+  {"tema": "provincia de buenos aires", "volumen": "200+"},
+  {"tema": "erupcion volcan indonesia", "volumen": "200+"},
+  {"tema": "elizabeth holmes", "volumen": "200+"},
+  {"tema": "feriado el 17 de septiembre 2026", "volumen": "100+"},
+  {"tema": "nintendo direct", "volumen": "100+"},
+  {"tema": "tiempo puerto montt", "volumen": "100+"}
+ ],
+ "videos_del_tema": [
+  {"url": "https://youtube.com/watch?v=wzsGHBfdWQE", "vistas": 2751, "dur_s": 60, "canal": "CNN Chile", "titulo": "Declaran inadmisible proyecto de feriado irrenunciable para..."},
+  {"url": "https://youtube.com/watch?v=ajMBgkGUMzE", "vistas": 1395, "dur_s": 116, "canal": "CNN Chile", "titulo": "Feriados irrenunciables para el comercio"},
+  {"url": "https://youtube.com/watch?v=7z02qlOIWJI", "vistas": 3205, "dur_s": 28, "canal": "Palma contadores & asociados", "titulo": "PAGO POR DIA FERIADO"}
+ ],
+ "PUERTA_NUEVA_CERRADA_07_09_2026": "yt-dlp YA NO PUEDE DESCARGAR DE YOUTUBE desde el sandbox: 'Sign in to confirm you are not a bot'. Probados y fallidos los clientes tv, android_vr, ios, web_safari y mweb (los tres ultimos entregan 'only images available'). La BUSQUEDA de YouTube (ytsearch, --flat-playlist) SIGUE FUNCIONANDO y devuelve vistas reales: el radar --video sirve para elegir tema, pero analizar.py no puede radiografiar un video de YouTube hasta que haya cookies. TikTok con --impersonate chrome si responde (probado sobre @geovanni3.3). Consecuencia: la ESTRUCTURA del dia se toma de una plantilla ya radiografiada de videolab/formatos.json.",
+ "cuentas_semilla": {
+  "geovanni3.3": "MUERTA COMO SEMILLA: la cuenta se paso a clips de Minecraft y sus ultimas 6 subidas tienen entre 201 y 344 vistas. No sirve para medir vistas/hora ni para extraer estructura. Reemplazarla."
+ }
+}
