@@ -7,10 +7,20 @@ Uso: python3 ensayo.py pieza.json salida.mp4   (requiere motor.py en la misma ca
 pieza.json: {"voz":"v.mp3", "subs":"v.ass", "materia":"laboral", "etiqueta":"DRAMATIZACIÓN",
              "shots":["f01.png", "f02.png", ...],            # planos en orden; se reparten el tiempo a partes iguales
              "placas":[{"t0":14.0,"t1":19.0,"titulo":"...","sub":"..."}, ...]}   # tarjetas que aparecen entre t0 y t1
+
+v2 (11/09/2026) — ZONA SEGURA DE TIKTOK. Todo el texto vive dentro de x[95,930] y[200,1586]:
+fuera de ahí lo tapan el buscador (arriba 200 px), el bloque de usuario y copy (abajo 334 px),
+el bisel (izq 86 px) y la columna de corazón/comentarios/compartir (der 140 px).
+En el piloto del 05/09, 83 de 137 cajas de texto caían fuera — incluida la línea de marca + WhatsApp,
+que estaba en y=1770, debajo del copy de TikTok: el CTA existía en el archivo y nadie lo veía nunca.
+Verificar con `python3 pantalla_chica.py salida.mp4`.
 """
 import json, sys, os
 from PIL import Image, ImageDraw
 from motor import sh, dur, fuente, bloque, W, H, FPS, F_HEAD, F_BOLD, F_BODY, CREMA, LATON, TINTA, ACENTO, MARCA, TEL
+
+# Zona segura TikTok 1080x1920 (spec 2026)
+SX0, SX1, SY0, SY1 = 95, 930, 200, 1586
 
 def escena(img, d, out, k):
     frames = int(d * FPS) + 1
@@ -27,33 +37,46 @@ def escena(img, d, out, k):
        f'-t {d:.3f} -an -c:v libx264 -preset veryfast -crf 20 -r {FPS} "{out}"')
 
 def placa(materia, titulo, sub, out):
-    """Tarjeta tipo '$150 vs $23': fondo tinta translúcido, título enorme, subtítulo, filete de materia."""
+    """Tarjeta tipo '$150 vs $23': fondo tinta translúcido, título enorme, subtítulo, filete de materia.
+    v2: la tarjeta va de x=95 a x=930 (zona segura) y el subtítulo sube de 46 a 58 px —
+    bajo 80 px de alto de caja solo sobrevive el 22% de las palabras al 25% de escala."""
     acc = ACENTO.get(materia, LATON)
+    ancho = SX1 - SX0
+    cx = (SX0 + SX1) / 2
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    f_t, l_t = bloque(d, titulo, F_HEAD, 120, W - 200, 4, 64)
-    f_s, l_s = bloque(d, sub, F_BODY, 46, W - 220, 3, 32) if sub else (None, [])
+    f_t, l_t = bloque(d, titulo, F_HEAD, 120, ancho - 80, 4, 64)
+    f_s, l_s = bloque(d, sub, F_BODY, 58, ancho - 100, 3, 40) if sub else (None, [])
     alto = len(l_t) * f_t.size * 1.08 + (40 + len(l_s) * f_s.size * 1.3 if sub else 0) + 120
-    y0 = H * 0.42 - alto / 2
-    d.rounded_rectangle((60, y0, W - 60, y0 + alto), 28, fill=TINTA + (225,))
-    d.rectangle((60, y0, 60 + 14, y0 + alto), fill=acc + (255,))
+    y0 = min(max(H * 0.42 - alto / 2, SY0 + 20), SY1 - alto - 20)
+    d.rounded_rectangle((SX0, y0, SX1, y0 + alto), 28, fill=TINTA + (225,))
+    d.rectangle((SX0, y0, SX0 + 14, y0 + alto), fill=acc + (255,))
     y = y0 + 60
     for ln in l_t:
-        d.text(((W - d.textlength(ln, font=f_t)) / 2, y), ln, font=f_t, fill=CREMA + (255,))
+        d.text((cx - d.textlength(ln, font=f_t) / 2, y), ln, font=f_t, fill=CREMA + (255,))
         y += f_t.size * 1.08
     if sub:
         y += 40
         for ln in l_s:
-            d.text(((W - d.textlength(ln, font=f_s)) / 2, y), ln, font=f_s, fill=(214, 219, 226, 255))
+            d.text((cx - d.textlength(ln, font=f_s) / 2, y), ln, font=f_s, fill=(214, 219, 226, 255))
             y += f_s.size * 1.3
     img.save(out)
 
 def etiqueta(texto, out):
+    """v2: la etiqueta baja de y=150 a y=215 (el buscador de TikTok se come los primeros 200 px) y la línea
+    de marca + WhatsApp sube de y=1770 a y=1470, sobre el bloque de copy. Ambas con caja opaca detrás:
+    con caja sobrevive el 100% del texto al 25% de escala; con contorno solo, el 29%."""
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((90, 150, 90 + 330, 150 + 54), 8, fill=(0, 0, 0, 150))
-    d.text((112, 158), texto, font=fuente(F_BOLD, 28), fill=(230, 230, 230, 255))
-    d.text((90, H - 150), MARCA + "  ·  WhatsApp " + TEL, font=fuente(F_BOLD, 26), fill=LATON + (255,))
+    f_e = fuente(F_BOLD, 34)
+    w_e = d.textlength(texto, font=f_e)
+    d.rounded_rectangle((SX0, 215, SX0 + w_e + 44, 215 + 66), 8, fill=(16, 16, 16, 220))
+    d.text((SX0 + 22, 227), texto, font=f_e, fill=(235, 235, 235, 255))
+    f_m = fuente(F_BOLD, 40)
+    marca = MARCA + "  ·  WhatsApp " + TEL
+    w_m = d.textlength(marca, font=f_m)
+    d.rounded_rectangle((SX0, 1470, min(SX0 + w_m + 44, SX1), 1470 + 72), 8, fill=(16, 16, 16, 220))
+    d.text((SX0 + 22, 1484), marca, font=f_m, fill=LATON + (255,))
     img.save(out)
 
 def main(pj, salida):
