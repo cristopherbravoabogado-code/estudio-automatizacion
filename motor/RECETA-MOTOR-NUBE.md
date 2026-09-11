@@ -1,4 +1,4 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026**)
 
 Produce y programa TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
@@ -7,7 +7,7 @@ Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados 
 
 ---
 
-## ⛔ LAS TRES REGLAS DURAS (si se rompe una, la pieza no sale)
+## ⛔ LAS CUATRO REGLAS DURAS (si se rompe una, la pieza no sale)
 
 ### 1. NUNCA una etiqueta `<break>` en el texto que va a ElevenLabs
 `eleven_multilingual_v2` a veces **vocaliza** la etiqueta en vez de callar. Detalle y medición en "Lo que NO hacer".
@@ -38,6 +38,34 @@ Toda la cadena de audio corre a **48000 Hz, 2 canales**, y los tramos se empalma
   otra frecuencia o en mono para que el empalme quede sucio. Con el filtro es imposible. Y 48 kHz estéreo es
   el formato que TikTok espera: entregarle 44,1 mono lo obliga a re-muestrear, que es calidad que se regala.
 
+### 4. TODO EL TEXTO CON CAJA OPACA Y DENTRO DE LA ZONA SEGURA (norma del 11/09/2026)
+El video no se ve en un monitor: se ve en un teléfono, comprimido, y con la interfaz de TikTok encima.
+Las dos medidas del 11/09 sobre el piloto F11 (25 cuadros, OCR a tamaño completo contra OCR al 25% de escala):
+
+**a) Caja opaca, no contorno.** Al 25% de escala sobrevivía el **29%** de las palabras con el contorno
+que usábamos; con caja opaca detrás, el **100%**. n=24 intentos de palabra por estilo, 6 fondos fotográficos,
+render libass real. Subir la fuente de 78 a 96 px **no cambió nada** (0,29 con contorno en ambos tamaños):
+lo que decide la legibilidad es el fondo detrás de la letra, no el tamaño de la letra.
+Estilo vigente en `videolab/karaoke.py` v2 — `BorderStyle 3`, `OutlineColour &H23101010` (negro al 86%), `Outline 6`:
+```
+Style: K,Montserrat ExtraBold,78,&H00FFFFFF,&H00FFFFFF,&H23101010,&H00101010,-1,0,0,0,100,100,0,0,3,6,0,2,95,150,560,1
+```
+Cuesta **0 s y 0 créditos**: es el mismo filtro `ass` de siempre.
+
+**b) Zona segura de TikTok 1080x1920 (spec 2026): x[95,930], y[200,1586].**
+Arriba 200 px se los come el buscador y las pestañas; abajo 334 px el nombre, el copy y la marquesina de audio;
+a la izquierda 86 px el bisel; a la derecha 140 px la columna de avatar, corazón, comentarios y compartir.
+En el piloto medido, **83 de 137 cajas de texto caían fuera** — entre ellas la línea de marca + WhatsApp,
+que estaba en y=1770, debajo del copy de TikTok: **el CTA con el teléfono existía en el archivo y nadie lo veía nunca**.
+Corregido en `videolab/ensayo.py` v2 (etiqueta 150→215, marca 1770→1470, placas 60..1020 → 95..930, subtítulo de placa 46→58 px).
+
+**c) Umbral de tamaño medido**: bajo 40 px de alto de caja sobrevive el 22% de las palabras al 25% de escala;
+sobre 80 px, el 85%. Ningún texto de una pieza baja de 80 px de alto salvo que lleve caja opaca.
+
+**Verificación obligatoria antes de publicar**: `python3 videolab/pantalla_chica.py <n>.mp4`
+(requiere `pip install -q rapidocr-onnxruntime`, ~20 s, CPU, sin GPU; ~33 s por pieza de 75 s).
+Pasa con **recall ≥ 0,80 y 0 cajas fuera de la zona segura**. Devuelve código 1 si no pasa.
+
 ---
 
 ## ⭐ PIPELINE v2 (VIDEO LAB, 05/09/2026) — voz gratis + subtítulos karaoke. ES EL VIGENTE.
@@ -55,6 +83,7 @@ Muestra real de v2 (Kokoro + karaoke + foto del banco): https://d2ol7oe51mr4n9.c
 7v2. **Subtítulos**: `python3 karaoke.py <n>.mp3 <n>.ass` (→ `KARAOKE_OK`), ~6 s. Sirve para ambos brazos.
    En `pieza.json` agregar `"subs":"<n>.ass"` y `"tramos": <contenido de <n>.mp3.tramos.json>`.
    `motor.py` v2+ quema el karaoke (solo desde el fin del gancho), deja las láminas con título solo y re-encodea.
+   Desde el 11/09 el estilo lleva **caja opaca** (regla dura 4a): es la versión de `karaoke.py` que está en GitHub.
 Verificación numérica extra: en 2 cuadros de láminas debe haber píxeles amarillos (R>200,G>200,B<90) entre y=1150 y y=1400.
 
 ### Campo `rotulo` (v3) — el rótulo de la esquina del gancho
@@ -62,6 +91,7 @@ Por defecto dice `DRAMATIZACIÓN`. Con `"rotulo":"¿DELITO O NO DELITO?"` (o `"1
 la serie que sea) el motor lo cambia y ajusta solo el ancho de la caja. **Así se produce la serie semanal y las
 piezas de reacción/noticia sin escribir un motor aparte**: gancho = clip real (mp4) con el rótulo de la serie,
 punto 1 = "Comenta antes del veredicto", puntos 2 y 3 = el veredicto con su artículo y su pena, cierre = la marca.
+El rótulo va **dentro de la zona segura** (y ≥ 200, x ≥ 95): si se dibuja más arriba lo tapa el buscador de TikTok.
 
 ### Metraje real para el gancho (doctrina: TOMAS REALES por sobre imágenes generadas)
 Desde el sandbox, **Mixkit** sí responde (Pexels y Pixabay dan 403):
@@ -75,8 +105,8 @@ ffmpeg -y -i raw.mp4 -f lavfi -t 12 -i anullsrc=r=48000:cl=stereo \
 ```
 Sin pista de audio el motor falla al mezclar el ambiente del clip. Elegir planos de OBJETOS, sin rostros identificables.
 
-Formato F11 ENSAYO (videolab/ensayo.py, 05/09): guion de 4 párrafos, voz con `voz.py`, karaoke, 26-30 fotos,
-`python3 ensayo.py pieza.json salida.mp4` (~45 s). Ver videolab/ANALISIS-viral-01.md.
+Formato F11 ENSAYO (videolab/ensayo.py, 05/09; v2 zona segura 11/09): guion de 4 párrafos, voz con `voz.py`,
+karaoke, 26-30 fotos, `python3 ensayo.py pieza.json salida.mp4` (~45 s). Ver videolab/ANALISIS-viral-01.md.
 
 Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar edge-tts como primaria; no mezclar voces dentro de una pieza.
 
@@ -102,15 +132,23 @@ Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar
 7. **Sandbox** (Higgsfield `sandbox_exec`):
    - El sandbox es efímero: se descarta ~10 s después de cada llamada. Con `background:true` se toma un lease de
      15 minutos; terminar el comando con `sleep 800` mantiene vivos los archivos para las llamadas siguientes.
+   - Una llamada que pasa de ~60 s muere con **502 de Cloudflare** y **se lleva el contenedor**: lo que había en
+     `/tmp` y en `~` desaparece. Todo trabajo largo va con `nohup ... &` escribiendo a un archivo, y se sondea
+     con `sleep 45` como máximo por llamada (medido el 11/09/2026).
    - Escribir `motor.py` COMO TEXTO PLANO (no base64: al transcribirlo se corrompe). Tope 16.000 caracteres por llamada.
    - Render: ~15 s por pieza. Subida: `curl -X PUT -H "Content-Type: video/mp4" --data-binary @out/<id>.mp4 '<upload_url>'` → 200.
+   - `apt-get install` NO funciona (no hay root). `pip install` SÍ. Por eso el OCR del QC es `rapidocr-onnxruntime`
+     (Apache 2.0, CPU, sin torch) y no tesseract.
 8. **Confirmar** con `media_confirm` (`media_ids[]`, type video).
 9. **Publicar / programar**: ver `motor/PUBLICAR.md`. Metricool está topado desde el 08/09/2026; la vía viva es
    Higgsfield → TikTok, y la hora se fija con una tarea de un solo disparo por pieza.
 10. **Verificar**: `PUBLISH_COMPLETE` o `PUBLISHED`. Un 200 no es publicado.
 
 ## Verificación sin ojos
-El contenedor de Claude no puede bajar de CloudFront ni WebFetch acepta imágenes. Se verifica por números en el sandbox: extraer cuadros con ffmpeg, medir con numpy la caja de píxeles claros (L>215) y comprobar que no toque bordes ni se salga de x[60,1020] y[120,1730].
+El contenedor de Claude no puede bajar de CloudFront ni WebFetch acepta imágenes. Se verifica por números en el sandbox: extraer cuadros con ffmpeg, medir con numpy la caja de píxeles claros (L>215) y comprobar que no toque bordes ni se salga de **x[95,930] y[200,1586]** — la zona segura de TikTok (regla dura 4b; hasta el 11/09/2026 este límite decía x[60,1020] y[120,1730], que es el borde del archivo, no lo que el espectador ve).
+
+**Control de pantalla chica obligatorio (desde 11/09/2026)** — `python3 videolab/pantalla_chica.py <n>.mp4`:
+recall de lectura al 25% de escala **≥ 0,80** y **0 cajas fuera de la zona segura**. Código 1 si no pasa.
 
 **Control de audio obligatorio (desde 08/09/2026; ampliado el 11/09/2026)** — un mp4 renderizado no es un mp4 bueno; se mide:
 1. `ffprobe -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels` → **debe decir `aac,48000,2`**. Si no, la pieza se re-muxea; no se publica en mono ni a 44,1 kHz.
@@ -128,7 +166,7 @@ Viernes 18:00 queda tomado por la SERIE "¿Delito o no delito?".
 Tope de la API de TikTok por terceros: ~25 publicaciones por 24 h; el conector de Higgsfield corta antes: 13/24 h.
 
 ## Costos por pieza
-v2/v3: 0 créditos (voz Kokoro, metraje Mixkit, karaoke whisper). v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días por materia.
+v2/v3/v4: 0 créditos (voz Kokoro, metraje Mixkit, karaoke whisper, QC rapidocr). v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días por materia.
 
 ## Lo que NO hacer
 - **NUNCA poner etiquetas `<break time="..." />` en el texto que se manda a ElevenLabs.** Es la causa del defecto de audio del lote 911-917 (diagnosticado 08/09/2026). `eleven_multilingual_v2` a veces NO interpreta la etiqueta como pausa: la LEE EN VOZ ALTA y salen sílabas sin sentido al volumen normal de la voz.
@@ -138,9 +176,12 @@ v2/v3: 0 créditos (voz Kokoro, metraje Mixkit, karaoke whisper). v1 (brazo A): 
   - Las piezas Kokoro nunca lo tuvieron: `voz.py` ya sintetizaba tramo por tramo.
 - **No escribir los guiones sin tildes.** Ver regla dura 2.
 - **No unir audio con el demuxer `concat` ni entregar mono/44,1 kHz.** Ver regla dura 3.
+- **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
+- **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
 - No mandar `motor.py` en base64 dentro del comando: se corrompe al transcribirlo.
 - No lanzar `render.sh &` en una llamada sin `background:true`: la herramienta espera y mata la llamada.
+- No dejar una llamada de `sandbox_exec` corriendo más de ~60 s: el 502 de Cloudflare se lleva el contenedor entero.
 - No confiar en un `ls` justo después de una llamada background: puede estar aún escribiendo.
 - No correr más de 5 nodos de Eleven a la vez.
-- No dar por buena una pieza sin el control de audio completo.
+- No dar por buena una pieza sin el control de audio completo ni sin el control de pantalla chica.
 - No republicar un video defectuoso que ya salió al aire (regla de Cristopher del 07/09/2026): ensucia la muestra de métricas. La corrección se aplica solo a la producción nueva.
