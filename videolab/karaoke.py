@@ -3,9 +3,15 @@
 
 Uso:  python3 karaoke.py voz.mp3 salida.ass [palabras_por_linea=4]
 Luego en el motor (motor.py v2 lo hace solo con el campo "subs"):  ffmpeg ... -vf "ass=salida.ass" ...
-Estilo: Montserrat ExtraBold 78 px, blanco con borde oscuro; la palabra que se está diciendo va en amarillo
-(un evento por palabra, así solo la activa cambia de color). Alineación centro, MarginV 560 → sobre el tercio inferior,
-fuera de la interfaz de TikTok y debajo del título de la lámina. Costo: 0. Tiempo: ~6 s por pieza de 25 s (CPU, modelo small int8).
+
+Estilo v2 (11/09/2026 — CAJA OPACA, medido): Montserrat ExtraBold 78 px, blanco sobre CAJA OPACA #101010 al 86%
+(ASS BorderStyle 3, OutlineColour &H23101010, Outline 6 = relleno de la caja). La palabra que se está diciendo va
+en amarillo (un evento por palabra, así solo la activa cambia de color).
+Por qué la caja y no el contorno: con el contorno solo, a 25% de escala (teléfono / vista previa / bitrate bajo)
+se leía el 29% de las palabras; con la caja, el 100%. n=24 intentos por estilo, 6 fondos, render libass real.
+Subir la fuente a 96 px NO cambia nada (0,29 con contorno, 1,00 con caja): lo que decide es el fondo, no el tamaño.
+MarginL 95 / MarginR 150 / MarginV 560 → dentro de la zona segura de TikTok (izq 86, der 140, abajo 334, arriba 200).
+Costo: 0. Tiempo: ~6 s por pieza de 25 s (CPU, modelo small int8). La caja no agrega tiempo: es el mismo filtro ass.
 """
 import sys, warnings
 warnings.filterwarnings("ignore")
@@ -22,7 +28,7 @@ def ts(t):
 
 lines = ["[Script Info]", "ScriptType: v4.00+", "PlayResX: 1080", "PlayResY: 1920", "WrapStyle: 2", "", "[V4+ Styles]",
  "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
- "Style: K,Montserrat ExtraBold,78,&H00FFFFFF,&H00FFFFFF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,6,0,2,60,60,560,1",
+ "Style: K,Montserrat ExtraBold,78,&H00FFFFFF,&H00FFFFFF,&H23101010,&H00101010,-1,0,0,0,100,100,0,0,3,6,0,2,95,150,560,1",
  "", "[Events]", "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"]
 AMAR = "{\\c&H00E5FF&}"; BLANCO = "{\\c&HFFFFFF&}"
 n_ev = 0
