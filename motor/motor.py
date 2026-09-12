@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""motor.py v5 (12/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
+"""motor.py v5.1 (12/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
 Uso: python3 motor.py pieza.json salida.mp4
 pieza.json: {id, materia, gancho, puntos:[{t,d} x3], cierre, voz:"voz.mp3", hook:"hook.jpg|hook.mp4",
              subs:"voz.ass" (opcional), tramos:[t0..t5] (opcional), rotulo:"..." (opcional)}
@@ -14,7 +14,7 @@ v5 (12/09/2026, medido con videolab/pantalla_chica.py sobre una pieza REAL del m
         TikTok. Ahora 1390/1440/1495, con CAJA OPACA detras y fuentes 36/34/26 (antes 30/30/24,
         bajo el umbral de 40 px donde solo sobrevive el 22% de las palabras en pantalla chica).
     (b) lamina_cierre() tiene su PROPIO pie y el v4 no lo toco: el descargo iba en y=1618 y la
-        marca y el WhatsApp se pasaban de x=930. Corregido (fuentes 36/40/48 y descargo en H-380).
+        marca y el WhatsApp se pasaban de x=930. Corregido (fuentes 36/40/48 y descargo abajo).
     (c) cabecera(): el texto se dibujaba en y=205 pero la caja del OCR empieza ~23 px mas arriba
         (y=182), o sea bajo el buscador de TikTok. Ahora y=245.
     (d) anchos: bloque() recibia W-190 (y el gancho W-260), que desde x=95 llega a x=1002. Ahora
@@ -22,8 +22,12 @@ v5 (12/09/2026, medido con videolab/pantalla_chica.py sobre una pieza REAL del m
     (e) SEG_X0 pasa de 95 a 130. OJO: SEG_X0 es el margen de DIBUJO, no el borde de la zona
         segura (que sigue siendo 95). La caja que mide el OCR se extiende ~17 px mas alla del
         glifo, asi que dibujar justo en 95 dejaba la mitad de las cajas medidas en x=78.
-    Resultado medido: 236 -> 26 cajas fuera, y esas 26 son graficos del clip de noticia del
-    gancho (cintillo y ticker del medio), no texto del motor.
+v5.1 (12/09/2026, segunda medicion): el descargo de lamina_cierre() seguia 13 px fuera
+    (caja en y=1568-1599 con la y de dibujo en 1540). La caja del OCR empieza ~28 px MAS ABAJO
+    de la y de dibujo y mide ~31 px, asi que un offset fijo desde H no lo garantiza. Ahora se
+    ancla al final del bloque (y += 62) y se limita con min(y, H-430).
+    Verificado: 0 cajas de texto propio fuera en los cuadros de laminas. Lo que reporta
+    pantalla_chica sobre el video completo es el cintillo del clip de prensa del gancho.
 """
 import json, subprocess, sys, os, re, math
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -182,7 +186,9 @@ def lamina_punto(materia, k, titulo, detalle, out):
 
 
 def lamina_cierre(materia, cierre, out):
-    """v5: esta lamina tiene su PROPIO pie y el v4 no lo habia tocado."""
+    """v5: esta lamina tiene su PROPIO pie y el v4 no lo habia tocado.
+    v5.1: el descargo se ancla al final del bloque y se limita con min(y, H-430); con el offset
+    fijo H-380 su caja quedaba en y=1568-1599, 13 px fuera del limite 1586."""
     img = fondo(materia)
     d = ImageDraw.Draw(img)
     cabecera(d, materia, 4)
@@ -199,7 +205,8 @@ def lamina_cierre(materia, cierre, out):
     d.text((SEG_X0, y), f"WhatsApp {TEL}", font=fuente(F_HEAD, 48), fill=CREMA)
     y += 88
     d.text((SEG_X0, y), "Pasaje Juan Rau 611, San Bernardo", font=fuente(F_BODY, 34), fill=(200, 206, 214))
-    d.text((SEG_X0, H - 380), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(140, 150, 162))
+    y += 62
+    d.text((SEG_X0, min(y, H - 430)), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(140, 150, 162))
     img.save(out)
 
 
