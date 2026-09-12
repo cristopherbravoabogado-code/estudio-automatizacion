@@ -59,6 +59,8 @@ En el piloto medido, **83 de 137 cajas de texto caían fuera** — entre ellas l
 que estaba en y=1770, debajo del copy de TikTok: **el CTA con el teléfono existía en el archivo y nadie lo veía nunca**.
 Corregido en `videolab/ensayo.py` v2 (etiqueta 150→215, marca 1770→1470, placas 60..1020 → 95..930, subtítulo de placa 46→58 px).
 
+**d) La zona segura x[95,930] · y[200,1586] es regla del MOTOR, no solo del formato ENSAYO.** Corregida también en `motor/motor.py` el 12/09/2026 (v4): `cabecera()` pasó de y=150 a y=205 y `pie()` subió la marca y el WhatsApp de y=1620/1665 a y=1490/1535 — estaban debajo del copy de TikTok, así que el CTA con el teléfono existía en el archivo y el espectador no lo veía nunca. Ningún texto que dibuje el motor puede quedar fuera de ese rectángulo: el margen izquierdo es 95, el derecho 930 y nada se pinta sobre y=1586.
+
 **c) Umbral de tamaño medido**: bajo 40 px de alto de caja sobrevive el 22% de las palabras al 25% de escala;
 sobre 80 px, el 85%. Ningún texto de una pieza baja de 80 px de alto salvo que lleve caja opaca.
 
