@@ -1,14 +1,29 @@
 #!/usr/bin/env python3
-"""motor.py v4 (12/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
+"""motor.py v5 (12/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
 Uso: python3 motor.py pieza.json salida.mp4
 pieza.json: {id, materia, gancho, puntos:[{t,d} x3], cierre, voz:"voz.mp3", hook:"hook.jpg|hook.mp4",
              subs:"voz.ass" (opcional), tramos:[t0..t5] (opcional), rotulo:"..." (opcional)}
 v3: (a) audio de salida SIEMPRE aac 48 kHz ESTEREO; (b) campo opcional "rotulo" para el
     rotulo de la esquina del gancho (DRAMATIZACION por defecto; la serie usa "DELITO O NO DELITO?").
 v4: TODO el texto dentro de la ZONA SEGURA DE TIKTOK x[95,930] y[200,1586] (regla dura 4b de la
-    receta). Antes la marca y el WhatsApp de pie() iban en y=1620/1665 y la cabecera en y=150:
-    quedaban bajo el copy de TikTok y bajo el buscador, o sea el CTA con el telefono estaba en el
-    archivo y nadie lo veia. Ahora pie() dibuja en y=1490/1535/1580 y cabecera() en y=205.
+    receta). Antes la marca y el WhatsApp de pie() iban en y=1620/1665 y la cabecera en y=150.
+v5 (12/09/2026, medido con videolab/pantalla_chica.py sobre una pieza REAL del motor - el v4
+    nunca se midio, solo se corrigio de memoria; el primer OCR dio 236 cajas fuera de la zona
+    segura y recall 0,71):
+    (a) pie(): el WhatsApp terminaba en y=1593 y el descargo en y=1650, los dos bajo el copy de
+        TikTok. Ahora 1390/1440/1495, con CAJA OPACA detras y fuentes 36/34/26 (antes 30/30/24,
+        bajo el umbral de 40 px donde solo sobrevive el 22% de las palabras en pantalla chica).
+    (b) lamina_cierre() tiene su PROPIO pie y el v4 no lo toco: el descargo iba en y=1618 y la
+        marca y el WhatsApp se pasaban de x=930. Corregido (fuentes 36/40/48 y descargo en H-380).
+    (c) cabecera(): el texto se dibujaba en y=205 pero la caja del OCR empieza ~23 px mas arriba
+        (y=182), o sea bajo el buscador de TikTok. Ahora y=245.
+    (d) anchos: bloque() recibia W-190 (y el gancho W-260), que desde x=95 llega a x=1002. Ahora
+        todos reciben SEG_X1-SEG_X0.
+    (e) SEG_X0 pasa de 95 a 130. OJO: SEG_X0 es el margen de DIBUJO, no el borde de la zona
+        segura (que sigue siendo 95). La caja que mide el OCR se extiende ~17 px mas alla del
+        glifo, asi que dibujar justo en 95 dejaba la mitad de las cajas medidas en x=78.
+    Resultado medido: 236 -> 26 cajas fuera, y esas 26 son graficos del clip de noticia del
+    gancho (cintillo y ticker del medio), no texto del motor.
 """
 import json, subprocess, sys, os, re, math
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -19,7 +34,9 @@ SR, CH = 48000, 2
 # Zona segura de TikTok 1080x1920 (spec 2026): arriba 200 px se los come el buscador y las
 # pestanas; abajo 334 px el nombre, el copy y la marquesina de audio; izquierda 86 px el bisel;
 # derecha 140 px la columna de avatar, corazon, comentarios y compartir.
-SEG_X0, SEG_X1, SEG_Y0, SEG_Y1 = 95, 930, 200, 1586
+# SEG_X0/SEG_X1 son los margenes de DIBUJO, metidos 35 px dentro del borde real (95 y 930),
+# porque la caja que mide el OCR se extiende mas alla del glifo. Ver v5 (e) en el encabezado.
+SEG_X0, SEG_X1, SEG_Y0, SEG_Y1 = 130, 925, 200, 1586
 F_HEAD = "/usr/share/fonts/truetype/higgsfield/Montserrat-ExtraBold.ttf"
 F_BODY = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 F_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -128,30 +145,32 @@ def fondo(materia):
 
 
 def cabecera(d, materia, k):
-    """v4: y=205 (antes 150, bajo el buscador de TikTok) y puntos corridos a x = W-150."""
+    """v5: y=245. En y=205 la CAJA del texto empezaba en 182, bajo el buscador de TikTok."""
     acc = ACENTO.get(materia, LATON)
-    f = fuente(F_BOLD, 34)
-    d.text((SEG_X0, 205), materia.upper(), font=f, fill=acc)
+    f = fuente(F_BOLD, 40)
+    d.text((SEG_X0, 245), materia.upper(), font=f, fill=acc)
     for i in range(5):
         x = W - 150 - (4 - i) * 34
-        d.ellipse((x - 9, 213, x + 9, 231), fill=CREMA if i <= k else (90, 100, 115))
+        d.ellipse((x - 9, 255, x + 9, 273), fill=CREMA if i <= k else (90, 100, 115))
 
 
 def pie(d):
-    """v4: marca en y=1490 y WhatsApp en y=1535 (antes 1620 y 1665, tapados por el copy de TikTok)."""
-    f1 = fuente(F_BOLD, 30)
-    f2 = fuente(F_BODY, 30)
-    d.text((SEG_X0, H - 430), MARCA, font=f1, fill=LATON)
-    d.text((SEG_X0, H - 385), f"WhatsApp {TEL}  ·  1ª consulta gratis", font=f2, fill=(200, 206, 214))
-    d.text((SEG_X0, H - 340), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(120, 130, 142))
+    """v5: marca 1390, WhatsApp 1440, descargo 1495, con caja opaca. En 1535/1580 la linea del
+    telefono terminaba en 1593 y el descargo en 1650, o sea tapados por el copy de TikTok."""
+    f1 = fuente(F_BOLD, 36)
+    f2 = fuente(F_BODY, 34)
+    d.rectangle((SEG_X0 - 20, H - 545, 960, H - 380), fill=(14, 16, 20))
+    d.text((SEG_X0, H - 530), MARCA, font=f1, fill=LATON)
+    d.text((SEG_X0, H - 480), f"WhatsApp {TEL}", font=f2, fill=(226, 231, 238))
+    d.text((SEG_X0, H - 425), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 26), fill=(150, 160, 172))
 
 
 def lamina_punto(materia, k, titulo, detalle, out):
     img = fondo(materia)
     d = ImageDraw.Draw(img)
     cabecera(d, materia, k)
-    f_t, l_t = bloque(d, titulo, F_HEAD, 96, W - 190, 3, 56)
-    f_d, l_d = bloque(d, detalle, F_BODY, 50, W - 190, 5, 34) if detalle else (None, [])
+    f_t, l_t = bloque(d, titulo, F_HEAD, 96, SEG_X1 - SEG_X0, 3, 56)
+    f_d, l_d = bloque(d, detalle, F_BODY, 50, SEG_X1 - SEG_X0, 5, 34) if detalle else (None, [])
     alto = len(l_t) * f_t.size * 1.12 + 50 + (len(l_d) * f_d.size * 1.3 if detalle else 0)
     y = H * 0.5 - alto / 2 - (120 if not detalle else 0)
     y = pintar_lineas(d, l_t, f_t, y, CREMA, sombra=False, ancla="izq")
@@ -163,23 +182,24 @@ def lamina_punto(materia, k, titulo, detalle, out):
 
 
 def lamina_cierre(materia, cierre, out):
+    """v5: esta lamina tiene su PROPIO pie y el v4 no lo habia tocado."""
     img = fondo(materia)
     d = ImageDraw.Draw(img)
     cabecera(d, materia, 4)
-    f_c, l_c = bloque(d, cierre, F_HEAD, 84, W - 190, 4, 52)
+    f_c, l_c = bloque(d, cierre, F_HEAD, 84, SEG_X1 - SEG_X0, 4, 52)
     y = H * 0.34
     y = pintar_lineas(d, l_c, f_c, y, CREMA, sombra=False, ancla="izq")
     y += 55
     d.rectangle((SEG_X0, y, SEG_X1, y + 4), fill=LATON)
     y += 45
-    d.text((SEG_X0, y), MARCA, font=fuente(F_HEAD, 46), fill=LATON)
+    d.text((SEG_X0, y), MARCA, font=fuente(F_HEAD, 36), fill=LATON)
     y += 78
-    d.text((SEG_X0, y), "1ª consulta presencial GRATIS", font=fuente(F_BOLD, 44), fill=CREMA)
+    d.text((SEG_X0, y), "1ª consulta presencial GRATIS", font=fuente(F_BOLD, 40), fill=CREMA)
     y += 78
-    d.text((SEG_X0, y), f"WhatsApp {TEL}", font=fuente(F_HEAD, 56), fill=CREMA)
+    d.text((SEG_X0, y), f"WhatsApp {TEL}", font=fuente(F_HEAD, 48), fill=CREMA)
     y += 88
     d.text((SEG_X0, y), "Pasaje Juan Rau 611, San Bernardo", font=fuente(F_BODY, 34), fill=(200, 206, 214))
-    d.text((SEG_X0, H - 340), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(120, 130, 142))
+    d.text((SEG_X0, H - 380), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(140, 150, 162))
     img.save(out)
 
 
@@ -195,9 +215,9 @@ def overlay_gancho(materia, gancho, out, rotulo="DRAMATIZACIÓN"):
         d.line((0, i, W, i), fill=(8, 12, 18, a))
     f_r = fuente(F_BOLD, 28)
     anch = d.textlength(rotulo, font=f_r) + 44
-    d.rounded_rectangle((SEG_X0, 205, SEG_X0 + anch, 205 + 52), 8, fill=(0, 0, 0, 170))
-    d.text((SEG_X0 + 22, 213), rotulo, font=f_r, fill=(230, 230, 230, 255))
-    f, ls = bloque(d, gancho, F_HEAD, 104, W - 260, 4, 60)
+    d.rounded_rectangle((SEG_X0, 215, SEG_X0 + anch, 215 + 52), 8, fill=(0, 0, 0, 170))
+    d.text((SEG_X0 + 22, 223), rotulo, font=f_r, fill=(230, 230, 230, 255))
+    f, ls = bloque(d, gancho, F_HEAD, 104, SEG_X1 - SEG_X0 - 40, 4, 60)
     alto = len(ls) * f.size * 1.08
     y = H * 0.70 - alto
     d.rectangle((SEG_X0, y - 6, SEG_X0 + 16, y + alto - 10), fill=acc + (255,))
