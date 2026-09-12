@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""motor.py v3 (11/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
+"""motor.py v4 (12/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
 Uso: python3 motor.py pieza.json salida.mp4
 pieza.json: {id, materia, gancho, puntos:[{t,d} x3], cierre, voz:"voz.mp3", hook:"hook.jpg|hook.mp4",
              subs:"voz.ass" (opcional), tramos:[t0..t5] (opcional), rotulo:"..." (opcional)}
 v3: (a) audio de salida SIEMPRE aac 48 kHz ESTEREO; (b) campo opcional "rotulo" para el
     rotulo de la esquina del gancho (DRAMATIZACION por defecto; la serie usa "DELITO O NO DELITO?").
+v4: TODO el texto dentro de la ZONA SEGURA DE TIKTOK x[95,930] y[200,1586] (regla dura 4b de la
+    receta). Antes la marca y el WhatsApp de pie() iban en y=1620/1665 y la cabecera en y=150:
+    quedaban bajo el copy de TikTok y bajo el buscador, o sea el CTA con el telefono estaba en el
+    archivo y nadie lo veia. Ahora pie() dibuja en y=1490/1535/1580 y cabecera() en y=205.
 """
 import json, subprocess, sys, os, re, math
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -12,6 +16,10 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 W, H = 1080, 1920
 FPS = 30
 SR, CH = 48000, 2
+# Zona segura de TikTok 1080x1920 (spec 2026): arriba 200 px se los come el buscador y las
+# pestanas; abajo 334 px el nombre, el copy y la marquesina de audio; izquierda 86 px el bisel;
+# derecha 140 px la columna de avatar, corazon, comentarios y compartir.
+SEG_X0, SEG_X1, SEG_Y0, SEG_Y1 = 95, 930, 200, 1586
 F_HEAD = "/usr/share/fonts/truetype/higgsfield/Montserrat-ExtraBold.ttf"
 F_BODY = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 F_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -98,7 +106,7 @@ def pintar_lineas(draw, lineas, f, y, color, interlinea=1.12, sombra=True, ancla
     alto = f.size * interlinea
     for ln in lineas:
         w = draw.textlength(ln, font=f)
-        x = (W - w) / 2 if ancla == "centro" else 90
+        x = (W - w) / 2 if ancla == "centro" else SEG_X0
         if sombra:
             draw.text((x + 3, y + 4), ln, font=f, fill=(0, 0, 0, 160))
         draw.text((x, y), ln, font=f, fill=color)
@@ -120,32 +128,34 @@ def fondo(materia):
 
 
 def cabecera(d, materia, k):
+    """v4: y=205 (antes 150, bajo el buscador de TikTok) y puntos corridos a x = W-150."""
     acc = ACENTO.get(materia, LATON)
     f = fuente(F_BOLD, 34)
-    d.text((90, 150), materia.upper(), font=f, fill=acc)
+    d.text((SEG_X0, 205), materia.upper(), font=f, fill=acc)
     for i in range(5):
-        x = W - 90 - (4 - i) * 34
-        d.ellipse((x - 9, 158, x + 9, 176), fill=CREMA if i <= k else (90, 100, 115))
+        x = W - 150 - (4 - i) * 34
+        d.ellipse((x - 9, 213, x + 9, 231), fill=CREMA if i <= k else (90, 100, 115))
 
 
 def pie(d):
+    """v4: marca en y=1490 y WhatsApp en y=1535 (antes 1620 y 1665, tapados por el copy de TikTok)."""
     f1 = fuente(F_BOLD, 30)
     f2 = fuente(F_BODY, 30)
-    d.text((90, H - 300), MARCA, font=f1, fill=LATON)
-    d.text((90, H - 255), f"WhatsApp {TEL}  ·  1ª consulta gratis", font=f2, fill=(200, 206, 214))
-    d.text((90, H - 200), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(120, 130, 142))
+    d.text((SEG_X0, H - 430), MARCA, font=f1, fill=LATON)
+    d.text((SEG_X0, H - 385), f"WhatsApp {TEL}  ·  1ª consulta gratis", font=f2, fill=(200, 206, 214))
+    d.text((SEG_X0, H - 340), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(120, 130, 142))
 
 
 def lamina_punto(materia, k, titulo, detalle, out):
     img = fondo(materia)
     d = ImageDraw.Draw(img)
     cabecera(d, materia, k)
-    f_t, l_t = bloque(d, titulo, F_HEAD, 96, W - 180, 3, 56)
-    f_d, l_d = bloque(d, detalle, F_BODY, 50, W - 180, 5, 34) if detalle else (None, [])
+    f_t, l_t = bloque(d, titulo, F_HEAD, 96, W - 190, 3, 56)
+    f_d, l_d = bloque(d, detalle, F_BODY, 50, W - 190, 5, 34) if detalle else (None, [])
     alto = len(l_t) * f_t.size * 1.12 + 50 + (len(l_d) * f_d.size * 1.3 if detalle else 0)
     y = H * 0.5 - alto / 2 - (120 if not detalle else 0)
     y = pintar_lineas(d, l_t, f_t, y, CREMA, sombra=False, ancla="izq")
-    d.rectangle((90, y + 14, 90 + 140, y + 20), fill=ACENTO.get(materia, LATON))
+    d.rectangle((SEG_X0, y + 14, SEG_X0 + 140, y + 20), fill=ACENTO.get(materia, LATON))
     if detalle:
         pintar_lineas(d, l_d, f_d, y + 50, (214, 219, 226), 1.3, sombra=False, ancla="izq")
     pie(d)
@@ -156,20 +166,20 @@ def lamina_cierre(materia, cierre, out):
     img = fondo(materia)
     d = ImageDraw.Draw(img)
     cabecera(d, materia, 4)
-    f_c, l_c = bloque(d, cierre, F_HEAD, 84, W - 180, 4, 52)
-    y = H * 0.36
+    f_c, l_c = bloque(d, cierre, F_HEAD, 84, W - 190, 4, 52)
+    y = H * 0.34
     y = pintar_lineas(d, l_c, f_c, y, CREMA, sombra=False, ancla="izq")
-    y += 60
-    d.rectangle((90, y, W - 90, y + 4), fill=LATON)
-    y += 50
-    d.text((90, y), MARCA, font=fuente(F_HEAD, 46), fill=LATON)
-    y += 80
-    d.text((90, y), "1ª consulta presencial GRATIS", font=fuente(F_BOLD, 44), fill=CREMA)
-    y += 80
-    d.text((90, y), f"WhatsApp {TEL}", font=fuente(F_HEAD, 56), fill=CREMA)
-    y += 90
-    d.text((90, y), "Pasaje Juan Rau 611, San Bernardo", font=fuente(F_BODY, 34), fill=(200, 206, 214))
-    d.text((90, H - 200), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(120, 130, 142))
+    y += 55
+    d.rectangle((SEG_X0, y, SEG_X1, y + 4), fill=LATON)
+    y += 45
+    d.text((SEG_X0, y), MARCA, font=fuente(F_HEAD, 46), fill=LATON)
+    y += 78
+    d.text((SEG_X0, y), "1ª consulta presencial GRATIS", font=fuente(F_BOLD, 44), fill=CREMA)
+    y += 78
+    d.text((SEG_X0, y), f"WhatsApp {TEL}", font=fuente(F_HEAD, 56), fill=CREMA)
+    y += 88
+    d.text((SEG_X0, y), "Pasaje Juan Rau 611, San Bernardo", font=fuente(F_BODY, 34), fill=(200, 206, 214))
+    d.text((SEG_X0, H - 340), "Información general, no reemplaza asesoría", font=fuente(F_BODY, 24), fill=(120, 130, 142))
     img.save(out)
 
 
@@ -185,16 +195,16 @@ def overlay_gancho(materia, gancho, out, rotulo="DRAMATIZACIÓN"):
         d.line((0, i, W, i), fill=(8, 12, 18, a))
     f_r = fuente(F_BOLD, 28)
     anch = d.textlength(rotulo, font=f_r) + 44
-    d.rounded_rectangle((90, 150, 90 + anch, 150 + 52), 8, fill=(0, 0, 0, 150))
-    d.text((112, 158), rotulo, font=f_r, fill=(230, 230, 230, 255))
-    f, ls = bloque(d, gancho, F_HEAD, 104, W - 160, 4, 60)
+    d.rounded_rectangle((SEG_X0, 205, SEG_X0 + anch, 205 + 52), 8, fill=(0, 0, 0, 170))
+    d.text((SEG_X0 + 22, 213), rotulo, font=f_r, fill=(230, 230, 230, 255))
+    f, ls = bloque(d, gancho, F_HEAD, 104, W - 260, 4, 60)
     alto = len(ls) * f.size * 1.08
-    y = H * 0.78 - alto
-    d.rectangle((80, y - 6, 80 + 16, y + alto - 10), fill=acc + (255,))
+    y = H * 0.70 - alto
+    d.rectangle((SEG_X0, y - 6, SEG_X0 + 16, y + alto - 10), fill=acc + (255,))
     for ln in ls:
-        d.text((118, y), ln, font=f, fill=(255, 255, 255, 255), stroke_width=5, stroke_fill=(8, 12, 18, 235))
+        d.text((SEG_X0 + 35, y), ln, font=f, fill=(255, 255, 255, 255), stroke_width=5, stroke_fill=(8, 12, 18, 235))
         y += f.size * 1.08
-    d.text((118, H * 0.78 + 30), MARCA, font=fuente(F_BOLD, 30), fill=LATON + (255,))
+    d.text((SEG_X0 + 35, H * 0.70 + 30), MARCA, font=fuente(F_BOLD, 30), fill=LATON + (255,))
     img.save(out)
 
 
