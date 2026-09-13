@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""motor.py v5.1 (12/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
+"""motor.py v5.2 (13/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
 Uso: python3 motor.py pieza.json salida.mp4
 pieza.json: {id, materia, gancho, puntos:[{t,d} x3], cierre, voz:"voz.mp3", hook:"hook.jpg|hook.mp4",
              subs:"voz.ass" (opcional), tramos:[t0..t5] (opcional), rotulo:"..." (opcional)}
@@ -26,8 +26,23 @@ v5.1 (12/09/2026, segunda medicion): el descargo de lamina_cierre() seguia 13 px
     (caja en y=1568-1599 con la y de dibujo en 1540). La caja del OCR empieza ~28 px MAS ABAJO
     de la y de dibujo y mide ~31 px, asi que un offset fijo desde H no lo garantiza. Ahora se
     ancla al final del bloque (y += 62) y se limita con min(y, H-430).
-    Verificado: 0 cajas de texto propio fuera en los cuadros de laminas. Lo que reporta
-    pantalla_chica sobre el video completo es el cintillo del clip de prensa del gancho.
+v5.2 (13/09/2026, tercera medicion - la que encontro que el inset del v5 era ASIMETRICO):
+    el v5 dijo "SEG_X0 pasa de 95 a 130", es decir metio el margen izquierdo 35 px dentro del
+    borde real... y DEJO SEG_X1 en 925, que esta a solo 5 px del borde derecho (930). El texto
+    grande del titulo de lamina_punto (F_HEAD hasta 96 px) tiene una caja de OCR que sobresale
+    ~24 px del glifo por lado, asi que cualquier titulo que ocupe el ancho completo se sale:
+    medido sobre la pieza 941, "Articulo 160 del Codigo del Trabajo" dio caja x=[106, 946],
+    o sea 16 px fuera por la derecha, en 6 cuadros seguidos. En la 945 se midio ademas una
+    caja en x0=93 (2 px fuera por la izquierda) con "y ascendientes": el sobresalto puede
+    llegar a 37 px, mas que los 35 que suponia el v5.
+    Regla que se desprende y que vale para cualquier cambio futuro de encuadre:
+    **el inset tiene que ser >= el sobresalto de la caja de OCR de la fuente MAS GRANDE de la
+    pieza, y tiene que aplicarse a LOS DOS lados.** Medido: 45 px. De ahi SEG_X0=140, SEG_X1=885.
+    Cuesta 50 px de ancho util de titulo (795 -> 745) y no cambia nada mas.
+    Ojo con la trampa de diagnostico: lo que reporta pantalla_chica sobre el video completo
+    mezcla el texto propio con los graficos del clip del gancho (en la 945 el gancho era un
+    billete y aportaba 11 de las 12 cajas). Para decidir hay que volcar las detecciones con su
+    texto, no contar cajas.
 """
 import json, subprocess, sys, os, re, math
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -38,9 +53,11 @@ SR, CH = 48000, 2
 # Zona segura de TikTok 1080x1920 (spec 2026): arriba 200 px se los come el buscador y las
 # pestanas; abajo 334 px el nombre, el copy y la marquesina de audio; izquierda 86 px el bisel;
 # derecha 140 px la columna de avatar, corazon, comentarios y compartir.
-# SEG_X0/SEG_X1 son los margenes de DIBUJO, metidos 35 px dentro del borde real (95 y 930),
-# porque la caja que mide el OCR se extiende mas alla del glifo. Ver v5 (e) en el encabezado.
-SEG_X0, SEG_X1, SEG_Y0, SEG_Y1 = 130, 925, 200, 1586
+# SEG_X0/SEG_X1 son los margenes de DIBUJO, metidos 45 px dentro del borde real (95 y 930),
+# porque la caja que mide el OCR se extiende hasta ~45 px mas alla del glifo con la fuente de
+# 96 px del titulo. El inset va a LOS DOS lados: el v5 solo metio el izquierdo y por eso los
+# titulos anchos se salian por la derecha. Ver v5.2 en el encabezado.
+SEG_X0, SEG_X1, SEG_Y0, SEG_Y1 = 140, 885, 200, 1586
 F_HEAD = "/usr/share/fonts/truetype/higgsfield/Montserrat-ExtraBold.ttf"
 F_BODY = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 F_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
