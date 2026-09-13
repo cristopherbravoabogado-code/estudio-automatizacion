@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""motor.py v5.2 (13/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
+"""motor.py v5.3 (13/09/2026) - motor de video en la nube del Estudio Juridico San Bernardo.
+v5.3: bloque() exige que cada linea quepa en el ancho, no solo que no sobren lineas. Una
+    palabra sola mas larga que la caja se desbordaba sin que el motor bajara el tamano.
+    Medido en la 956 ("Racionalizacion,"): 6 cuadros fuera por la derecha. Ver bloque().
 Uso: python3 motor.py pieza.json salida.mp4
 pieza.json: {id, materia, gancho, puntos:[{t,d} x3], cierre, voz:"voz.mp3", hook:"hook.jpg|hook.mp4",
              subs:"voz.ass" (opcional), tramos:[t0..t5] (opcional), rotulo:"..." (opcional)}
@@ -129,11 +132,18 @@ def envolver(draw, texto, f, ancho):
 
 
 def bloque(draw, texto, path, tam_max, ancho, max_lineas, tam_min=40):
+    """v5.3: ademas del numero de lineas, se exige que CADA linea quepa en el ancho.
+    Sin esa segunda condicion, una PALABRA SOLA mas ancha que la caja se desbordaba: envolver()
+    no puede partir una palabra, asi que la dejaba en su propia linea, el conteo de lineas daba
+    OK y el tamano nunca bajaba. Medido en la pieza 956: el titulo "Racionalizacion,
+    productividad, mercado" a 96 px dejaba 3 lineas (una palabra cada una) y "Racionalizacion,"
+    media ~950 px contra 745 utiles -> caja de OCR en x=[114, 998], 6 cuadros fuera por la
+    derecha. Con la condicion de ancho el tamano baja hasta que la palabra larga entra."""
     tam = tam_max
     while tam >= tam_min:
         f = fuente(path, tam)
         ls = envolver(draw, texto, f, ancho)
-        if len(ls) <= max_lineas:
+        if len(ls) <= max_lineas and all(draw.textlength(l, font=f) <= ancho for l in ls):
             return f, ls
         tam -= 4
     f = fuente(path, tam_min)
