@@ -10,10 +10,10 @@ def html(key, T0, TOTAL, WORDS, HEAD):
     tP = T0[1]+0.4
     if A:
         tS1 = T0[2]+wt(WORDS[2],"treinta"); tS2 = T0[3]+wt(WORDS[3],"trescientos"); tS3 = T0[3]+wt(WORDS[3],"once"); tSout = T0[4]+0.3
-        tR = [T0[5]+wt(WORDS[5],"treinta"), T0[5]+wt(WORDS[5],"cincuenta"), T0[5]+wt(WORDS[5],"ochenta")]; tRout = T0[6]+0.2
+        tR = [T0[5]+wt(WORDS[5],"treinta"), T0[5]+wt(WORDS[5],"cincuenta"), T0[5]+wt(WORDS[5],"ochenta")]; tRout = max(T0[6]+0.2, tR[-1]+1.3)
     else:
         tS1 = T0[2]+wt(WORDS[2],"dueño"); tS2 = T0[4]+wt(WORDS[4],"dueño"); tS3 = T0[4]+wt(WORDS[4],"demandar"); tSout = T0[5]+0.3
-        tR = [T0[5]+wt(WORDS[5],"prohíbe")]; tRout = T0[6]+0.2
+        tR = [T0[5]+wt(WORDS[5],"prohíbe")]; tRout = max(T0[6]+0.2, tR[-1]+1.3)
     tC = TOTAL-6.5
     stat_html = ('<div id="stat" class="grp" style="top:420px"><div class="big"><span id="num">0</span><span class="unit"> DÍAS</span></div>'
                  '<div class="lab" id="lab1">DE SUELDO POR CADA AÑO</div><div class="slam" id="slam">= 11 SUELDOS</div></div>') if A else \
@@ -92,6 +92,6 @@ window.__timelines["master"]=tl;
 if __name__=="__main__":
     import sys,data
     key=sys.argv[1]; tl=json.load(open(f"tl_{key}.json"))
-    WORDS=[data.words(f"{key}{i}") for i in range(1,8)]
+    WORDS=[[tuple(w) for w in ws] for ws in tl["words"]]  # tiempos COMPRIMIDOS (los mismos del audio), no los crudos de HeyGen
     open(f"hf_{key}/index.html","w",encoding="utf-8").write(html(key,tl["t0"],tl["total"],WORDS,data.HEAD[key]))
     print("overlay html ok",key,round(tl["total"],2))
