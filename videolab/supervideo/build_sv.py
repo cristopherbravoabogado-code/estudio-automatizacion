@@ -33,8 +33,12 @@ def prep(K):
         L=D[k]+(XF if k<6 else 0); out=f"sh/{K}{k}.mp4"
         if s[0]=="img":
             FR=int(round(L*FPS))
-            vf=f"scale=1350:-2,crop=1350:2400,zoompan=z='1+0.22*on/{FR}':x='iw/2-(iw/zoom/2)+16*sin(on/2.9)':y='ih/2-(ih/zoom/2)+12*sin(on/2.2)':d={FR}:s=1080x1920:fps={FPS},format=yuv420p"
-            sh(f'ffmpeg -y -v error -i press_{K}.jpg -vf "{vf}" -frames:v {FR} -r {FPS} -c:v libx264 -preset veryfast -crf 18 {out}')
+            # foto de prensa apaisada: fondo = misma foto desenfocada a pantalla completa; frente = foto 1080 de ancho con zoom lento (tarjeta de noticia)
+            fc=(f"[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=30:2,eq=brightness=-0.22:saturation=0.85[bg];"
+                f"[1:v]scale=1620:-2,zoompan=z='1+0.20*on/{FR}':x='iw/2-(iw/zoom/2)+14*sin(on/2.9)':y='ih/2-(ih/zoom/2)+10*sin(on/2.2)':d={FR}:s=1080x570:fps={FPS}[fg];"
+                f"[bg][fg]overlay=0:(H-h)/2:shortest=1,format=yuv420p")
+            r=sh(f'ffmpeg -y -v error -loop 1 -framerate {FPS} -i press_{K}.jpg -i press_{K}.jpg -filter_complex "{fc}" -frames:v {FR} -r {FPS} -c:v libx264 -preset veryfast -crf 18 {out}')
+            if r.returncode: print("IMG_ERR",r.stderr[-400:])
         else:
             clips=s[1:]; parts=[]
             for j,c in enumerate(clips):
@@ -48,7 +52,8 @@ def prep(K):
     ins=" ".join(f"-i sh/{K}{k}.mp4" for k in range(7)); fc=""; prev="[0:v]"
     for k in range(1,7):
         o=f"[v{k}]"; fc+=f"{prev}[{k}:v]xfade=transition={tr[k-1]}:duration={XF}:offset={T0[k]:.3f}{o};"; prev=o
-    sh(f'ffmpeg -y -v error {ins} -filter_complex "{fc[:-1]}" -map "{prev}" -c:v libx264 -preset veryfast -crf 18 -pix_fmt yuv420p -r {FPS} mute_{K}.mp4')
+    r=sh(f'ffmpeg -y -v error {ins} -filter_complex "{fc[:-1]}" -map "{prev}" -c:v libx264 -preset veryfast -crf 18 -pix_fmt yuv420p -r {FPS} mute_{K}.mp4')
+    if r.returncode: print("XFADE_ERR",r.stderr[-400:])
     # audio master
     M=np.zeros(int((TOTAL+1)*SR),dtype=np.float32); V=np.zeros_like(M)
     for k,seg in enumerate(segs):
