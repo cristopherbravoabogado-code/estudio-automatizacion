@@ -1,4 +1,4 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
@@ -37,6 +37,24 @@ Toda la cadena de audio corre a **48000 Hz, 2 canales**, y los tramos se empalma
 - Por qué: el demuxer `concat` empalma sin mirar los parámetros de cada entrada — basta que un tramo venga a
   otra frecuencia o en mono para que el empalme quede sucio. Con el filtro es imposible. Y 48 kHz estéreo es
   el formato que TikTok espera: entregarle 44,1 mono lo obliga a re-muestrear, que es calidad que se regala.
+
+**3-bis. EL STOCK VIEJO NO CUMPLE UNA REGLA QUE NACIÓ DESPUÉS QUE ÉL (medido el 15/09/2026).**
+Arreglar el código NO arregla lo ya renderizado. La regla 3 se implementó el 11/09 (`voz.py` v3 + `motor.py` v3);
+todo lo anterior sigue alojado en CloudFront con el audio viejo y **la RESERVA publica desde ahí sin volver a medir**.
+Medición del 15/09 sobre las 7 piezas vivas del lote: las 4 renderizadas el 11/09 o después dan `aac,48000,2`;
+las 2 renderizadas el **07/09** dan **`aac,96000,1`** — mono, al doble de frecuencia. Eran justo las dos piezas de
+la RESERVA (compensación económica y choque/SOAP), o sea las que el VIGILANTE publica cuando el día viene en cero:
+el defecto estaba a un día seco de salir al aire. La correlación es exacta por fecha de render, no por tema.
+- ✅ **Remuxear, no re-renderizar**: el video está bien, lo único malo es el contenedor de audio.
+  `ffmpeg -y -i viejo.mp4 -c:v copy -c:a aac -b:a 192k -ar 48000 -ac 2 -movflags +faststart nuevo.mp4`
+  Conserva duración y encuadre (verificado: 22,20 s y 24,07 s idénticos) y cuesta ~3 s por pieza y 0 créditos.
+- ⛔ **"Con control de audio limpio" caduca.** Una pieza marcada como controlada lo fue contra el control de SU día.
+  Cuando cambia una regla dura, la etiqueta vieja miente. **Toda pieza de la RESERVA se re-mide con `ffprobe`
+  (`codec_name,sample_rate,channels`) INMEDIATAMENTE ANTES de publicarla**, aunque la bitácora la dé por limpia.
+  Son 2 segundos y es lo único que separa el stock viejo del aire.
+- 🔑 **Regla general**: cuando se agregue o cambie una regla dura, la misma jugada re-mide TODO el stock alojado
+  que pueda publicarse sin pasar por el motor. Si no se re-mide, la corrección solo cubre la producción futura
+  y el stock viejo queda como una mina enterrada en la reserva.
 
 ### 4. TODO EL TEXTO CON CAJA OPACA Y DENTRO DE LA ZONA SEGURA (norma del 11/09/2026)
 El video no se ve en un monitor: se ve en un teléfono, comprimido, y con la interfaz de TikTok encima.
@@ -260,6 +278,7 @@ v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke w
   - Las piezas Kokoro nunca lo tuvieron: `voz.py` ya sintetizaba tramo por tramo.
 - **No escribir los guiones sin tildes.** Ver regla dura 2.
 - **No unir audio con el demuxer `concat` ni entregar mono/44,1 kHz.** Ver regla dura 3.
+- **No publicar de la RESERVA sin re-medir el audio con `ffprobe` justo antes.** El stock renderizado antes de una regla dura no la cumple, y la etiqueta "control de audio limpio" de la bitácora es del día en que se escribió. Ver regla dura 3-bis.
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
 - **No dar por corregida una regla de encuadre sin medirla con `pantalla_chica.py`**, y buscar TODAS las funciones que dibujan el mismo bloque: `pie()` y `lamina_cierre()` dibujan los dos el CTA. Ver regla dura 4d.
 - **No publicar una pieza de más de 34 s.** Ver regla dura 5.
