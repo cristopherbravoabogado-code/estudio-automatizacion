@@ -74,7 +74,8 @@ def prep(K):
     slam = T0[3]+[s for t,s,e in W3 if t.startswith("once")][0] if K=="A" else T0[4]+[s for t,s,e in W4 if t.startswith("demandar")][0]
     put(bo,slam-0.05,0.5); twist = T0[5] if K=="A" else T0[4]; put(ri,twist-2.4,0.42); put(bo,twist,0.45)
     m=float(np.abs(M).max()); M=(np.tanh(M/(m*0.88))*0.95).astype(np.float32)
-    wv=wave.open(f"master_{K}.wav","wb");wv.setnchannels(1);wv.setsampwidth(2);wv.setframerate(SR);wv.writeframes((np.clip(M,-1,1)*32700).astype("<i2").tobytes());wv.close()
+    ST=np.repeat((np.clip(M,-1,1)*32700).astype("<i2"),2)  # regla dura 3: ESTEREO desde el master
+    wv=wave.open(f"master_{K}.wav","wb");wv.setnchannels(2);wv.setsampwidth(2);wv.setframerate(SR);wv.writeframes(ST.tobytes());wv.close()
     # subs
     def ts(x): mm=int(x//60); return f"0:{mm:02d}:{x-mm*60:05.2f}"
     Y=[1230,1300,1180,1330,1210,1290,1160]
@@ -87,7 +88,7 @@ def prep(K):
     open(f"subs_{K}.ass","w",encoding="utf-8").write("\n".join(L)+"\n")
     print("PREP_OK",K,"total=%.2f"%TOTAL,"t0=",[round(x,2) for x in T0])
 def final(K,url):
-    r=sh(f'ffmpeg -y -v error -i mute_{K}.mp4 -c:v libvpx-vp9 -i ov_{K}.webm -i master_{K}.wav -filter_complex "[0:v][1:v]overlay=0:0:format=auto,ass=subs_{K}.ass[v]" -map "[v]" -map 2:a -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart -shortest final_{K}.mp4')
+    r=sh(f'ffmpeg -y -v error -i mute_{K}.mp4 -c:v libvpx-vp9 -i ov_{K}.webm -i master_{K}.wav -filter_complex "[0:v][1:v]overlay=0:0:format=auto,ass=subs_{K}.ass[v]" -map "[v]" -map 2:a -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -c:a aac -ar 48000 -ac 2 -b:a 160k -movflags +faststart -shortest final_{K}.mp4')
     if r.returncode: print("FFMPEG_ERR",r.stderr[-800:]); return
     p=sh(f"ffprobe -v error -show_entries format=duration -show_entries stream=codec_name,width,height,sample_rate,channels -of csv=p=0 final_{K}.mp4").stdout.replace("\n"," ")
     raw=subprocess.run(["ffmpeg","-v","error","-i",f"final_{K}.mp4","-vf","fps=15,scale=96:-2,format=gray","-f","rawvideo","-"],capture_output=True).stdout
@@ -95,6 +96,23 @@ def final(K,url):
     b=subprocess.run(["ffmpeg","-v","error","-i",f"final_{K}.mp4","-vf","fps=2,crop=1080:400:0:1080,format=gray","-f","rawvideo","-"],capture_output=True).stdout
     g=np.frombuffer(b,dtype=np.uint8).reshape(-1,400,1080);whs=(g>235).sum(axis=(1,2))
     print("VERIF",K,p,"| motion mean %.2f p10 %.2f"%(d.mean(),np.percentile(d,10)),"| subs %d/%d frames"%((whs>400).sum(),len(whs)))
-    print(sh(f"curl -s -o /dev/null -w 'PUT %{{http_code}}' -X PUT -H 'Content-Type: video/mp4' --data-binary @final_{K}.mp4 '{url}'").stdout)
+    # LA PUERTA (regla dura 3-ter, 15/09/2026): medir no es controlar si el resultado no puede
+    # bloquear la subida. El 14/09 esta misma funcion imprimia VERIF y subia igual: el supervideo A
+    # salio mono, de 60,74 s y a -19,8 dB. Ahora la subida la hace control.py o no la hace nadie.
+    import control
+    ctl = control.controlar(f"final_{K}.mp4", dmin=20.0, dmax=75.0,
+                            cortes=json.load(open(f"tl_{K}.json")).get("t0", [])[1:])
+    print("CONTROL", json.dumps(ctl, ensure_ascii=False))
+    print("PUT", control.subir(f"final_{K}.mp4", url, ctl))
+def _traer_control():
+    """control.py vive en motor/ y es obligatorio para subir. Se baja aqui para que la receta
+    del supervideo no pueda correr sin la puerta puesta."""
+    import urllib.request
+    if not os.path.exists("control.py"):
+        urllib.request.urlretrieve(
+            "https://raw.githubusercontent.com/cristopherbravoabogado-code/"
+            "estudio-automatizacion/main/motor/control.py", "control.py")
+
 if __name__=="__main__":
+    _traer_control()
     (prep if sys.argv[1]=="prep" else lambda K,u: final(K,u))(*sys.argv[2:])
