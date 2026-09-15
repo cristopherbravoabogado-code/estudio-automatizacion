@@ -56,6 +56,26 @@ el defecto estaba a un día seco de salir al aire. La correlación es exacta por
   que pueda publicarse sin pasar por el motor. Si no se re-mide, la corrección solo cubre la producción futura
   y el stock viejo queda como una mina enterrada en la reserva.
 
+**3-ter. LA REGLA 3 VIVE DENTRO DE `motor.py`, ASÍ QUE TODO LO QUE NO PASA POR `motor.py` SE LA SALTA
+(medido el 15/09/2026).**
+El QC del 15/09 midió las 11 piezas vivas del lote del lunes 14/09. Las **10 salidas del motor** dieron
+`aac,48000,2`, 1080x1920, 23,1-30,5 s, volumen medio −17,7 a −18,1 dB y las 4 uniones entre −87 y −92 dBFS:
+el motor está sano y la regla 3 se cumple sola ahí. La única que falló es la **11ª, el SUPERVIDEO A**
+(`b035baf5-865a-40f0-a363-293a9c807643`, despido por IA, publicado el 14/09 a las 20:26), que salió
+**`aac,48000,1` — MONO —, 60,74 s y volumen medio −19,8 dB**: rompe la regla dura 3, la regla dura 5 y la
+franja de volumen, las tres a la vez. No es un motor enfermo: es que la receta de `videolab/supervideo/`
+produce su mp4 por fuera de `motor.py` y **ningún control la obliga a cerrar como cierra el motor**.
+- ⛔ **Ninguna pieza se publica sin haber pasado el control de audio, la produzca quien la produzca.**
+  El cierre del mux es SIEMPRE `-c:a aac -b:a 192k -ar 48000 -ac 2`, y después `ffprobe` imprimiendo
+  `codec_name,sample_rate,channels` — en `motor.py`, en `videolab/supervideo/` y en cualquier receta nueva.
+  Una receta que no termina imprimiendo `aac,48000,2` no está terminada.
+- 🔑 **Toda receta nueva nace con los cuatro controles o no nace**: formato de audio, duración en franja,
+  volumen medio entre −14 y −19 dB y RMS de cada unión ≤ −35 dBFS. Copiar el bloque de verificación del
+  motor es más barato que descubrir el defecto cuando la pieza ya está al aire y no se puede republicar.
+- 📏 **El supervideo también rompe la franja de duración**: 60,7 s contra el tope de 34 s de la regla 5.
+  Si el formato largo se quiere mantener, la regla 5 tiene que decirlo explícitamente con su propia franja
+  medida; mientras no lo diga, un supervideo de 60 s es una pieza fuera de norma publicada sin decidirlo.
+
 ### 4. TODO EL TEXTO CON CAJA OPACA Y DENTRO DE LA ZONA SEGURA (norma del 11/09/2026)
 El video no se ve en un monitor: se ve en un teléfono, comprimido, y con la interfaz de TikTok encima.
 Las dos medidas del 11/09 sobre el piloto F11 (25 cuadros, OCR a tamaño completo contra OCR al 25% de escala):
@@ -282,6 +302,7 @@ v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke w
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
 - **No dar por corregida una regla de encuadre sin medirla con `pantalla_chica.py`**, y buscar TODAS las funciones que dibujan el mismo bloque: `pie()` y `lamina_cierre()` dibujan los dos el CTA. Ver regla dura 4d.
 - **No publicar una pieza de más de 34 s.** Ver regla dura 5.
+- **No publicar NINGUNA pieza sin control de audio, aunque no la haya hecho `motor.py`.** El supervideo A salió mono y de 60,7 s el 14/09 porque su receta cierra el mux por fuera del motor. Ver regla dura 3-ter.
 - **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
 - **No recortar con `crop` un clip de prensa**: se come el cintillo del medio. Fondo desenfocado + clip centrado.
 - **No programar en Metricool ni probar si su tope se soltó**, y **no volver a intentar Zernio**. Ver paso 9.
