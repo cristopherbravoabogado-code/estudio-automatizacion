@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""produce.py v1 (13/09/2026) - driver de produccion del Estudio Juridico San Bernardo.
+"""produce.py v2 (15/09/2026) - driver de produccion del Estudio Juridico San Bernardo.
 
 POR QUE EXISTE
 --------------
@@ -12,19 +12,24 @@ era una oportunidad nueva de equivocarse. Ese fue el costo repetido de las corri
 Con este driver el comando del sandbox se reduce a: bajar produce.py + un job.json compacto +
 `python3 produce.py job.json`. El pipeline vive versionado en el repo, no en el prompt.
 
+v2 (15/09/2026): los controles salieron de aqui y se fueron a `motor/control.py`, que es LA
+PUERTA comun a todas las recetas (regla dura 3-ter). Este archivo ya no decide si una pieza sube:
+se lo pregunta a control.py, igual que `videolab/supervideo/build_sv.py`. De paso entraron los
+dos controles que aqui faltaban y que el 14/09 costaron una pieza mala al aire: VOLUMEN MEDIO y
+RMS DE LAS UNIONES entre tramos (los cortes salen de `<id>.mp3.tramos.json`, que ya se calculaba).
+
 QUE HACE (una pieza completa, de punta a punta)
 -----------------------------------------------
- 1. baja videolab/voz.py, videolab/karaoke.py, videolab/pantalla_chica.py y motor/motor.py del repo
+ 1. baja videolab/voz.py, videolab/karaoke.py, videolab/pantalla_chica.py, motor/motor.py
+    y motor/control.py del repo
  2. pip install de lo que hace falta (kokoro, soundfile, faster-whisper, numpy, pillow, rapidocr)
  3. baja el clip de gancho y lo prepara (crop 9:16 + pista de audio silenciosa, o fondo
     desenfocado + audio original si es clip de prensa: "prensa": true)
  4. escribe urls/<id>.txt con los 5 tramos de voz separados por linea en blanco  (regla dura 2)
  5. voz.py (kokoro, 48 kHz estereo)  ->  karaoke.py  ->  motor.py
- 6. CONTROL DE AUDIO: ffprobe tiene que decir aac,48000,2                         (regla dura 3)
- 7. CONTROL DE DURACION: 22-34 s, si no avisa y marca la pieza                    (regla dura 5)
- 8. CONTROL DE PANTALLA CHICA: videolab/pantalla_chica.py                         (regla dura 4)
- 9. sube el mp4 con PUT a la upload_url presignada
-Deja un informe en resultado.json con una linea por pieza.
+ 6. CONTROL: control.controlar() corre los cinco (audio, duracion, volumen, uniones, pantalla)
+ 7. SUBIDA: control.subir() hace el PUT y SOLO si el control paso
+Deja un informe en resultado.json con una linea por pieza, con el informe de control completo.
 
 job.json
 --------
@@ -39,7 +44,8 @@ Uso: python3 produce.py job.json   (dentro de UNA llamada sandbox_exec con backg
 import json, os, re, subprocess, sys, urllib.request
 
 RAW = "https://raw.githubusercontent.com/cristopherbravoabogado-code/estudio-automatizacion/main/"
-DEPS = ["videolab/voz.py", "videolab/karaoke.py", "videolab/pantalla_chica.py", "motor/motor.py"]
+DEPS = ["videolab/voz.py", "videolab/karaoke.py", "videolab/pantalla_chica.py",
+        "motor/motor.py", "motor/control.py"]
 PIP = "kokoro soundfile faster-whisper numpy pillow rapidocr-onnxruntime"
 DUR_MIN, DUR_MAX = 22.0, 34.0
 
@@ -63,6 +69,7 @@ def hook(url, dst, prensa):
     urllib.request.urlretrieve(url, "raw_hook.mp4")
     if prensa:
         # clip de prensa: fondo desenfocado + clip centrado, conserva cintillo y AUDIO ORIGINAL
+        # OJO: esta rama muere en [0:a] si el clip viene MUDO. ffprobe el clip antes de elegirla.
         f = ("[0:v]split=2[bg][fg];"
              "[bg]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
              "boxblur=25:2,eq=brightness=-0.14[b];"
@@ -82,6 +89,7 @@ def hook(url, dst, prensa):
 
 
 def una(p):
+    import control                                   # se bajo en preparar(); LA PUERTA
     i = p["id"]
     r = {"id": i, "pasos": []}
     hook(p["hook"], f"hook{i}.mp4", p.get("prensa", False))
@@ -95,9 +103,10 @@ def una(p):
     sh(f"python3 karaoke.py {i}.mp3 {i}.ass")
     r["pasos"].append("voz+karaoke")
 
+    tramos = json.load(open(f"{i}.mp3.tramos.json"))
     pieza = {"id": i, "materia": p["materia"], "gancho": p["gancho"], "puntos": p["puntos"],
              "cierre": p["cierre"], "voz": f"{i}.mp3", "hook": f"hook{i}.mp4",
-             "subs": f"{i}.ass", "tramos": json.load(open(f"{i}.mp3.tramos.json"))}
+             "subs": f"{i}.ass", "tramos": tramos}
     if p.get("rotulo"):
         pieza["rotulo"] = p["rotulo"]
     json.dump(pieza, open(f"pieza{i}.json", "w"), ensure_ascii=False)
@@ -105,27 +114,22 @@ def una(p):
     r["motor"] = m.stdout.strip().splitlines()[-1]
     r["pasos"].append("motor")
 
-    # --- controles obligatorios -------------------------------------------------
-    a = sh(f'ffprobe -v error -select_streams a:0 -show_entries '
-           f'stream=codec_name,sample_rate,channels -of csv=p=0 {i}.mp4').stdout.strip()
-    r["audio"] = a
-    r["audio_ok"] = a.replace(" ", "") == "aac,48000,2"                      # regla dura 3
-    d = float(sh(f'ffprobe -v error -show_entries format=duration -of csv=p=0 {i}.mp4').stdout)
-    r["dur"] = round(d, 2)
-    r["dur_ok"] = DUR_MIN <= d <= DUR_MAX                                    # regla dura 5
-    q = sh(f"python3 pantalla_chica.py {i}.mp4", check=False, t=600)         # regla dura 4
-    r["pantalla_chica"] = (q.stdout + q.stderr).strip()[-600:]
-    r["pantalla_exit"] = q.returncode
+    # --- LA PUERTA: los cinco controles viven en control.py (regla dura 3-ter) --------------
+    # Los empalmes entre tramos de voz son los cortes interiores de tramos[]: ahi es donde
+    # aparecen los chasquidos si la union de audio se hizo mal.
+    cortes = [float(t) for t in tramos[1:-1]] if isinstance(tramos, list) and len(tramos) > 2 else []
+    c = control.controlar(f"{i}.mp4", DUR_MIN, DUR_MAX, cortes)
+    r["control"] = c
+    r["audio"], r["audio_ok"] = c["audio"]["valor"], c["audio"]["ok"]
+    r["dur"], r["dur_ok"] = c["duracion"]["valor"], c["duracion"]["ok"]
+    r["volumen"] = c["volumen"]["valor"]
+    r["uniones"] = c["uniones"]["valor"]
+    r["pantalla_chica"] = c["pantalla_chica"]["valor"]
 
-    if not r["audio_ok"]:
-        r["subida"] = "NO SUBIDA: audio fuera de norma"
+    if not c["pasa"]:
+        r["subida"] = "NO SUBIDA: " + ", ".join(c["falla"])
         return r
-    if not r["dur_ok"]:
-        r["subida"] = f"NO SUBIDA: dura {r['dur']} s, fuera de 22-34"
-        return r
-    u = sh(f'curl -s -o /dev/null -w "%{{http_code}}" -X PUT '
-           f'-H "Content-Type: video/mp4" --data-binary @{i}.mp4 \'{p["upload_url"]}\'')
-    r["subida"] = u.stdout.strip()
+    r["subida"] = control.subir(f"{i}.mp4", p["upload_url"], c)
     return r
 
 

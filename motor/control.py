@@ -71,7 +71,9 @@ def duracion(mp4, dmin=DUR_MIN, dmax=DUR_MAX):
 
 def volumen(mp4):
     """Volumen medio dentro de la franja del motor. Fuera de franja = pieza rara, se mira."""
-    r = _sh(f'ffmpeg -v error -i "{mp4}" -af volumedetect -f null - 2>&1')
+    # OJO: volumedetect imprime en nivel "info". Con -v error el resumen NO sale y el
+    # regex no encuentra nada (medido el 15/09: devolvia 0.0 y reprobaba piezas sanas).
+    r = _sh(f'ffmpeg -hide_banner -nostats -i "{mp4}" -af volumedetect -f null - 2>&1')
     m = re.search(r"mean_volume:\s*(-?[\d.]+) dB", r.stderr + r.stdout)
     v = float(m.group(1)) if m else 0.0
     return VOL_MIN <= v <= VOL_MAX, v
@@ -82,8 +84,8 @@ def uniones(mp4, cortes):
     peor, detalle = -999.0, []
     for t in cortes or []:
         ini = max(0.0, float(t) - VENTANA_UNION)
-        r = _sh(f'ffmpeg -v error -ss {ini:.3f} -t {VENTANA_UNION * 2:.3f} -i "{mp4}" '
-                f'-af volumedetect -f null - 2>&1')
+        r = _sh(f'ffmpeg -hide_banner -nostats -ss {ini:.3f} -t {VENTANA_UNION * 2:.3f} '
+                f'-i "{mp4}" -af volumedetect -f null - 2>&1')
         m = re.search(r"max_volume:\s*(-?[\d.]+) dB", r.stderr + r.stdout)
         v = float(m.group(1)) if m else -999.0
         detalle.append(round(v, 1))
