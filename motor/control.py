@@ -170,8 +170,8 @@ def texto(guion):
     mirando el texto, no la pieza: sale gratis y evita gastar una sintesis entera.
 
     La regla -cion / -sion es dura: en español el singular SIEMPRE va acentuado
-    ("indemnizacion" -> "indemnizacion" mal, "indemnizacion" con tilde bien), mientras que el
-    plural NO la lleva ("indemnizaciones", "acciones"), asi que el plural no se toca.
+    ("indemnizacion" mal, "indemnización" bien), mientras que el plural NO la lleva
+    ("indemnizaciones", "acciones"), asi que el plural no se toca.
     """
     malas = []
     for w in set(_tok(guion)):
@@ -198,6 +198,14 @@ def voz(media, guion, modelo="small"):
     guion son casi siempre del transcriptor - en la 967b escribio "haya impactado" por
     "hayan pactado" - y bloquear por ellas re-renderiza piezas sanas. Por eso se informan.
 
+    EL PEGADO (medido el 16/09 contra el audio real de la 967b): whisper transcribio "por años"
+    como UN token, "poranos". Buscar "anos" como palabra suelta NO lo encuentra, y esa fue la
+    primera version de este control - un falso negativo sobre la pieza misma que lo motivo. Por
+    eso tambien se mira el sufijo de los tokens que estan fuera del guion, exigiendo que el
+    prefijo que queda sea a su vez palabra del guion: "poranos" = "por" + "anos" y "por" esta en
+    el guion, asi que se marca; en "mano" el sufijo "ano" deja "m", que no es palabra del guion,
+    asi que no se marca.
+
     ⚠️ En piezas de REACCION hay que pasarle el **mp3 de la voz**, no el mp4: el mp4 lleva a
     proposito el audio del noticiero durante el gancho y su texto no esta en el guion.
     """
@@ -214,13 +222,20 @@ def voz(media, guion, modelo="small"):
     dicho = " ".join(s.text for s in segs).strip()
 
     oido = set(_tok(dicho))
-    # (a) BLOQUEA: cada palabra del guion con n-tilde tiene que oirse CON su n-tilde
-    perdidas = sorted({w for w in _tok(guion) if "ñ" in w
-                       and w not in oido and _plano(w) in oido})
-    # (b) INFORMA: palabras fuera del guion, plegando diacriticos (la comparacion de siempre)
+    oido_plano = {_plano(w) for w in oido}
     vocab = {_plano(w) for w in _tok(guion)}
-    fuera = sorted({w for w in _tok(_plano(dicho))
-                    if w not in vocab and not w.isdigit()})
+    # INFORMA: palabras fuera del guion, plegando diacriticos (la comparacion de siempre)
+    fuera = sorted({w for w in _tok(_plano(dicho)) if w not in vocab and not w.isdigit()})
+
+    # BLOQUEA: cada palabra del guion con n-tilde tiene que oirse CON su n-tilde
+    perdidas = []
+    for w in sorted({w for w in _tok(guion) if "ñ" in w}):
+        if w in oido:
+            continue                                  # se oyo bien
+        p = _plano(w)
+        pegada = any(f != p and f.endswith(p) and f[:-len(p)] in vocab for f in fuera)
+        if p in oido_plano or pegada:
+            perdidas.append(w)
     return (not perdidas), {"enie_perdida": perdidas, "fuera_del_guion": fuera[:15],
                             "dicho": dicho[:500]}
 
