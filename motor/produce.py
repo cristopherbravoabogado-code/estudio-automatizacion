@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""produce.py v2 (15/09/2026) - driver de produccion del Estudio Juridico San Bernardo.
+"""produce.py v3 (16/09/2026) - driver de produccion del Estudio Juridico San Bernardo.
 
 POR QUE EXISTE
 --------------
@@ -18,6 +18,13 @@ se lo pregunta a control.py, igual que `videolab/supervideo/build_sv.py`. De pas
 dos controles que aqui faltaban y que el 14/09 costaron una pieza mala al aire: VOLUMEN MEDIO y
 RMS DE LAS UNIONES entre tramos (los cortes salen de `<id>.mp3.tramos.json`, que ya se calculaba).
 
+v3 (16/09/2026): se ABREN los controles 6 y 7 (voz), que control.py v2 traia pero que aqui
+quedaban inertes porque `controlar()` los omite si no se le pasa el guion - y no se le pasaba.
+Ese es el agujero por el que la 967b salio al aire el 15/09 diciendo "indemnizacion por ANOS de
+servicio". Ahora el guion se arma primero y el control 6 corre ANTES de `voz.py`: un guion sin
+n-tilde se para sin haber gastado una sintesis. Ademas sube el parche de uniones de las piezas
+de reaccion que el 15/09 se aplico a mano en el sandbox y nunca llego al repo.
+
 QUE HACE (una pieza completa, de punta a punta)
 -----------------------------------------------
  1. baja videolab/voz.py, videolab/karaoke.py, videolab/pantalla_chica.py, motor/motor.py
@@ -25,10 +32,12 @@ QUE HACE (una pieza completa, de punta a punta)
  2. pip install de lo que hace falta (kokoro, soundfile, faster-whisper, numpy, pillow, rapidocr)
  3. baja el clip de gancho y lo prepara (crop 9:16 + pista de audio silenciosa, o fondo
     desenfocado + audio original si es clip de prensa: "prensa": true)
- 4. escribe urls/<id>.txt con los 5 tramos de voz separados por linea en blanco  (regla dura 2)
- 5. voz.py (kokoro, 48 kHz estereo)  ->  karaoke.py  ->  motor.py
- 6. CONTROL: control.controlar() corre los cinco (audio, duracion, volumen, uniones, pantalla)
- 7. SUBIDA: control.subir() hace el PUT y SOLO si el control paso
+ 4. CONTROL 6: revisa el guion (n-tilde y tildes) ANTES de sintetizar      (regla dura 2)
+ 5. escribe urls/<id>.txt con los 5 tramos de voz separados por linea en blanco  (regla dura 2)
+ 6. voz.py (kokoro, 48 kHz estereo)  ->  karaoke.py  ->  motor.py
+ 7. CONTROL: control.controlar() corre los siete (audio, duracion, volumen, uniones, pantalla,
+    texto y voz)
+ 8. SUBIDA: control.subir() hace el PUT y SOLO si el control paso
 Deja un informe en resultado.json con una linea por pieza, con el informe de control completo.
 
 job.json
@@ -91,13 +100,27 @@ def hook(url, dst, prensa):
 def una(p):
     import control                                   # se bajo en preparar(); LA PUERTA
     i = p["id"]
+    prensa = bool(p.get("prensa", False))
     r = {"id": i, "pasos": []}
-    hook(p["hook"], f"hook{i}.mp4", p.get("prensa", False))
+
+    # --- CONTROL 6 (regla dura 2), ANTES de gastar TTS -------------------------------------
+    # Un guion sin n-tilde no se nota en pantalla pero SI en la voz: el 15/09 la 967b salio al
+    # aire diciendo "indemnizacion por ANOS de servicio". Mirar el texto sale gratis; descubrirlo
+    # despues cuesta la sintesis, el render y -si nadie escucha la pieza- la publicacion.
+    guion = "\n\n".join(t.strip() for t in p["voz"])   # regla dura 2: tildes, UTF-8, 5 tramos
+    ok_txt, malas = control.texto(guion)
+    if not ok_txt:
+        r["control_texto"] = malas
+        r["subida"] = ("NO PRODUCIDA: texto (regla dura 2) -> " +
+                       ", ".join(f"{m['dice']}->{m['deberia']}" for m in malas))
+        return r
+    r["pasos"].append("texto")
+
+    hook(p["hook"], f"hook{i}.mp4", prensa)
     r["pasos"].append("hook")
 
     os.makedirs("urls", exist_ok=True)
-    txt = "\n\n".join(t.strip() for t in p["voz"])          # regla dura 2: tildes, UTF-8, 5 tramos
-    open(f"urls/{i}.txt", "w", encoding="utf-8").write(txt + "\n")
+    open(f"urls/{i}.txt", "w", encoding="utf-8").write(guion + "\n")
     v = sh(f"python3 voz.py urls/{i}.txt {i}.mp3 kokoro")
     r["voz"] = v.stdout.strip().splitlines()[-1] if v.stdout.strip() else ""
     sh(f"python3 karaoke.py {i}.mp3 {i}.ass")
@@ -114,17 +137,28 @@ def una(p):
     r["motor"] = m.stdout.strip().splitlines()[-1]
     r["pasos"].append("motor")
 
-    # --- LA PUERTA: los cinco controles viven en control.py (regla dura 3-ter) --------------
+    # --- LA PUERTA: los controles viven en control.py (regla dura 3-ter) --------------------
     # Los empalmes entre tramos de voz son los cortes interiores de tramos[]: ahi es donde
     # aparecen los chasquidos si la union de audio se hizo mal.
-    cortes = [float(t) for t in tramos[1:-1]] if isinstance(tramos, list) and len(tramos) > 2 else []
-    c = control.controlar(f"{i}.mp4", DUR_MIN, DUR_MAX, cortes)
+    #
+    # PIEZAS DE REACCION (prensa:true): el PRIMER corte interior cae donde se desvanece el audio
+    # del noticiero del gancho, asi que mide como voz y reprueba una pieza sana, bloqueando la
+    # subida. Se salta. (Parche aplicado a mano el 15/09 en la 991 y subido al repo el 16/09.)
+    # Por lo mismo el control 7 escucha el mp3 de la voz y no el mp4, que lleva el audio del
+    # noticiero a proposito.
+    if isinstance(tramos, list) and len(tramos) > (3 if prensa else 2):
+        cortes = [float(t) for t in (tramos[2:-1] if prensa else tramos[1:-1])]
+    else:
+        cortes = []
+    c = control.controlar(f"{i}.mp4", DUR_MIN, DUR_MAX, cortes,
+                          guion=guion, media_voz=f"{i}.mp3" if prensa else None)
     r["control"] = c
     r["audio"], r["audio_ok"] = c["audio"]["valor"], c["audio"]["ok"]
     r["dur"], r["dur_ok"] = c["duracion"]["valor"], c["duracion"]["ok"]
     r["volumen"] = c["volumen"]["valor"]
     r["uniones"] = c["uniones"]["valor"]
     r["pantalla_chica"] = c["pantalla_chica"]["valor"]
+    r["voz_control"] = c["voz"]["valor"]
 
     if not c["pasa"]:
         r["subida"] = "NO SUBIDA: " + ", ".join(c["falla"])
