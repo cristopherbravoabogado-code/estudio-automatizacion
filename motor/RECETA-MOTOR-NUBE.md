@@ -1,4 +1,4 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
@@ -23,6 +23,27 @@ DejaVuSans, DejaVuSans-Bold) tienen tildes, ñ, ¿ y ¡: verificado glifo por gl
   "diecinueve mil novecientos setenta y tres") y en **cifras** en la lámina. Son dos textos distintos a propósito.
 - Palabras que el TTS español pronuncia mal (p. ej. "mall") se reemplazan por su equivalente
   ("la tienda", "el supermercado"): el karaoke sale de transcribir el audio, así que no sirve escribirlas fonéticamente.
+
+**2-bis. ESTA REGLA ESTUVO ESCRITA Y SIN IMPLEMENTAR OCHO DÍAS, Y VOLVIÓ A SALIR AL AIRE (medido el 16/09/2026).**
+La pieza **967b** (`78e2d3d8-…`, publicada el 15/09 a las 12:11) dice *"indemnización por **anos** de servicio"*:
+el ejemplo textual con el que esta regla está escrita desde el 07/09. Medido sobre el mp4 publicado con
+faster-whisper `medium`, que transcribe "indemnización" acentuada y aun así escribe "anos" — no es error del
+transcriptor, es lo que la pieza dice. Dos causas sumadas, las dos ya corregidas:
+- **`control.py` no tenía ningún control de voz.** Sus cinco controles miraban el continente (audio, duración,
+  volumen, uniones, encuadre) y ninguno el CONTENIDO. La transcripción contra el guion se hacía **a mano en cada
+  corrida**, así que la corrida que no la hacía publicaba el defecto. Es la misma lección de la regla 3-ter:
+  **medir no es controlar si el resultado no puede bloquear la subida** — y un control que depende de que alguien
+  se acuerde de correrlo no es un control.
+- **El procedimiento escrito que debía cazarlo estaba roto de origen.** Ver el paso 3 de "Control de audio
+  obligatorio": mandaba plegar las tildes antes de comparar, y plegadas "anos" y "años" son el mismo token.
+- ✅ **Control 6 — `control.texto(guion)`, ANTES del TTS. BLOQUEA.** Determinista y sin falsos positivos: lista de
+  palabras que perdieron la ñ (`anos`, `dano`, `senor`, `nino`, `dueno`…), lista de tildes obligatorias
+  (`articulo`, `codigo`, `dia`…) y la regla **-ción / -sión singular**, que en español SIEMPRE va acentuada
+  (el plural no la lleva: "indemnizaciones", "acciones", y por eso no se toca). Mirar el texto sale gratis;
+  descubrirlo después cuesta la síntesis, el render y —si nadie escucha la pieza— la publicación.
+- ✅ **Control 7 — `control.voz(media, guion)`, después del render. BLOQUEA solo por ñ.** Ver paso 3b.
+- ⛔ **Una pieza que reprueba el control 6 o el 7 se REHACE desde el guion.** El remux arregla el contenedor de
+  audio, no lo que la voz dice. Y si ya salió al aire, no se republica (regla de Cristopher del 07/09).
 
 ### 3. AUDIO 48 kHz ESTÉREO, UNIDO CON EL FILTRO `concat` (norma del 11/09/2026)
 Toda la cadena de audio corre a **48000 Hz, 2 canales**, y los tramos se empalman con el **filtro** `concat`
@@ -69,9 +90,10 @@ produce su mp4 por fuera de `motor.py` y **ningún control la obliga a cerrar co
   El cierre del mux es SIEMPRE `-c:a aac -b:a 192k -ar 48000 -ac 2`, y después `ffprobe` imprimiendo
   `codec_name,sample_rate,channels` — en `motor.py`, en `videolab/supervideo/` y en cualquier receta nueva.
   Una receta que no termina imprimiendo `aac,48000,2` no está terminada.
-- 🔑 **Toda receta nueva nace con los cuatro controles o no nace**: formato de audio, duración en franja,
-  volumen medio entre −14 y −19 dB y RMS de cada unión ≤ −35 dBFS. Copiar el bloque de verificación del
-  motor es más barato que descubrir el defecto cuando la pieza ya está al aire y no se puede republicar.
+- 🔑 **Toda receta nueva nace con los controles o no nace**: formato de audio, duración en franja, volumen medio
+  entre −14 y −19 dB, RMS de cada unión ≤ −35 dBFS y **los dos controles de voz de la regla 2-bis**. Copiar el
+  bloque de verificación del motor es más barato que descubrir el defecto cuando la pieza ya está al aire y no se
+  puede republicar. Desde el 15/09 esto no se copia: **se importa `motor/control.py`**, que es LA PUERTA.
 - 📏 **El supervideo también rompe la franja de duración**: 60,7 s contra el tope de 34 s de la regla 5.
   Si el formato largo se quiere mantener, la regla 5 tiene que decirlo explícitamente con su propia franja
   medida; mientras no lo diga, un supervideo de 60 s es una pieza fuera de norma publicada sin decidirlo.
@@ -189,6 +211,11 @@ el **tramo 1 de la voz**: para que se escuche el momento fuerte del clip, el tra
 del clip debe dejar la frase de impacto dentro de los primeros 2 s. Acreditar siempre el medio en la descripción
 ("Imágenes: Meganoticias").
 
+⚠️ **En una pieza de reacción las UNIONES se miden saltando el primer corte interior** (`tramos[2:-1]`, no
+`tramos[1:-1]`): ese primer corte cae donde se desvanece el audio del noticiero del gancho, así que mide como voz
+y **reprueba una pieza sana, bloqueando la subida**. Lo hace solo `produce.py` v3 cuando la pieza trae `prensa:true`.
+Por lo mismo, el control 7 de voz escucha el **mp3**, no el mp4.
+
 Formato F11 ENSAYO (videolab/ensayo.py, 05/09; v2 zona segura 11/09): guion de 4 párrafos, voz con `voz.py`,
 karaoke, 26-30 fotos, `python3 ensayo.py pieza.json salida.mp4` (~45 s). Ver videolab/ANALISIS-viral-01.md.
 
@@ -198,6 +225,8 @@ Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar
 - `motor.py` — render (Pillow + ffmpeg). Entrada `pieza.json`; salida mp4 1080x1920 h264 + aac 48k estéreo, 24-33 s
 - `render.sh` — bucle: lee `urls/<n>.voz` y `urls/<n>.hook`, descarga, renderiza a `out/<id>.mp4`
 - `piezas.json` — guiones: `{id, materia, gancho, puntos:[{t,d}x3], cierre, hook_prompt, hashtags, rotulo?}`
+- `control.py` — **LA PUERTA**: los siete controles en un solo lugar. Toda receta lo importa o no sube (regla 3-ter)
+- `produce.py` — driver de producción de punta a punta; llama a `control.py` y decide nada por su cuenta
 - ⚠️ `render.sh` NO sirve para el pipeline v2: no inyecta `subs` ni `tramos` en pieza.json. Usar un driver en python sobre el mismo `motor.py`.
 
 ## Flujo (cada paso es una herramienta distinta)
@@ -223,6 +252,8 @@ Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar
    - Una llamada que pasa de ~60 s muere con **502 de Cloudflare** y **se lleva el contenedor**. Todo trabajo largo
      va con `nohup ... &` escribiendo a un archivo, y se sondea con `sleep 45` como máximo por llamada.
    - Los .py del repo se bajan directo con `curl` desde `raw.githubusercontent.com/cristopherbravoabogado-code/estudio-automatizacion/main/<ruta>` (el repo es público, responde 200 y no pide token). **Es mejor que pegarlos por heredoc**: no se corrompen y no gastan los 16.000 caracteres del comando.
+     ⚠️ `raw.githubusercontent.com` **cachea ~5 minutos**: recién subido un cambio, el sandbox todavía baja la versión
+     anterior. Si se acaba de commitear, verificar con un `grep` de algo nuevo antes de dar por probado el cambio.
    - Escribir código por heredoc COMO TEXTO PLANO (no base64: al transcribirlo se corrompe). Tope 16.000 caracteres por llamada.
    - Render: ~20 s por pieza. Subida: `curl -X PUT -H "Content-Type: video/mp4" --data-binary @out/<id>.mp4 '<upload_url>'` → 200.
    - `apt-get install` NO funciona (no hay root). `pip install` SÍ. Por eso el OCR del QC es `rapidocr-onnxruntime`
@@ -265,19 +296,38 @@ segura**; para el ensayo, además recall ≥ 0,80. Devuelve código 1 si no pasa
 Diagnóstico cuando no pasa: volcar las detecciones de un cuadro con `RapidOCR` e imprimir las que caen fuera con
 su caja y su texto. Así se distingue texto propio mal puesto de gráficos del clip de prensa, que no se tocan.
 
-**Control de audio obligatorio (desde 08/09/2026; ampliado el 11/09/2026)** — un mp4 renderizado no es un mp4 bueno; se mide:
+**Control de audio obligatorio (desde 08/09/2026; ampliado el 11/09/2026; paso 3 corregido el 16/09/2026)** —
+un mp4 renderizado no es un mp4 bueno; se mide. **Todo esto está implementado en `motor/control.py`: se corre
+importándolo, no copiándolo.**
 1. `ffprobe -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels` → **debe decir `aac,48000,2`**. Si no, la pieza se re-muxea; no se publica en mono ni a 44,1 kHz.
 2. `ffmpeg -i <n>.mp4 -vn -ac 1 -ar 16000 <n>.wav` y transcribir con faster-whisper `small`, `language="es"`, `word_timestamps=True`, `vad_filter=False`.
-3. Normalizar (minúsculas, sin tildes) y contar las palabras transcritas que NO están en el vocabulario del guion. **Debe dar 0**, descontando:
-   - **cifras**: el guion dice "dieciocho" y whisper escribe "18". Ignorar todo token que sea solo dígitos o puntuación.
-   - **homófonos conocidos** de whisper (`filiación`→`afiliación`, `SOAP`→`swap`, `criar`→`crear`, `golpean`→`colpean`, `bencineras`→`vencineras`): son error del transcriptor, se corrigen en el `.ass` SIN tocar los tiempos.
-   - **cortes de palabra**: whisper a veces parte "a una" en "aun". Si el token de sobra es un pedazo de una palabra del guion y las uniones miden silencio real, es segmentación del transcriptor, no basura de audio.
-   - Cualquier otra palabra fuera del guion **no es alucinación hasta que se mida el RMS** (lección de la 917).
+3. **La comparación contra el guion son DOS pasadas, y hay que hacer las dos.** Hasta el 16/09/2026 aquí decía una
+   sola cosa — *"normalizar (minúsculas, sin tildes) y contar las palabras que no están en el guion"* — y ese
+   plegado es exactamente lo que dejó salir la **967b** diciendo *"por anos de servicio"*: plegadas las tildes,
+   `anos` y `años` son el mismo token y el control informaba **0 palabras fuera del guion**. Un control que
+   normaliza la diferencia que busca no puede encontrarla nunca. Ver regla dura 2-bis.
+   - **3a. PLEGADA (minúsculas, sin tildes) — INFORMA.** Cuenta las palabras transcritas que NO están en el
+     vocabulario del guion. Sirve para basura de audio y para etiquetas leídas en voz alta. **No bloquea**, porque
+     whisper se equivoca solo: en la 967b escribió "haya impactado" por "hayan pactado" y "Cres" por "Crece".
+     Descontando siempre:
+     - **cifras**: el guion dice "dieciocho" y whisper escribe "18". Ignorar todo token que sea solo dígitos o puntuación.
+     - **homófonos conocidos** de whisper (`filiación`→`afiliación`, `SOAP`→`swap`, `criar`→`crear`, `golpean`→`colpean`, `bencineras`→`vencineras`): son error del transcriptor, se corrigen en el `.ass` SIN tocar los tiempos.
+     - **cortes de palabra**: whisper a veces parte "a una" en "aun". Si el token de sobra es un pedazo de una palabra del guion y las uniones miden silencio real, es segmentación del transcriptor, no basura de audio.
+     - Cualquier otra palabra fuera del guion **no es alucinación hasta que se mida el RMS** (lección de la 917).
+   - **3b. SENSIBLE A DIACRÍTICOS — BLOQUEA.** Cada palabra del guion que lleva **ñ** tiene que OÍRSE con ñ.
+     Whisper conserva los diacríticos cuando están (en la 991 escribió "daños" y "dueño" sin ayuda), así que oír
+     "anos" donde el guion dice "años" es señal del TTS, no del transcriptor. Se bloquea por ñ y no por tilde
+     porque la ñ es la que cambia la palabra entera.
+     ⚠️ **El pegado**: whisper transcribe "por años" como UN token, `poranos`. Buscar `anos` como palabra suelta
+     NO lo encuentra — medido el 16/09 contra el audio real de la 967b, y fue el primer falso negativo de este
+     mismo control. Por eso también se mira el **sufijo** de los tokens que están fuera del guion, exigiendo que
+     el prefijo que queda sea a su vez palabra del guion: `poranos` = `por` + `anos` y `por` está en el guion, así
+     que se marca; en `mano` el sufijo `ano` deja `m`, que no es palabra del guion, así que no se marca.
 4. Medir el RMS de cada hueco entre tramos con numpy (`f32le` a 16 kHz), ventana [límite−0,62 s, límite−0,10 s].
    **Silencio real ≤ −35 dBFS** (con voz.py v3 dan −240 dBFS). Si un hueco mide como la voz (≈ −15 dBFS), rehacer la pieza.
    ⚠️ En piezas de **reacción** este control se mide sobre el **mp3 de la voz**, no sobre el mp4: el mp4 lleva el audio
    del clip de prensa durante el gancho, así que la primera unión y la transcripción traen la voz del noticiero — que
-   es deliberada, no un defecto.
+   es deliberada, no un defecto. Además se salta el primer corte interior (`tramos[2:-1]`): ver el bloque de clips de prensa.
 
 ## Grilla
 6 diarias (D-10 rev. 05/09): 09:00, 12:00, 13:00, 16:00, 18:00, 20:00. Recalcular con `getBestTimeToPostByNetwork` cada lunes.
@@ -297,6 +347,10 @@ v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke w
   - El fallo es **intermitente**: que una pieza salga limpia NO valida la etiqueta.
   - Las piezas Kokoro nunca lo tuvieron: `voz.py` ya sintetizaba tramo por tramo.
 - **No escribir los guiones sin tildes.** Ver regla dura 2.
+- **No plegar las tildes antes de comparar la transcripción con el guion.** Es lo que dejó salir la 967b diciendo
+  "por anos de servicio" con el control marcando 0 palabras fuera. Ver regla dura 2-bis y el paso 3b.
+- **No dejar un control de contenido en manos de que alguien se acuerde de correrlo a mano.** Si no está en
+  `control.py` y no puede bloquear la subida, no es un control: es una intención. Ver regla dura 3-ter.
 - **No unir audio con el demuxer `concat` ni entregar mono/44,1 kHz.** Ver regla dura 3.
 - **No publicar de la RESERVA sin re-medir el audio con `ffprobe` justo antes.** El stock renderizado antes de una regla dura no la cumple, y la etiqueta "control de audio limpio" de la bitácora es del día en que se escribió. Ver regla dura 3-bis.
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
@@ -305,6 +359,7 @@ v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke w
 - **No publicar NINGUNA pieza sin control de audio, aunque no la haya hecho `motor.py`.** El supervideo A salió mono y de 60,7 s el 14/09 porque su receta cierra el mux por fuera del motor. Ver regla dura 3-ter.
 - **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
 - **No recortar con `crop` un clip de prensa**: se come el cintillo del medio. Fondo desenfocado + clip centrado.
+- **No medir las uniones de una pieza de reacción sobre el mp4 ni desde el primer corte interior**: reprueba piezas sanas. `tramos[2:-1]` y el mp3.
 - **No programar en Metricool ni probar si su tope se soltó**, y **no volver a intentar Zernio**. Ver paso 9.
 - **No contar los publicados con `getScheduledPosts` de Metricool**: lo que sale por Higgsfield no aparece ahí y se lee como día vacío. Peor: en Metricool quedaron posts viejos en ERROR cuyas piezas ya salieron por Higgsfield, y "republicar lo que está en ERROR" genera duplicados.
 - **No dar por imposible publicar desde una tarea programada sin haberlo intentado en esa corrida.** Ver paso 9.
