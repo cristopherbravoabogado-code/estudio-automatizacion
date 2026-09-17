@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""produce.py v3 (16/09/2026) - driver de produccion del Estudio Juridico San Bernardo.
+"""produce.py v4 (17/09/2026) - driver de produccion del Estudio Juridico San Bernardo.
 
 POR QUE EXISTE
 --------------
@@ -25,8 +25,19 @@ servicio". Ahora el guion se arma primero y el control 6 corre ANTES de `voz.py`
 n-tilde se para sin haber gastado una sintesis. Ademas sube el parche de uniones de las piezas
 de reaccion que el 15/09 se aplico a mano en el sandbox y nunca llego al repo.
 
+v4 (17/09/2026): entra el CONTROL 0 - GANCHO DEL BANCO. La doctrina manda desde el 13/09 que el
+gancho salga del banco medido (tipo ESCENA), y las auditorias del 14, 15 y 16/09 verificaron
+pieza por pieza que NINGUNA de las ~130 publicaciones lo hizo. El diagnostico de esas tres noches
+fue siempre el mismo -"la produccion improvisa el gancho al momento"- y la respuesta fue siempre
+la misma: escribir quince ganchos mas. El problema no era el stock (34 limpios sin usar): era que
+la regla vivia en prosa dentro de un archivo de memoria y NINGUNA pieza de codigo podia leerla.
+Ahora el banco es `motor/ganchos/cola.json` y esta funcion lo abre antes de gastar un solo
+credito de TTS: pieza de lamina con gancho que no esta en el banco, no se produce. Las piezas de
+reaccion (prensa:true) quedan exentas, porque su gancho es el titular de la noticia del dia.
+
 QUE HACE (una pieza completa, de punta a punta)
 -----------------------------------------------
+ 0. CONTROL 0: el gancho sale de motor/ganchos/cola.json (salvo piezas de reaccion)
  1. baja videolab/voz.py, videolab/karaoke.py, videolab/pantalla_chica.py, motor/motor.py
     y motor/control.py del repo
  2. pip install de lo que hace falta (kokoro, soundfile, faster-whisper, numpy, pillow, rapidocr)
@@ -48,15 +59,20 @@ job.json
             "voz":["tramo1","tramo2","tramo3","tramo4","tramo5"],
             "upload_url":"https://...s3.amazonaws.com/..."}]}
 
+El campo "gancho" de una pieza de lamina tiene que coincidir con una entrada de
+motor/ganchos/cola.json. Si no coincide, la pieza no se produce y resultado.json dice por que.
+
 Uso: python3 produce.py job.json   (dentro de UNA llamada sandbox_exec con background:true)
 """
-import json, os, re, subprocess, sys, urllib.request
+import json, os, re, subprocess, sys, unicodedata, urllib.request
 
 RAW = "https://raw.githubusercontent.com/cristopherbravoabogado-code/estudio-automatizacion/main/"
 DEPS = ["videolab/voz.py", "videolab/karaoke.py", "videolab/pantalla_chica.py",
         "motor/motor.py", "motor/control.py"]
+BANCO_URL = RAW + "motor/ganchos/cola.json"
 PIP = "kokoro soundfile faster-whisper numpy pillow rapidocr-onnxruntime"
 DUR_MIN, DUR_MAX = 22.0, 34.0
+_BANCO = None
 
 
 def sh(cmd, check=True, t=900):
@@ -64,6 +80,37 @@ def sh(cmd, check=True, t=900):
     if check and r.returncode != 0:
         raise RuntimeError(f"{cmd[:90]} -> {r.stderr[-1200:]}")
     return r
+
+
+def _norm(s):
+    """Compara ganchos sin que una tilde o un signo decidan. OJO: aqui SI se pliegan las
+    tildes, al reves que en el control 6 de texto. Son dos preguntas distintas: alla se
+    busca la diferencia entre 'anos' y 'anios' y plegarla la borra; aca se busca si dos
+    redacciones del mismo gancho son la misma frase."""
+    s = unicodedata.normalize("NFD", s.lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9 ]", " ", s)).strip()
+
+
+def banco(p):
+    """CONTROL 0 (regla de doctrina del 13/09/2026, ejecutable desde el 17/09).
+
+    Devuelve (ok, id_del_gancho_o_motivo). Las piezas de reaccion estan exentas: su gancho
+    es el titular de la noticia del dia y no puede estar escrito de antemano en un banco.
+    """
+    global _BANCO
+    if p.get("prensa"):
+        return True, "exenta: pieza de reaccion"
+    if _BANCO is None:
+        _BANCO = json.loads(urllib.request.urlopen(BANCO_URL, timeout=90).read().decode("utf-8"))
+    g = _norm(p.get("gancho", ""))
+    if not g:
+        return False, "SIN GANCHO"
+    for e in _BANCO["cola"]:
+        t = _norm(e["texto"])
+        if t == g or t.startswith(g[:40]) or g.startswith(t[:40]):
+            return True, e["id"]
+    return False, "SIN BANCO"
 
 
 def preparar():
@@ -102,6 +149,18 @@ def una(p):
     i = p["id"]
     prensa = bool(p.get("prensa", False))
     r = {"id": i, "pasos": []}
+
+    # --- CONTROL 0: el gancho sale del banco medido -----------------------------------------
+    # Se corre PRIMERO, antes que nada: es el unico control que puede evitar producir entera
+    # una pieza que la doctrina no queria. Cuesta una descarga de 6 KB.
+    ok_b, gid = banco(p)
+    r["gancho_banco"] = gid
+    if not ok_b:
+        r["subida"] = (f"NO PRODUCIDA: gancho fuera del banco ({gid}). El gancho de una pieza "
+                       "de lamina tiene que estar en motor/ganchos/cola.json (doctrina del "
+                       "13/09/2026). Si el gancho es nuevo y bueno, agregalo AL BANCO primero.")
+        return r
+    r["pasos"].append("banco")
 
     # --- CONTROL 6 (regla dura 2), ANTES de gastar TTS -------------------------------------
     # Un guion sin n-tilde no se nota en pantalla pero SI en la voz: el 15/09 la 967b salio al
