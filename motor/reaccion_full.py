@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""reaccion_full.py v1 (17/09/2026) - formato F15 REACCION FULL.
+"""reaccion_full.py v1.1 (17/09/2026) - formato F15 REACCION FULL.
 Pedido de Cristopher (17/09): toda la duracion con VIDEO VERTICAL de la noticia (sin lamina, sin
 clip horizontal), narracion encima que comenta la noticia, delitos, penas y cierre con CTA.
 Uso: python3 reaccion_full.py clip.mp4 voz.mp3 subs.ass salida.mp4 "TAG SUPERIOR" "credito"
 Recorta el clip 16:9 a 9:16 (escala a 1920 de alto, ventana de 1080 con paneo lento), lo pasa dos
 veces ralentizado para cubrir la voz, tapa el cintillo del canal con un pie oscuro (bajo la zona
 segura, donde va la UI de TikTok), mete rotulo propio arriba, CTA al final y el karaoke de karaoke.py.
+v1.1: el rotulo lleva caja propia (drawtext box) para que el ancho siga al texto -con drawbox fijo el
+"VIRAL ARGENTINO / VALE EN CHILE?" se salia de la caja- y la linea del WhatsApp del CTA baja a 24 px:
+con 28 px media ~900 px y pantalla_chica.py contaba 21 cajas propias fuera del borde derecho (930).
+Regla: el TAG cabe en ~20 caracteres ("ESTO VALE EN CHILE?"); lo largo va al credito. La cama del
+audio ajeno queda en 0.032 (~-30 dB): con 0.045 las uniones median -34.4 dBFS y no pasaban el tope -35.
+El clip puede ser una concatenacion de clips de Mixkit (16:9, 30 fps, pista muda) cuando no hay clip de
+prensa utilizable: ver motor/lotes/1000_guion.txt (pieza 1000, clips 48973 + 12877 + 49020).
 """
 import json, subprocess, sys
 clip, voz, ass, out, tag, cred = sys.argv[1:7]
@@ -39,25 +46,25 @@ esc = lambda s: s.replace("\\","\\\\").replace(":", "\\:").replace("'", "\\\\\\'
 cta_in = LEAD + V - 6.0
 tx = (f"[vv]trim=0:{T},setpts=PTS-STARTPTS,"
       # rotulo propio arriba, dentro de la zona segura (x 130-925, y >= 245)
-      f"drawbox=x=130:y=258:w=600:h=76:color=0xE5261F@0.92:t=fill,"
-      f"drawtext=fontfile={FONT}:text='{esc(tag)}':fontsize=40:fontcolor=white:x=154:y=258+(76-th)/2,"
+      f"drawtext=fontfile={FONT}:text='{esc(tag)}':fontsize=40:fontcolor=white:x=130:y=272:"
+      f"box=1:boxcolor=0xE5261F@0.92:boxborderw=16,"
       f"drawtext=fontfile={FONT}:text='{esc(cred)}':fontsize=26:fontcolor=white@0.85:x=130:y=348:"
       f"shadowcolor=black@0.7:shadowx=2:shadowy=2,"
       # CTA final sobre las palabras del cierre (y 1080-1230, encima del karaoke)
       f"drawbox=x=130:y=1080:w=795:h=150:color=0x101010@0.86:t=fill:enable='gte(t,{cta_in:.2f})',"
       f"drawtext=fontfile={FONT}:text='¿Necesitas asesoría? Escríbenos':fontsize=40:fontcolor=0xFFE500:"
       f"x=(1080-tw)/2:y=1102:enable='gte(t,{cta_in:.2f})',"
-      f"drawtext=fontfile={FONT}:text='WhatsApp +56 9 9690 5994 · Estudio Jurídico San Bernardo':fontsize=28:"
+      f"drawtext=fontfile={FONT}:text='WhatsApp +56 9 9690 5994 · Estudio Jurídico San Bernardo':fontsize=24:"
       f"fontcolor=white:x=(1080-tw)/2:y=1168:enable='gte(t,{cta_in:.2f})',"
       # pie oscuro: tapa el cintillo y el ticker del canal (bajo la zona segura, y >= 1545)
       f"drawbox=x=0:y=1545:w=1080:h=45:color=black@0.55:t=fill,"
       f"drawbox=x=0:y=1590:w=1080:h=330:color=black@0.94:t=fill,"
       f"ass={ass}[vout]")
 fc.append(tx)
-# audio: noticia audible 1,2 s, luego cama a -27 dB (0.045, bajo el tope de uniones de control.py);
+# audio: noticia audible 1,2 s, luego cama a -30 dB (0.032, bajo el tope de uniones de control.py);
 # voz encima con 0,5 s de entrada; loudnorm al final
 fc.append(f"[aa]atrim=0:{T},asetpts=PTS-STARTPTS,"
-          f"volume='if(lt(t,1.2),0.55,max(0.045,0.55-0.505*(t-1.2)/1.0))':eval=frame[news]")
+          f"volume='if(lt(t,1.2),0.55,max(0.032,0.55-0.518*(t-1.2)/1.0))':eval=frame[news]")
 fc.append(f"[1:a]adelay={int(LEAD*1000)}|{int(LEAD*1000)},aresample=48000[vz]")
 fc.append(f"[news][vz]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,"
           f"aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[aout]")
