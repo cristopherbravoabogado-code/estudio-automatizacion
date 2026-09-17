@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""reaccion_full.py v1 (17/09/2026) - formato F15 REACCION FULL.
+Pedido de Cristopher (17/09): toda la duracion con VIDEO VERTICAL de la noticia (sin lamina, sin
+clip horizontal), narracion encima que comenta la noticia, delitos, penas y cierre con CTA.
+Uso: python3 reaccion_full.py clip.mp4 voz.mp3 subs.ass salida.mp4 "TAG SUPERIOR" "credito"
+Recorta el clip 16:9 a 9:16 (escala a 1920 de alto, ventana de 1080 con paneo lento), lo pasa dos
+veces ralentizado para cubrir la voz, tapa el cintillo del canal con un pie oscuro (bajo la zona
+segura, donde va la UI de TikTok), mete rotulo propio arriba, CTA al final y el karaoke de karaoke.py.
+"""
+import json, subprocess, sys
+clip, voz, ass, out, tag, cred = sys.argv[1:7]
+FONT = "/usr/share/fonts/truetype/higgsfield/Montserrat-ExtraBold.ttf"
+def dur(f):
+    return float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",f]).decode().strip())
+V = dur(voz); C = dur(clip)
+LEAD = 0.5                      # la voz entra a los 0,5 s
+T = round(LEAD + V + 1.3, 2)    # cola de 1,3 s con el CTA visible
+s1 = 0.82; s2 = 0.75; a = 1.5; b = min(C, 13.0)
+d1 = C / s1; d2 = (b - a) / s2
+s3 = 0.7 if d1 + d2 < T + 0.5 else None
+XF = 0.6
+def vpass(i, ss, to, s, label, zoom=False):
+    z = ",scale=1188:2112,crop=1080:1920:54+30*sin(t/3):96+20*sin(t/4)" if zoom else ""
+    return (f"[0:v]trim=start={ss}:end={to},setpts=(PTS-STARTPTS)/{s},"
+            f"scale=-2:1920:flags=lanczos,crop=1080:1920:x='(iw-1080)/2+220*sin(2*PI*t/16+{i})':y=0"
+            f"{z},fps=30,format=yuv420p[{label}]")
+def apass(ss, to, s, label):
+    return f"[0:a]atrim=start={ss}:end={to},asetpts=PTS-STARTPTS,atempo={s},aresample=48000[{label}]"
+fc = [vpass(0, 0, C, s1, "v1"), vpass(1, a, b, s2, "v2", zoom=True), apass(0, C, s1, "a1"), apass(a, b, s2, "a2")]
+if s3:
+    fc += [vpass(2, 0, C, s3, "v3"), apass(0, C, s3, "a3"),
+           f"[v1][v2]xfade=transition=fade:duration={XF}:offset={d1-XF:.3f}[v12]",
+           f"[v12][v3]xfade=transition=fade:duration={XF}:offset={d1+d2-2*XF:.3f}[vv]",
+           f"[a1][a2]acrossfade=d={XF}[a12]", f"[a12][a3]acrossfade=d={XF}[aa]"]
+else:
+    fc += [f"[v1][v2]xfade=transition=fade:duration={XF}:offset={d1-XF:.3f}[vv]",
+           f"[a1][a2]acrossfade=d={XF}[aa]"]
+esc = lambda s: s.replace("\\","\\\\").replace(":", "\\:").replace("'", "\\\\\\'").replace("%","\\%")
+cta_in = LEAD + V - 6.0
+tx = (f"[vv]trim=0:{T},setpts=PTS-STARTPTS,"
+      # rotulo propio arriba, dentro de la zona segura (x 130-925, y >= 245)
+      f"drawbox=x=130:y=258:w=600:h=76:color=0xE5261F@0.92:t=fill,"
+      f"drawtext=fontfile={FONT}:text='{esc(tag)}':fontsize=40:fontcolor=white:x=154:y=258+(76-th)/2,"
+      f"drawtext=fontfile={FONT}:text='{esc(cred)}':fontsize=26:fontcolor=white@0.85:x=130:y=348:"
+      f"shadowcolor=black@0.7:shadowx=2:shadowy=2,"
+      # CTA final sobre las palabras del cierre (y 1080-1230, encima del karaoke)
+      f"drawbox=x=130:y=1080:w=795:h=150:color=0x101010@0.86:t=fill:enable='gte(t,{cta_in:.2f})',"
+      f"drawtext=fontfile={FONT}:text='¿Necesitas asesoría? Escríbenos':fontsize=40:fontcolor=0xFFE500:"
+      f"x=(1080-tw)/2:y=1102:enable='gte(t,{cta_in:.2f})',"
+      f"drawtext=fontfile={FONT}:text='WhatsApp +56 9 9690 5994 · Estudio Jurídico San Bernardo':fontsize=28:"
+      f"fontcolor=white:x=(1080-tw)/2:y=1168:enable='gte(t,{cta_in:.2f})',"
+      # pie oscuro: tapa el cintillo y el ticker del canal (bajo la zona segura, y >= 1545)
+      f"drawbox=x=0:y=1545:w=1080:h=45:color=black@0.55:t=fill,"
+      f"drawbox=x=0:y=1590:w=1080:h=330:color=black@0.94:t=fill,"
+      f"ass={ass}[vout]")
+fc.append(tx)
+# audio: noticia audible 1,2 s, luego cama a -27 dB (0.045, bajo el tope de uniones de control.py);
+# voz encima con 0,5 s de entrada; loudnorm al final
+fc.append(f"[aa]atrim=0:{T},asetpts=PTS-STARTPTS,"
+          f"volume='if(lt(t,1.2),0.55,max(0.045,0.55-0.505*(t-1.2)/1.0))':eval=frame[news]")
+fc.append(f"[1:a]adelay={int(LEAD*1000)}|{int(LEAD*1000)},aresample=48000[vz]")
+fc.append(f"[news][vz]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,"
+          f"aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[aout]")
+cmd = ["ffmpeg","-y","-hide_banner","-loglevel","error","-i",clip,"-i",voz,
+       "-filter_complex",";".join(fc),"-map","[vout]","-map","[aout]","-t",str(T),
+       "-c:v","libx264","-preset","medium","-crf","19","-pix_fmt","yuv420p","-r","30",
+       "-c:a","aac","-ar","48000","-ac","2","-b:a","160k","-movflags","+faststart",out]
+r = subprocess.run(cmd, capture_output=True, text=True)
+if r.returncode:
+    print("FF_ERR", r.stderr[-1500:]); sys.exit(1)
+print(json.dumps({"ok":True,"T":T,"voz":V,"clip":C,"pasadas":3 if s3 else 2,"out":out}))
