@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-videolab/musica.py — CAMA MUSICAL GRATIS CON DUCKING (M6 corrida 2, 18/09/2026)
+videolab/musica.py v2 — CAMA MUSICAL GRATIS CON DUCKING (M6 corrida 2, 18/09/2026)
 
 Qué hace:
   1) busca música/efectos CC0 en Openverse (sin clave, sin cuenta) y baja el archivo
@@ -38,9 +38,7 @@ def sh(cmd):
     return subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
 
-def buscar(q, n=5, licencia="cc0"):
-    """Openverse, sin clave. licencia=cc0 => no exige atribución.
-    Con cc-by hay que acreditar al autor en la descripción del video."""
+def _consulta(q, n, licencia):
     url = OPENVERSE + "?" + urllib.parse.urlencode(
         {"q": q, "license": licencia, "page_size": n})
     req = urllib.request.Request(url, headers={"User-Agent": UA})
@@ -49,8 +47,22 @@ def buscar(q, n=5, licencia="cc0"):
     for r in d.get("results", []):
         out.append({"titulo": r.get("title"), "licencia": r.get("license"),
                     "proveedor": r.get("provider"), "url": r.get("url"),
-                    "duracion_ms": r.get("duration")})
+                    "duracion_ms": r.get("duration"),
+                    "atribucion": None if r.get("license") == "cc0" else r.get("creator")})
     return out
+
+
+def buscar(q, n=5, licencia="cc0"):
+    """Openverse, sin clave. Degrada sola: consulta completa -> dos primeras
+    palabras -> cc-by. cc0 no exige atribución; con cc-by hay que acreditar al
+    autor en la descripción del video (campo 'atribucion')."""
+    for qq in [q, " ".join(q.split()[:2]), q.split()[0]]:
+        r = _consulta(qq, n, licencia)
+        if r:
+            return r
+    if licencia == "cc0":
+        return buscar(q, n, "cc-by")
+    return []
 
 
 def bajar(url, destino):
