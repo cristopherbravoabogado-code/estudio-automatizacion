@@ -1,13 +1,13 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
 
-**Para PUBLICAR (y para fijar una hora) ver `motor/PUBLICAR.md`. Para el encuadre medido ver `motor/ZONA-SEGURA-v5.md`.**
+**Para PUBLICAR (y para fijar una hora) ver `motor/PUBLICAR.md`. Para el encuadre medido ver `motor/ZONA-SEGURA-v5.md`. Para la cama musical ver `motor/REGLA-6-MUSICA.md`.**
 
 ---
 
-## ⛔ LAS CINCO REGLAS DURAS (si se rompe una, la pieza no sale)
+## ⛔ LAS SEIS REGLAS DURAS (si se rompe una, la pieza no sale)
 
 ### 1. NUNCA una etiqueta `<break>` en el texto que va a ElevenLabs
 `eleven_multilingual_v2` a veces **vocaliza** la etiqueta en vez de callar. Detalle y medición en "Lo que NO hacer".
@@ -155,6 +155,27 @@ porque el guion traía 5 tramos largos y Kokoro lee a velocidad normal: se pasar
 - `voz.py` imprime `dur=` antes de renderizar: **si pasa de 34 s, se recorta el guion y se re-sintetiza**, no se
   publica y se anota "quedó largo". Cuesta 20 segundos de sandbox y es lo único que mide la retención antes de subir.
 
+### 6. LA MÚSICA VA CON DUCKING, NUNCA ESTÁTICA (norma del 18/09/2026 — M6 corrida 2)
+Las piezas salían **sin música**: entre frase y frase quedaban **−26,0 LUFS de aire muerto**, seis veces por pieza,
+mientras la voz se entrega a −14,2. La cama musical tapa ese hueco, pero **solo con ducking**.
+Medición completa, tabla de 9 mezclas y comandos en **`motor/REGLA-6-MUSICA.md`**. Lo que manda:
+- **Fuente: Openverse `license=cc0`** (`videolab/musica.py buscar`). Sin clave, sin cuenta, US$0, y CC0 **no obliga
+  a acreditar**. Si degrada a `cc-by`, el autor que devuelve el campo `atribucion` **va sí o sí en la descripción**.
+  Probado desde el sandbox: Openverse 200, efectos de Mixkit 200, incompetech 200 (pero CC-BY);
+  **403 Mixkit música, 403 Pixabay, 403 Free Music Archive, 401 Freesound** — no insistir con esos cuatro.
+- **Ducking a 0 dB** (`sidechaincompress=threshold=0.03:ratio=12:attack=15:release=350:makeup=1`):
+  los silencios suben de −26,0 a **−13,4 LUFS** (12,6 dB de relleno) y la voz entregada se mueve **0,2 dB**
+  (−14,2 → −14,4).
+- ⛔ **Música estática descartada con número.** Para rellenar igual hay que ponerla a 0 dB y la mezcla se va a
+  **−13,1 LUFS**: TikTok normaliza a ~−14 y **baja la pieza entera**, o sea la voz llega más callada que sin música.
+  A −16 dB no molesta pero tampoco se oye (silencios en −24,9, casi aire muerto). No volver a probarla.
+- ⛔ **WER no sirve para decidir el nivel de la música.** faster-whisper `small` dio **WER 0,0000 en las 12 mezclas**,
+  incluida música **6 dB más fuerte que la voz**. El juez es el par (voz entregada, silencios) en LUFS.
+- ✅ **Control obligatorio**: `python3 videolab/musica.py control <mezcla> <tramos.json>` → `MUSICA_OK`.
+  Bloquea si la voz entregada baja de −14,8 LUFS, si la mezcla sube de −15,5 o si los silencios pasan de −12,0.
+- Costo real de punta a punta: **≈ 8 s y US$0 por pieza** (búsqueda 0,7 s, descarga 4,0 s, mezcla 1,0 s, control 2,3 s),
+  y la salida es `48000, 2` — cumple la regla dura 3.
+
 ---
 
 ## ⭐ PIPELINE v2 (VIDEO LAB, 05/09/2026) — voz gratis + subtítulos karaoke. ES EL VIGENTE.
@@ -173,6 +194,9 @@ Muestra real de v2 (Kokoro + karaoke + foto del banco): https://d2ol7oe51mr4n9.c
    En `pieza.json` agregar `"subs":"<n>.ass"` y `"tramos": <contenido de <n>.mp3.tramos.json>`.
    `motor.py` v2+ quema el karaoke (solo desde el fin del gancho), deja las láminas con título solo y re-encodea.
    Desde el 11/09 el estilo lleva **caja opaca** (regla dura 4a): es la versión de `karaoke.py` que está en GitHub.
+7v3. **Cama musical** (desde el 18/09, regla dura 6): `python3 musica.py buscar "<clima de la pieza>" 5`,
+   `python3 musica.py mezclar <n>.mp3 mus.mp3 <n>_mus.wav 0` y `python3 musica.py control <n>_mus.wav <n>.mp3.tramos.json`.
+   La mezcla reemplaza al mp3 de voz en el mux del motor. **No se publica una pieza con música sin `MUSICA_OK`.**
 Verificación numérica extra: en 2 cuadros de láminas debe haber píxeles amarillos (R>200,G>200,B<90) entre y=1150 y y=1400.
 
 ### Campo `rotulo` (v3) — el rótulo de la esquina del gancho
@@ -227,6 +251,7 @@ Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar
 - `piezas.json` — guiones: `{id, materia, gancho, puntos:[{t,d}x3], cierre, hook_prompt, hashtags, rotulo?}`
 - `control.py` — **LA PUERTA**: los siete controles en un solo lugar. Toda receta lo importa o no sube (regla 3-ter)
 - `produce.py` — driver de producción de punta a punta; llama a `control.py` y decide nada por su cuenta
+- `videolab/musica.py` — cama musical CC0 con ducking y su control (regla dura 6)
 - ⚠️ `render.sh` NO sirve para el pipeline v2: no inyecta `subs` ni `tramos` en pieza.json. Usar un driver en python sobre el mismo `motor.py`.
 
 ## Flujo (cada paso es una herramienta distinta)
@@ -253,7 +278,9 @@ Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar
      va con `nohup ... &` escribiendo a un archivo, y se sondea con `sleep 45` como máximo por llamada.
    - Los .py del repo se bajan directo con `curl` desde `raw.githubusercontent.com/cristopherbravoabogado-code/estudio-automatizacion/main/<ruta>` (el repo es público, responde 200 y no pide token). **Es mejor que pegarlos por heredoc**: no se corrompen y no gastan los 16.000 caracteres del comando.
      ⚠️ `raw.githubusercontent.com` **cachea ~5 minutos**: recién subido un cambio, el sandbox todavía baja la versión
-     anterior. Si se acaba de commitear, verificar con un `grep` de algo nuevo antes de dar por probado el cambio.
+     anterior. **El truco de `?t=<epoch>` NO lo salta** (probado el 18/09/2026). Lo que sí funciona es pedir el archivo
+     **por el SHA del commit** en vez de por `main`:
+     `raw.githubusercontent.com/<owner>/<repo>/<sha-del-commit>/<ruta>` → llega fresco al instante.
    - Escribir código por heredoc COMO TEXTO PLANO (no base64: al transcribirlo se corrompe). Tope 16.000 caracteres por llamada.
    - Render: ~20 s por pieza. Subida: `curl -X PUT -H "Content-Type: video/mp4" --data-binary @out/<id>.mp4 '<upload_url>'` → 200.
    - `apt-get install` NO funciona (no hay root). `pip install` SÍ. Por eso el OCR del QC es `rapidocr-onnxruntime`
@@ -296,6 +323,11 @@ segura**; para el ensayo, además recall ≥ 0,80. Devuelve código 1 si no pasa
 Diagnóstico cuando no pasa: volcar las detecciones de un cuadro con `RapidOCR` e imprimir las que caen fuera con
 su caja y su texto. Así se distingue texto propio mal puesto de gráficos del clip de prensa, que no se tocan.
 
+**Control de música obligatorio (desde 18/09/2026, solo si la pieza lleva cama musical)** —
+`python3 videolab/musica.py control <mezcla> <tramos.json>` → **`MUSICA_OK`** o no sube. Mide en LUFS, después de
+normalizar a −14 como hace TikTok: voz entregada ≥ −14,8 · mezcla ≤ −15,5 · silencios ≤ −12,0. Ver regla dura 6
+y `motor/REGLA-6-MUSICA.md`.
+
 **Control de audio obligatorio (desde 08/09/2026; ampliado el 11/09/2026; paso 3 corregido el 16/09/2026)** —
 un mp4 renderizado no es un mp4 bueno; se mide. **Todo esto está implementado en `motor/control.py`: se corre
 importándolo, no copiándolo.**
@@ -323,11 +355,15 @@ importándolo, no copiándolo.**
      mismo control. Por eso también se mira el **sufijo** de los tokens que están fuera del guion, exigiendo que
      el prefijo que queda sea a su vez palabra del guion: `poranos` = `por` + `anos` y `por` está en el guion, así
      que se marca; en `mano` el sufijo `ano` deja `m`, que no es palabra del guion, así que no se marca.
+   ⚠️ **Si la pieza lleva cama musical, los controles 2, 3a y 3b se corren sobre el MP3 DE VOZ, no sobre la mezcla**
+   (igual que en las piezas de reacción): la música no cambia lo que la voz dice, pero sí ensucia la transcripción.
 4. Medir el RMS de cada hueco entre tramos con numpy (`f32le` a 16 kHz), ventana [límite−0,62 s, límite−0,10 s].
    **Silencio real ≤ −35 dBFS** (con voz.py v3 dan −240 dBFS). Si un hueco mide como la voz (≈ −15 dBFS), rehacer la pieza.
    ⚠️ En piezas de **reacción** este control se mide sobre el **mp3 de la voz**, no sobre el mp4: el mp4 lleva el audio
    del clip de prensa durante el gancho, así que la primera unión y la transcripción traen la voz del noticiero — que
    es deliberada, no un defecto. Además se salta el primer corte interior (`tramos[2:-1]`): ver el bloque de clips de prensa.
+   ⚠️ **Lo mismo con música**: con cama musical los huecos ya NO miden silencio por diseño (suben a ≈ −13 LUFS).
+   Este control 4 se mide **siempre sobre el mp3 de voz**, nunca sobre la mezcla, o reprueba una pieza sana.
 
 ## Grilla
 6 diarias (D-10 rev. 05/09): 09:00, 12:00, 13:00, 16:00, 18:00, 20:00. Recalcular con `getBestTimeToPostByNetwork` cada lunes.
@@ -338,7 +374,9 @@ puede depender de producir: si un día falla el render, se publica de la reserva
 producción deja la reserva en 3 antes de terminar.
 
 ## Costos por pieza
-v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke whisper, QC rapidocr). v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días por materia.
+v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke whisper, QC rapidocr).
+v8 agrega la cama musical: **también 0** (Openverse CC0, ≈ 8 s de sandbox).
+v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días por materia.
 
 ## Lo que NO hacer
 - **NUNCA poner etiquetas `<break time="..." />` en el texto que se manda a ElevenLabs.** Es la causa del defecto de audio del lote 911-917 (diagnosticado 08/09/2026). `eleven_multilingual_v2` a veces NO interpreta la etiqueta como pausa: la LEE EN VOZ ALTA y salen sílabas sin sentido al volumen normal de la voz.
@@ -356,6 +394,13 @@ v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke w
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
 - **No dar por corregida una regla de encuadre sin medirla con `pantalla_chica.py`**, y buscar TODAS las funciones que dibujan el mismo bloque: `pie()` y `lamina_cierre()` dibujan los dos el CTA. Ver regla dura 4d.
 - **No publicar una pieza de más de 34 s.** Ver regla dura 5.
+- **No poner música estática debajo de la voz.** Medido el 18/09: para que se oiga hay que subirla a 0 dB y ahí la
+  mezcla se va a −13,1 LUFS, TikTok la normaliza y **baja la pieza entera**. Va siempre con `sidechaincompress`. Ver regla dura 6.
+- **No usar WER para decidir el nivel de la música.** faster-whisper dio 0,0000 en las 12 mezclas, incluso con la
+  música 6 dB MÁS FUERTE que la voz: no distingue nada. El juez es (voz entregada, silencios) en LUFS. Ver regla dura 6.
+- **No medir los huecos entre tramos ni transcribir sobre la MEZCLA con música**: con cama musical los silencios
+  miden ≈ −13 LUFS por diseño y reprueban una pieza sana. Esos controles se corren sobre el mp3 de voz.
+- **No publicar una pista de licencia desconocida, ni una `cc-by` sin acreditar al autor en la descripción.** Ver regla dura 6.
 - **No publicar NINGUNA pieza sin control de audio, aunque no la haya hecho `motor.py`.** El supervideo A salió mono y de 60,7 s el 14/09 porque su receta cierra el mux por fuera del motor. Ver regla dura 3-ter.
 - **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
 - **No recortar con `crop` un clip de prensa**: se come el cintillo del medio. Fondo desenfocado + clip centrado.
@@ -363,6 +408,8 @@ v2/v3/v4/v5: 0 créditos (voz Kokoro, metraje Mixkit o clip de prensa, karaoke w
 - **No programar en Metricool ni probar si su tope se soltó**, y **no volver a intentar Zernio**. Ver paso 9.
 - **No contar los publicados con `getScheduledPosts` de Metricool**: lo que sale por Higgsfield no aparece ahí y se lee como día vacío. Peor: en Metricool quedaron posts viejos en ERROR cuyas piezas ya salieron por Higgsfield, y "republicar lo que está en ERROR" genera duplicados.
 - **No dar por imposible publicar desde una tarea programada sin haberlo intentado en esa corrida.** Ver paso 9.
+- **No confiar en `?t=<epoch>` para saltar el caché de `raw.githubusercontent.com`**: no lo salta. Pedir el archivo por el SHA del commit. Ver paso 7.
+- **No buscar música en Mixkit, Pixabay, Free Music Archive ni Freesound directo**: 403, 403, 403 y 401 desde el sandbox. Openverse CC0. Ver regla dura 6.
 - No mandar `motor.py` en base64 dentro del comando: se corrompe al transcribirlo.
 - No lanzar `render.sh &` en una llamada sin `background:true`: la herramienta espera y mata la llamada.
 - No dejar una llamada de `sandbox_exec` corriendo más de ~60 s: el 502 de Cloudflare se lleva el contenedor entero.
