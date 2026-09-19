@@ -2,7 +2,7 @@
   "fecha": "2026-09-19",
   "meta": 10,
   "formato": "noticia-vertical-relatada-sin-rostro",
-  "creado": "2026-09-19T00:47:12-03:00",
+  "creado": "2026-09-19T01:32:59-03:00",
   "piezas": [
     {
       "slot": 1,
@@ -12,32 +12,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:23:05-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:23:05-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:23:05-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Sueldo pagado por fuera: qué pierdes sin darte cuenta",
-      "fuente": "Código del Trabajo, artículo 41",
-      "norma": "207436",
-      "articulo": "41",
-      "frase": "contraprestaciones en dinero",
-      "gancho": "Te pagan la mitad por fuera y cotizas por la mitad.",
+      "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
+      "fuente": "Carabineros de Chile, primer balance nacional, 18/09/2026",
+      "norma": "29708",
+      "articulo": "110",
+      "frase": "estado de ebriedad",
+      "gancho": "BALANCE DEL 18",
       "tramos": [
-        "Te pagan la mitad por fuera y cotizas por la mitad.",
-        "La ley llama remuneración a las contraprestaciones en dinero por causa del contrato.",
-        "El sobre no cambia eso, pero sí baja tus cotizaciones.",
-        "Y la indemnización se calcula sobre lo declarado.",
-        "Si te pagan así, escríbeme."
+        "Tres fallecidos y cincuenta y dos detenidos en el primer balance del 18.",
+        "Treinta y cinco de ellos iban con alcohol al volante.",
+        "La Ley de Tránsito sanciona conducir en estado de ebriedad.",
+        "No hace falta que choques: manejar así ya es delito.",
+        "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1101"
+      "pieza_id": "1201"
     },
     {
       "slot": 2,
@@ -47,32 +47,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Despido por WhatsApp: la comunicación tiene una forma obligatoria",
-      "fuente": "Código del Trabajo, artículo 162",
-      "norma": "207436",
-      "articulo": "162",
-      "frase": "personalmente o por carta certificada",
-      "gancho": "Te despidieron por WhatsApp un viernes y nadie te explicó nada.",
+      "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
+      "fuente": "Carabineros, fiscalización vial 18/09/2026",
+      "norma": "29708",
+      "articulo": "110",
+      "frase": "bajo la influencia",
+      "gancho": "ALCOHOL Y DROGAS",
       "tramos": [
-        "Te despidieron por WhatsApp y nadie te explicó nada.",
-        "La ley exige comunicarlo personalmente o por carta certificada.",
-        "Tiene que decir la causal y los hechos en que se funda.",
-        "Un mensaje suelto no cumple esa forma.",
-        "Si te pasó, escríbeme."
+        "Diecisiete conductores dieron positivo por drogas este 18.",
+        "Carabineros fiscalizó dieciséis mil cuatrocientos vehículos.",
+        "La Ley de Tránsito castiga conducir bajo la influencia de sustancias.",
+        "Negarse a la prueba también tiene consecuencias.",
+        "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1102"
+      "pieza_id": "1202"
     },
     {
       "slot": 3,
@@ -82,32 +82,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Honorarios con horario y jefe: lo que la ley presume",
-      "fuente": "Código del Trabajo, artículo 8",
-      "norma": "207436",
-      "articulo": "8",
-      "frase": "existencia de un contrato de trabajo",
-      "gancho": "Llevas tres años a honorarios, con horario, jefe y uniforme.",
+      "tema": "245 infracciones: velocidad, cinturón y sillas de niños",
+      "fuente": "Carabineros, balance de infracciones 18/09/2026",
+      "norma": "29708",
+      "articulo": "75",
+      "frase": "cinturón de seguridad",
+      "gancho": "245 PARTES",
       "tramos": [
-        "Llevas tres años a honorarios, con horario y jefe.",
-        "La boleta no decide: decide cómo trabajas de verdad.",
-        "Con horario, jefatura y uniforme hay subordinación.",
-        "La ley presume la existencia de un contrato de trabajo.",
-        "Si es tu caso, escríbeme."
+        "Doscientos cuarenta y cinco partes en un solo día de carretera.",
+        "Velocidad, cinturón y sillas de niños mal puestas.",
+        "La Ley de Tránsito obliga al cinturón de seguridad.",
+        "Y el parte lo paga quien conduce, no el pasajero.",
+        "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1103"
+      "pieza_id": "1203"
     },
     {
       "slot": 4,
@@ -117,32 +117,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Renuncia presionada: el finiquito y la ratificación",
-      "fuente": "Código del Trabajo, artículo 177",
-      "norma": "207436",
-      "articulo": "177",
-      "frase": "ante el inspector del trabajo",
-      "gancho": "Renunciaste presionado y te dijeron que así no hay finiquito.",
+      "tema": "Feriado irrenunciable: la DT fiscaliza y multa por trabajador afectado",
+      "fuente": "Dirección del Trabajo, programa nacional de fiscalización, 18/09/2026",
+      "norma": "230132",
+      "articulo": "2",
+      "frase": "feriados obligatorios e irrenunciables",
+      "gancho": "FERIADO 18 Y 19",
       "tramos": [
-        "Renunciaste presionado y te dijeron que así no hay finiquito.",
-        "Renunciar no borra lo que ya ganaste.",
-        "El finiquito se ratifica ante el inspector del trabajo.",
-        "Ahí puedes firmarlo con reserva de derechos.",
-        "Si te presionaron, escríbeme."
+        "La Dirección del Trabajo salió a fiscalizar el feriado del 18 y 19.",
+        "La ley los declara feriados obligatorios e irrenunciables para el comercio.",
+        "La multa se cuenta por cada trabajador afectado, no por local.",
+        "Quedan fuera clubes, restaurantes y cines.",
+        "Si te obligaron a trabajar, escríbenos."
       ],
-      "pieza_id": "1104"
+      "pieza_id": "1204"
     },
     {
       "slot": 5,
@@ -152,32 +152,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:00-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Vacaciones que nunca te dejaron tomar: no se cambian por plata",
-      "fuente": "Código del Trabajo, descanso y feriado",
+      "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
+      "fuente": "Corte Suprema, cierre de 58 cuadernos de remoción, 09/2026",
       "norma": "207436",
-      "articulo": "73",
-      "frase": "no podrá compensarse en dinero",
-      "gancho": "Renunciaste y te descontaron las vacaciones que nunca te dejaron tomar.",
+      "articulo": "160",
+      "frase": "falta de probidad",
+      "gancho": "11 JUECES FUERA",
       "tramos": [
-        "Te descontaron vacaciones que nunca te dejaron tomar.",
-        "El feriado no es un premio: es un derecho.",
-        "Vigente el contrato, no podrá compensarse en dinero.",
-        "Y si no las tomaste, se pagan al terminar.",
-        "Si te lo descontaron, escríbeme."
+        "La Corte Suprema removió a once jueces que viajaron con licencia médica.",
+        "En el mundo privado eso tiene un nombre en el Código del Trabajo.",
+        "Se llama falta de probidad, y es causal de despido sin indemnización.",
+        "La licencia es para recuperarse, no para viajar.",
+        "Si te acusan de esto, escríbenos."
       ],
-      "pieza_id": "1105"
+      "pieza_id": "1205"
     },
     {
       "slot": 6,
@@ -187,32 +187,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Te cambiaron de sucursal: hasta dónde puede llegar el empleador",
-      "fuente": "Código del Trabajo, artículo 12",
-      "norma": "207436",
-      "articulo": "12",
-      "frase": "sin que ello importe menoscabo para el trabajador",
-      "gancho": "Te mandaron a una sucursal a dos horas de tu casa.",
+      "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
+      "fuente": "Corte Suprema, Segunda Sala, fallo unánime 09/2026",
+      "norma": "29291",
+      "articulo": "9",
+      "frase": "armas de fuego",
+      "gancho": "ARMAS Y LA PENA",
       "tramos": [
-        "Te mandaron a una sucursal a dos horas de tu casa.",
-        "El empleador puede cambiar el sitio, pero con límites.",
-        "Tiene que ser el mismo lugar o ciudad y labores similares.",
-        "Y sin que ello importe menoscabo para el trabajador.",
-        "Si te perjudicó, escríbeme."
+        "La Suprema confirmó condenas por porte ilegal de armas de fuego.",
+        "La Ley de Control de Armas no exige que dispares.",
+        "Basta con portarla sin autorización para arriesgar cárcel.",
+        "Y guardarla en la casa de otro no te saca del problema.",
+        "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1106"
+      "pieza_id": "1206"
     },
     {
       "slot": 7,
@@ -222,32 +222,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:32:59-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Detención en Fiestas Patrias: cuándo es legal",
-      "fuente": "Código Procesal Penal, artículo 125",
-      "norma": "176595",
-      "articulo": "125",
-      "frase": "sino por orden de funcionario público expresamente facultado por la ley",
-      "gancho": "Pasó la noche detenido y a ti nadie te avisó.",
+      "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
+      "fuente": "Corte Suprema, rechazo de recursos de nulidad, 09/2026",
+      "norma": "235507",
+      "articulo": "4",
+      "frase": "pequeñas cantidades",
+      "gancho": "MICROTRÁFICO",
       "tramos": [
-        "Pasó la noche detenido y a ti nadie te avisó.",
-        "Nadie puede ser detenido sino por orden de funcionario público facultado por la ley.",
-        "La excepción es el delito flagrante.",
-        "Y tiene derecho a abogado desde el primer momento.",
-        "Si le pasó a alguien tuyo, escríbeme."
+        "La Suprema volvió a pronunciarse sobre microtráfico esta semana.",
+        "La ley distingue el tráfico de las pequeñas cantidades.",
+        "Esa diferencia cambia la pena por completo.",
+        "Y no la decide el detenido: la decide el tribunal con la prueba.",
+        "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1107"
+      "pieza_id": "1207"
     },
     {
       "slot": 8,
@@ -257,32 +257,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Firmaste como aval: qué significa de verdad",
-      "fuente": "Código Civil, artículo 2335",
+      "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
+      "fuente": "Corte Suprema, fallo sobre pérdida de oportunidad, 09/2026",
       "norma": "172986",
-      "articulo": "2335",
-      "frase": "La fianza es una obligación accesoria",
-      "gancho": "Firmaste como aval y ahora te llega la deuda entera.",
+      "articulo": "2329",
+      "frase": "todo daño que pueda imputarse a malicia o negligencia",
+      "gancho": "PÉRDIDA DE CHANCE",
       "tramos": [
-        "Firmaste como aval y ahora te llega la deuda entera.",
-        "Avalar no es un favor de palabra.",
-        "La fianza es una obligación accesoria.",
-        "Te pueden cobrar a ti aunque no gastaste un peso.",
-        "Si te está pasando, escríbeme."
+        "La Suprema confirmó una indemnización por pérdida de oportunidad.",
+        "El Código Civil dice que todo daño imputable a negligencia debe ser reparado.",
+        "No siempre hay que probar el resultado final.",
+        "A veces basta con probar la chance que te quitaron.",
+        "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1108"
+      "pieza_id": "1208"
     },
     {
       "slot": 9,
@@ -292,32 +292,32 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Pelea grabada en la fonda: el video como prueba",
-      "fuente": "Código Penal, artículo 397 y siguientes",
-      "norma": "1984",
-      "articulo": "397",
-      "frase": "El que hiriere, golpeare o maltratare de obra a otro",
-      "gancho": "Grabaron tu pelea en la fonda y ya circula en TikTok.",
+      "tema": "Detenido en la fonda: cuándo la detención es legal",
+      "fuente": "Fiestas Patrias 2026, detenciones por riñas y desórdenes",
+      "norma": "176595",
+      "articulo": "125",
+      "frase": "sino por orden de funcionario público expresamente facultado por la ley",
+      "gancho": "DETENIDO EN LA FONDA",
       "tramos": [
-        "Grabaron tu pelea en la fonda y ya circula.",
-        "El que hiriere, golpeare o maltratare de obra a otro comete delito.",
-        "Que haya sido en la fonda no lo borra.",
-        "Y ese video puede ser prueba en tu contra.",
-        "Si estás en eso, escríbeme."
+        "Cada 18 llegan detenciones por riñas en las fondas.",
+        "Nadie puede ser detenido sino por orden de funcionario facultado por la ley.",
+        "La excepción es el delito flagrante, y eso hay que probarlo.",
+        "Tienes derecho a abogado desde el primer minuto.",
+        "Si te pasó, escríbenos."
       ],
-      "pieza_id": "1109"
+      "pieza_id": "1209"
     },
     {
       "slot": 10,
@@ -327,33 +327,33 @@
       "intentos": 0,
       "historia": [
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "vacio -> tema"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "tema -> derecho"
         },
         {
-          "cuando": "2026-09-19T01:22:01-03:00",
+          "cuando": "2026-09-19T01:33:00-03:00",
           "que": "derecho -> guion"
         }
       ],
-      "tema": "Departamento entregado con fallas: qué debe el arrendador",
-      "fuente": "Código Civil, artículo 1915",
-      "norma": "172986",
-      "articulo": "1915",
-      "frase": "El arrendamiento es un contrato en que las dos partes se obligan recíprocamente",
-      "gancho": "Te entregaron el departamento con las cañerías malas.",
+      "tema": "Accidente trabajando el 18: sigue siendo accidente del trabajo",
+      "fuente": "Ley 16.744 sobre accidentes del trabajo",
+      "norma": "28650",
+      "articulo": "5",
+      "frase": "a causa o con ocasión del trabajo",
+      "gancho": "ACCIDENTE EL 18",
       "tramos": [
-        "Te entregaron el departamento con las cañerías malas.",
-        "El arrendamiento es un contrato en que las dos partes se obligan recíprocamente.",
-        "Tú pagas la renta, él entrega algo que sirva.",
-        "Las reparaciones mayores no son tuyas.",
-        "Si te pasó, escríbeme."
+        "Mucha gente trabajó este 18 y algunos se accidentaron.",
+        "La ley cubre la lesión ocurrida a causa o con ocasión del trabajo.",
+        "También el trayecto entre la casa y la pega.",
+        "Que haya sido feriado no cambia nada.",
+        "Si te pasó, escríbenos."
       ],
-      "pieza_id": "1110"
+      "pieza_id": "1210"
     }
   ],
-  "actualizado": "2026-09-19T01:23:05-03:00"
+  "actualizado": "2026-09-19T01:33:00-03:00"
 }

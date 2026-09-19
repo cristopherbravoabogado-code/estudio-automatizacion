@@ -68,7 +68,7 @@ import json, os, re, subprocess, sys, unicodedata, urllib.request
 
 RAW = "https://raw.githubusercontent.com/cristopherbravoabogado-code/estudio-automatizacion/main/"
 DEPS = ["videolab/voz.py", "videolab/karaoke.py", "videolab/pantalla_chica.py",
-        "motor/motor.py", "motor/control.py"]
+        "motor/motor.py", "motor/control.py", "motor/reaccion_full.py"]
 BANCO_URL = RAW + "motor/ganchos/cola.json"
 PIP = "kokoro soundfile faster-whisper numpy pillow rapidocr-onnxruntime"
 DUR_MIN, DUR_MAX = 22.0, 34.0
@@ -161,16 +161,55 @@ def hook(url, dst, prensa):
            f'-preset veryfast -crf 19 -c:a aac -ar 48000 -ac 2 -b:a 128k {dst}')
 
 
+def clip_f15(urls, dst):
+    """Arma el video de una pieza F15 a partir de uno o varios clips.
+
+    reaccion_full.py espera UN clip 16:9 del que saca el vertical con paneo. Su propio docstring
+    admite "una concatenacion de clips de Mixkit (16:9, 30 fps, pista muda) cuando no hay clip de
+    prensa utilizable"; asi se hizo la pieza 1000 (clips 48973 + 12877 + 49020).
+
+    Se concatena con el filtro `concat`, NUNCA con `-c copy`: es regla dura del motor, y con
+    fuentes de distinto tamano o fps el copy produce saltos y desincroniza el audio.
+    """
+    partes = []
+    for n, u in enumerate(urls):
+        sh(f"curl -sL -A 'Mozilla/5.0' -o f15_{n}.mp4 '{u}'")
+        # normalizar a 1920x1080/30fps y darle pista muda: sin audio el concat de audio falla
+        sh(f'ffmpeg -y -hide_banner -loglevel error -i f15_{n}.mp4 -f lavfi '
+           f'-i anullsrc=r=48000:cl=stereo -vf "scale=1920:1080:'
+           f'force_original_aspect_ratio=increase:flags=lanczos,crop=1920:1080,fps=30" '
+           f'-map 0:v -map 1:a -shortest -t 10 -c:v libx264 -preset veryfast -crf 20 '
+           f'-c:a aac -ar 48000 -ac 2 f15n_{n}.mp4')
+        partes.append(f"f15n_{n}.mp4")
+    if len(partes) == 1:
+        sh(f"mv {partes[0]} {dst}")
+        return
+    entradas = " ".join(f"-i {q}" for q in partes)
+    cadena = "".join(f"[{k}:v][{k}:a]" for k in range(len(partes)))
+    sh(f'ffmpeg -y -hide_banner -loglevel error {entradas} -filter_complex '
+       f'"{cadena}concat=n={len(partes)}:v=1:a=1[v][a]" -map "[v]" -map "[a]" '
+       f'-c:v libx264 -preset veryfast -crf 20 -c:a aac -ar 48000 -ac 2 {dst}')
+
+
 def una(p):
     import control                                   # se bajo en preparar(); LA PUERTA
     i = p["id"]
-    prensa = bool(p.get("prensa", False))
-    r = {"id": i, "pasos": []}
+    formato = p.get("formato", "lamina")
+    # F15 REACCION FULL: video vertical toda la duracion con la noticia y la narracion encima.
+    # Es el formato de las piezas de NOTICIA, que es lo que rinde (rev. 12 del cerebro, H-12:
+    # manda el TEMA). Hasta el 19/09 solo existia como script suelto que se corria a mano
+    # -de ahi que la cadena automatica publicara relleno-, y aqui queda conectado.
+    es_f15 = formato == "F15"
+    # Para los controles, una F15 se comporta como una pieza de prensa: el mp4 lleva la cama de
+    # audio del clip a proposito, asi que el control de voz escucha el mp3 y no el mp4, y el
+    # primer corte interior no se mide (ahi se desvanece la cama, no es una union de voz).
+    prensa = bool(p.get("prensa", False)) or es_f15
+    r = {"id": i, "formato": formato, "pasos": []}
 
     # --- CONTROL 0: el gancho sale del banco medido -----------------------------------------
     # Se corre PRIMERO, antes que nada: es el unico control que puede evitar producir entera
     # una pieza que la doctrina no queria. Cuesta una descarga de 6 KB.
-    ok_b, gid = banco(p)
+    ok_b, gid = (True, "exenta: pieza F15 de noticia") if es_f15 else banco(p)
     r["gancho_banco"] = gid
     if not ok_b:
         r["subida"] = (f"NO PRODUCIDA: gancho fuera del banco ({gid}). El gancho de una pieza "
@@ -192,7 +231,10 @@ def una(p):
         return r
     r["pasos"].append("texto")
 
-    hook(p["hook"], f"hook{i}.mp4", prensa)
+    if es_f15:
+        clip_f15(p.get("clips") or [p["hook"]], f"hook{i}.mp4")
+    else:
+        hook(p["hook"], f"hook{i}.mp4", prensa)
     r["pasos"].append("hook")
 
     os.makedirs("urls", exist_ok=True)
@@ -203,6 +245,13 @@ def una(p):
     r["pasos"].append("voz+karaoke")
 
     tramos = json.load(open(f"{i}.mp3.tramos.json"))
+    if es_f15:
+        tag = p.get("tag", "NOTICIA DE HOY")
+        cred = p.get("credito", "Estudio Juridico San Bernardo")
+        m = sh(f'python3 reaccion_full.py hook{i}.mp4 {i}.mp3 {i}.ass {i}.mp4 "{tag}" "{cred}"')
+        r["motor"] = m.stdout.strip().splitlines()[-1]
+        r["pasos"].append("reaccion_full")
+        return _cerrar(p, r, i, tramos, prensa, guion, control)
     pieza = {"id": i, "materia": p["materia"], "gancho": p["gancho"], "puntos": p["puntos"],
              "cierre": p["cierre"], "voz": f"{i}.mp3", "hook": f"hook{i}.mp4",
              "subs": f"{i}.ass", "tramos": tramos}
@@ -213,17 +262,25 @@ def una(p):
     r["motor"] = m.stdout.strip().splitlines()[-1]
     r["pasos"].append("motor")
 
-    # --- LA PUERTA: los controles viven en control.py (regla dura 3-ter) --------------------
+    return _cerrar(p, r, i, tramos, prensa, guion, control)
+
+
+def _cerrar(p, r, i, tramos, prensa, guion, control):
+    """LA PUERTA y la subida, comunes a los dos formatos (regla dura 3-ter).
+
+    Existe como funcion aparte desde el 19/09, al conectar el formato F15: si cada formato se
+    escribiera su propio cierre, el segundo nace con los controles apagados y no se entera.
+    Es el mismo argumento por el que los controles se fueron a control.py el 15/09.
+    """
     # Los empalmes entre tramos de voz son los cortes interiores de tramos[]: ahi es donde
     # aparecen los chasquidos si la union de audio se hizo mal.
     #
-    # PIEZAS DE REACCION (prensa:true): el PRIMER corte interior cae donde se desvanece el audio
-    # del noticiero del gancho, asi que mide como voz y reprueba una pieza sana, bloqueando la
-    # subida. Se salta. (Parche aplicado a mano el 15/09 en la 991 y subido al repo el 16/09.)
-    # Por lo mismo el control 7 escucha el mp3 de la voz y no el mp4, que lleva el audio del
-    # noticiero a proposito.
+    # PIEZAS DE REACCION (prensa:true) y F15: el PRIMER corte interior cae donde se desvanece
+    # el audio del clip, asi que mide como voz y reprueba una pieza sana, bloqueando la subida.
+    # Se salta. (Parche aplicado a mano el 15/09 en la 991 y subido al repo el 16/09.)
+    # Por lo mismo el control 7 escucha el mp3 de la voz y no el mp4, que lleva la cama a proposito.
     if isinstance(tramos, list) and len(tramos) > (3 if prensa else 2):
-        cortes = [float(t) for t in (tramos[2:-1] if prensa else tramos[1:-1])]
+        cortes = [float(x) for x in (tramos[2:-1] if prensa else tramos[1:-1])]
     else:
         cortes = []
     c = control.controlar(f"{i}.mp4", DUR_MIN, DUR_MAX, cortes,

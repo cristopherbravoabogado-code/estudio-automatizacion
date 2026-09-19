@@ -73,8 +73,14 @@ DIR_COLA = os.path.join(RAIZ, "cola")
 BANCO = os.path.join(RAIZ, "motor", "ganchos", "cola.json")
 CADENA_PY = os.path.join(RAIZ, "motor", "cadena.py")
 
-CAMPOS = ("id", "materia", "rotulo", "hook", "gancho", "puntos", "cierre", "voz",
-          "tema", "fuente", "norma", "articulo", "frase")
+# Los campos comunes a los dos formatos, y los propios de cada uno.
+# F15 REACCION FULL es el formato de las piezas de NOTICIA: video vertical toda la duracion con
+# la noticia y la narracion encima (motor/reaccion_full.py). Es lo que rinde -rev. 12 del cerebro,
+# H-12: manda el TEMA- y hasta el 19/09 no estaba conectado a la cadena automatica, que por eso
+# publicaba solo laminas de relleno.
+CAMPOS = ("id", "materia", "voz", "tema", "fuente", "norma", "articulo", "frase")
+CAMPOS_LAMINA = ("rotulo", "hook", "gancho", "puntos", "cierre")
+CAMPOS_F15 = ("clips", "tag")
 
 
 def ruta_cola(fecha):
@@ -104,6 +110,10 @@ def _norm(s):
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9 ]", " ", s)).strip()
 
 
+def es_f15(p):
+    return p.get("formato") == "F15"
+
+
 def control_6(p):
     """El control 6 de control.py sobre todo el texto de la pieza: voz y pantalla."""
     try:
@@ -112,9 +122,14 @@ def control_6(p):
         return ["no se pudo importar motor/control.py (%s): el control 6 NO corrio. "
                 "FALLA CERRADA: la pieza no se encola." % e]
     partes = list(p.get("voz") or [])
-    partes += [p.get("gancho", ""), p.get("cierre", "")]
-    for pt in (p.get("puntos") or []):
-        partes += [pt.get("t", ""), pt.get("d", "")]
+    if es_f15(p):
+        # En una F15 lo que va en pantalla es el rotulo y el credito; el resto es el karaoke,
+        # que sale de la propia voz.
+        partes += [p.get("tag", ""), p.get("credito", "")]
+    else:
+        partes += [p.get("gancho", ""), p.get("cierre", "")]
+        for pt in (p.get("puntos") or []):
+            partes += [pt.get("t", ""), pt.get("d", "")]
     ok, malas = control.texto(" ".join(partes))
     if ok:
         return []
@@ -133,7 +148,7 @@ def control_0(p):
     control que no lo mira dejan pasar la repeticion que el registro existe para evitar - que
     es el mismo defecto que `control.py` v3 arreglo en la puerta: medir sin poder bloquear.
     """
-    if p.get("prensa"):
+    if p.get("prensa") or es_f15(p):
         return []
     g = _norm(p.get("gancho", ""))
     if not g:
@@ -157,7 +172,8 @@ def control_0(p):
 
 def estructura(p):
     fallas = []
-    for c in CAMPOS:
+    propios = CAMPOS_F15 if es_f15(p) else CAMPOS_LAMINA
+    for c in CAMPOS + propios:
         if not p.get(c):
             fallas.append("falta el campo '%s'" % c)
     voz = p.get("voz") or []
@@ -166,11 +182,25 @@ def estructura(p):
                       "sin etiquetas <break>)" % len(voz))
     if any("<break" in str(t) for t in voz):
         fallas.append("hay una etiqueta <break> en la voz: regla dura 1, eleven la vocaliza")
-    puntos = p.get("puntos") or []
-    if len(puntos) != 3:
-        fallas.append("hay %d puntos y el formato pide 3" % len(puntos))
-    if not str(p.get("hook", "")).startswith("http"):
-        fallas.append("el clip de gancho ('hook') no parece una URL")
+
+    if es_f15(p):
+        clips = p.get("clips") or []
+        if not isinstance(clips, list) or not clips:
+            fallas.append("'clips' tiene que ser una lista con al menos una URL de video")
+        for u in clips:
+            if not str(u).startswith("http"):
+                fallas.append("un clip no parece una URL: %s" % str(u)[:60])
+        # reaccion_full.py v1.1: "el TAG cabe en ~20 caracteres; lo largo va al credito".
+        # Con mas, el rotulo se sale de la zona segura y pantalla_chica.py lo cuenta fuera.
+        if len(p.get("tag", "")) > 20:
+            fallas.append("el tag mide %d caracteres y reaccion_full.py pide ~20: lo largo va "
+                          "al credito" % len(p["tag"]))
+    else:
+        puntos = p.get("puntos") or []
+        if len(puntos) != 3:
+            fallas.append("hay %d puntos y el formato pide 3" % len(puntos))
+        if not str(p.get("hook", "")).startswith("http"):
+            fallas.append("el clip de gancho ('hook') no parece una URL")
     return fallas
 
 
@@ -213,7 +243,9 @@ def cmd_agregar(args):
         ("tema", ["--campo", "tema=%s" % p["tema"], "--campo", "fuente=%s" % p["fuente"]]),
         ("derecho", ["--campo", "norma=%s" % p["norma"], "--campo", "articulo=%s" % p["articulo"],
                      "--campo", "frase=%s" % p["frase"]]),
-        ("guion", ["--campo", "gancho=%s" % p["gancho"],
+        # En una F15 el papel del gancho lo hace el rotulo: es lo que abre la pieza en pantalla.
+        # Se anota igual en el libro de cuentas para que 'guion' exija siempre lo mismo.
+        ("guion", ["--campo", "gancho=%s" % (p.get("gancho") or p.get("tag", "")),
                    "--json", json.dumps({"tramos": p["voz"], "pieza_id": p["id"]}, ensure_ascii=False)]),
     ]
     for estado, extra in pasos:
