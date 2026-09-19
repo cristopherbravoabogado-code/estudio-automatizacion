@@ -46,16 +46,29 @@ Además se midió que **ninguna de las tareas caídas tenía `finished_at`**: no
 - Solo `PUBLISHED` cuenta como publicado. Un 200 al crear un post no prueba nada
 - Reglas duras del motor: un nodo de voz por tramo sin etiquetas `<break>`; textos siempre con tildes y ñ; audio estéreo 48 kHz; concatenar con el filtro `concat`, nunca con `-c copy`; control de audio antes de publicar (0 palabras fuera del guion, RMS de uniones ≤ −35 dBFS)
 
-## Columna vertebral — las 5 revisiones + vigilante
+## Columna vertebral — reescrita el 19/09/2026
+
+Las cuatro tareas se **reconvirtieron**, no se crearon de nuevo: conservan sus 17 conectores
+guardados. Eso importa — una tarea creada desde una sesión de Claude Code nace SIN conectores y
+no podría publicar en TikTok. Si alguna hay que rehacerla, hay que hacerlo desde claude.ai o
+desde un chat que tenga los conectores, nunca desde Claude Code.
+
+Los prompts vigentes están en `tareas/PROMPTS-CADENA.md`.
 
 | Tarea | id | cron UTC | Chile | Qué hace |
 |---|---|---|---|---|
-| SB 06:00 Producción del día | `trig_01R2vJVkPRhzSqfU7vt2Sehc` | `0 9 * * *` | 06:00 | Cuenta la cola y produce lo que falte |
-| SB 12:00 ¿Salieron al aire? | `trig_01NUjhWgu3AAA6ah6njxgVQy` | `0 15 * * *` | 12:00 | Verifica publicación real y republica lo caído |
-| SB 15:00 Viral y noticia | `trig_0131ftuMmRUmhdgoC47eaQiP` | `0 18 * * *` | 15:00 | Pieza de reacción o noticia, publicada el mismo día |
-| SB 19:00 Cierre del día | `trig_01ByZCVLhuBMRvSAH1vjbP9v` | `0 22 * * *` | 19:00 | Publicación, consultas, métricas, cola de mañana |
-| SB 00:00 Auditoría | `trig_01UDYCznrf4Yr5TXDHiNVrmE` | `0 3 * * *` | 00:00 | Audita protocolos y cubre a las otras cuatro |
-| SB Vigilante | `trig_018BGjU648of7vJq2YiRUhe7` | `4 */3 * * *` | cada 3 h | Detecta tareas a medias y publica de la reserva |
+| **T1-NOCHE** encolar mañana | `trig_01ByZCVLhuBMRvSAH1vjbP9v` | `0 22 * * *` | 19:00 | Encola las ranuras 1–5 de mañana |
+| **T1-MAÑANA** encolar la tarde | `trig_01R2vJVkPRhzSqfU7vt2Sehc` | `0 11 * * *` | 08:00 | Encola las ranuras 6–10 con noticia fresca |
+| **T2** Publicador | `trig_01NUjhWgu3AAA6ah6njxgVQy` | `0 0,1,10-23 * * *` | 16 veces/día | Publica lo vencido; reintenta solo a la hora siguiente |
+| **T3** Vigilante | `trig_018BGjU648of7vJq2YiRUhe7` | `34 */3 * * *` | cada 3 h | Audita; solo publica si algo venció hace +2 h |
+| SB 15:00 Viral y noticia | `trig_0131ftuMmRUmhdgoC47eaQiP` | `0 18 * * *` | 15:00 | Sin cambios: pieza de reacción del día |
+| SB 00:00 Auditoría | `trig_01UDYCznrf4Yr5TXDHiNVrmE` | `0 3 * * *` | 00:00 | Sin cambios |
+
+El render ya no lo hace ninguna de ellas: lo hace `.github/workflows/render-diario.yml` a las
+05:00, 09:00, 13:00 y 17:00 de Chile, sin sesión de por medio.
+
+**Los prompts traen una guarda**: si `motor/cadena.py` no existe en `main`, la tarea responde una
+línea y termina sin hacer nada. Así no hacen daño mientras el rediseño no esté mergeado.
 
 ## Mejora del video — M1 a M10
 
