@@ -240,6 +240,28 @@ def credito(clip):
                              clip.get("licencia", "?"))
 
 
+def credito_varias(clips, max_nombres=3):
+    """Una sola linea de credito para una pieza armada con VARIAS fotos.
+
+    CC BY exige nombrar al autor de cada una. Con cuatro fotos, cuatro lineas no caben en
+    pantalla ni se leen. Se nombran hasta tres y se dice cuantas mas hay: la mencion existe,
+    es verificable y no convierte la pieza en una ficha bibliografica.
+    """
+    nombres, licencias = [], []
+    for c in clips:
+        a_ = (c.get("atribucion") or "").strip()
+        if a_ and a_ not in nombres:
+            nombres.append(a_)
+        l_ = (c.get("licencia") or "").strip()
+        if l_ and l_ not in licencias:
+            licencias.append(l_)
+    resto = len(nombres) - max_nombres
+    visibles = ", ".join(nombres[:max_nombres])
+    if resto > 0:
+        visibles += " y %d mas" % resto
+    return "Fotos: %s / Wikimedia Commons (%s)" % (visibles or "?", ", ".join(licencias) or "?")
+
+
 def cmd_buscar(a):
     try:
         res = buscar(a.consulta, limite=a.limite, max_mb=a.max_mb, tipo=a.tipo)

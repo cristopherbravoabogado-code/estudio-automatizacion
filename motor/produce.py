@@ -161,6 +161,76 @@ def hook(url, dst, prensa):
            f'-preset veryfast -crf 19 -c:a aac -ar 48000 -ac 2 -b:a 128k {dst}')
 
 
+def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
+    """Arma el video de una pieza con FOTOGRAFIA REAL con licencia, animada.
+
+    POR QUE ESTO EXISTE (19/09/2026)
+    --------------------------------
+    Cristopher lo pidio tres veces y tenia razon las tres: "no tiene clip de noticias reales...
+    son clips estandar de un repositorio". Y cuando le ofreci una entrada donde el pegaba los
+    clips, respondio lo unico que importa: "la idea es que sea autosuficiente".
+
+    Video de noticia con licencia no alcanza: medido el 19/09, Commons devuelve candidatos en 1
+    de cada 3 busquedas. FOTOGRAFIA devuelve 8 de 8 sobre los temas reales del dia -Carabineros,
+    Poder Judicial, Corte Suprema, Congreso, PDI, Fiestas Patrias, carretera-. Una foto del
+    frontis de la Corte Suprema, ocupando la pantalla con un movimiento lento, ES la noticia.
+    Un clip generico de un martillo de juez, no.
+
+    Y no depende de nadie: lo busca el render, en Actions, a la hora que corresponda.
+
+    Devuelve (ok, credito_o_motivo). El credito nombra a los autores: es la condicion de CC BY.
+    """
+    import metraje as _M
+    elegidas, vistas = [], set()
+    for c in consultas:
+        if len(elegidas) >= cuantas:
+            break
+        try:
+            for f in _M.buscar(c, limite=cuantas, max_mb=25, tipo="imagen"):
+                if f["url"] in vistas:
+                    continue
+                vistas.add(f["url"])
+                elegidas.append(f)
+                if len(elegidas) >= cuantas:
+                    break
+        except _M.SinRed as e:
+            return False, str(e)
+        except Exception as e:
+            return False, "Commons fallo en '%s' (%s: %s)" % (c, type(e).__name__, e)
+
+    if len(elegidas) < 2:
+        # Menos de dos fotos no es una pieza: es una diapositiva. Se dice y se para.
+        return False, ("solo %d foto con licencia usable para %s; hacen falta 2 o mas"
+                       % (len(elegidas), consultas))
+
+    partes = []
+    for n, f in enumerate(elegidas):
+        sh(f"curl -sL -A 'Mozilla/5.0' -o foto_{n}.jpg '{f['url']}'")
+        # El zoom lento (Ken Burns) es lo que hace que una foto se lea como video. Sin el, la
+        # pieza parece una lamina y el espectador desliza. Se escala a 2400 antes de animar
+        # para que el zoom no muestre los pixeles de la foto original.
+        cuadros = int(por_foto * 30)
+        vf = (
+            "[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,"
+            "zoompan=z='min(zoom+0.0012,1.20)':d=%d:"
+            "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]" % cuadros
+        )
+        sh('ffmpeg -y -hide_banner -loglevel error -loop 1 -t %s -i foto_%d.jpg '
+           '-f lavfi -t %s -i anullsrc=r=48000:cl=stereo -filter_complex "%s" '
+           '-map "[v]" -map 1:a -t %s -c:v libx264 -preset veryfast -crf 20 '
+           '-c:a aac -ar 48000 -ac 2 fotoc_%d.mp4'
+           % (por_foto, n, por_foto, vf, por_foto, n))
+        partes.append(f"fotoc_{n}.mp4")
+
+    # concat con filtro, NUNCA -c copy: regla dura del motor.
+    ins = " ".join(f"-i {x}" for x in partes)
+    cad = "".join(f"[{i}:v][{i}:a]" for i in range(len(partes)))
+    sh(f'ffmpeg -y -hide_banner -loglevel error {ins} -filter_complex '
+       f'"{cad}concat=n={len(partes)}:v=1:a=1[v][a]" -map "[v]" -map "[a]" '
+       f'-c:v libx264 -preset veryfast -crf 20 -c:a aac -ar 48000 -ac 2 {dst}')
+    return True, _M.credito_varias(elegidas)
+
+
 def clip_f15(urls, dst, segundos=10):
     """Arma el video de una pieza F15 a partir de uno o varios clips.
 
@@ -243,7 +313,20 @@ def una(p):
         # entero durara 40 s y nadie lo cortara, la pieza publicaria 40 s de obra ajena con un
         # "segundos: 7" al lado. Se cumple lo que se declaro.
         met_ = p.get("metraje") or {}
-        if met_.get("url") and (met_.get("base") or "licencia") == "cita":
+        # SIN CLIP PROPIO -> FOTOGRAFIA REAL. Es lo que hace la cadena autosuficiente: nadie
+        # tiene que conseguir nada. Las consultas salen de la pieza; si no trae 'fotos', se
+        # usa su titular, que ya describe la noticia.
+        if not met_.get("url") and not p.get("clips") and not p.get("hook"):
+            consultas_ = p.get("fotos") or [q for q in
+                                            [(p.get("titular") or "")[:60], p.get("tema", "")[:60],
+                                             "Chile " + p.get("materia", "")] if q.strip()]
+            ok_f, res_f = fotos_a_clip(consultas_, f"hook{i}.mp4")
+            if not ok_f:
+                r["error"] = "no se pudo armar la pieza con fotografia: %s" % res_f
+                return r
+            p.setdefault("metraje", {})["credito_fotos"] = res_f
+            met_ = p["metraje"]
+        elif met_.get("url") and (met_.get("base") or "licencia") == "cita":
             import metraje as _M
             tope_ = float(met_.get("segundos") or _M.SEGUNDOS_CITA)
             clip_f15([met_["url"]], f"hook{i}.mp4", segundos=min(tope_, _M.SEGUNDOS_CITA))
@@ -276,11 +359,14 @@ def una(p):
             # una receta que se escribe sus propias reglas nace con los controles apagados y no
             # se entera. Es la misma decision que llevo los controles a control.py el 15/09.
             import metraje as _M
-            ok_, motivos_ = _M.validar(met)
-            if not ok_:
-                r["error"] = "metraje rechazado: " + " | ".join(motivos_)
-                return r
-            cred = _M.credito(met)
+            if met.get("credito_fotos"):
+                cred = met["credito_fotos"]      # pieza armada con fotografia: ya viene validado
+            else:
+                ok_, motivos_ = _M.validar(met)
+                if not ok_:
+                    r["error"] = "metraje rechazado: " + " | ".join(motivos_)
+                    return r
+                cred = _M.credito(met)
         else:
             cred = p.get("credito", "Estudio Juridico San Bernardo")
         # El titular REAL, citado con su medio, abre la pieza los primeros 4,2 s. Es lo que
