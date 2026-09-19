@@ -124,40 +124,42 @@ def clave_art(numero, sufijo=None):
     return n
 
 
-def articulos(plano_norma):
-    """[(clave, inicio, fin)] con el tramo que ocupa cada articulo en el texto plegado.
+def _orden(numero, sufijo):
+    """Clave de orden de un articulo. 196 < 196 A < 196 B; 5 < 5 bis."""
+    return (int(numero), (sufijo or ""))
 
-    El filtro que hace que esto sirva es el de ORDEN. El XML intercala, DENTRO del cuerpo de un
-    articulo, las notas que dicen que ley lo modifico, y esas notas se leen igual que un
-    encabezado: en mitad del articulo 160 del Codigo del Trabajo aparece "Art. 2o invocando una
-    o mas de las siguientes causales", y despues del 2313 del Codigo Civil, "2313 (DEL ART. 2)".
-    Sin filtrar, la frase del 160 quedaba atribuida al articulo 2.
 
-    Los articulos de una norma van en orden creciente y las notas no: se conserva un encabezado
-    solo si su numero no retrocede respecto del ultimo aceptado. Es una heuristica, no una
-    garantia, y por eso no poder ubicar un articulo se informa (ART_NO_UBICADO) en vez de
-    callarse: un control que se apaga por omision no es un control.
+def encabezados(plano_norma):
+    """[(orden, clave, posicion)] de todo lo que se lee como encabezado de articulo, SIN filtrar."""
+    return [(_orden(m.group(1), m.group(2)), clave_art(m.group(1), m.group(2)), m.start())
+            for m in RE_ART.finditer(plano_norma)]
+
+
+def tramos_de(marcas, quiere):
+    """Los tramos que ocupa el articulo 'quiere' (clave ya normalizada).
+
+    Un articulo empieza en su encabezado y termina en el del SIGUIENTE, pero "el siguiente" no
+    es el proximo texto que parezca un encabezado: el XML intercala, dentro del cuerpo, las
+    notas que dicen que ley modifico ese articulo, y se leen igual. En mitad del articulo 160
+    del Codigo del Trabajo aparece "Art. 2o invocando una o mas de las siguientes causales", y
+    despues del 2313 del Codigo Civil, "2313 (DEL ART. 2)". Tomarlas por encabezados partia el
+    articulo en dos y dejaba la frase fuera de su propio articulo.
+
+    Como los articulos de una norma van en orden creciente, el siguiente es el primer
+    encabezado POSTERIOR cuyo numero sea mayor. Lo que quede en medio con un numero menor es
+    una nota, y va dentro. Un tramo que llega al final de la norma se marca con fin None.
     """
-    marcas, ultimo = [], -1
-    for m in RE_ART.finditer(plano_norma):
-        numero = int(m.group(1))
-        if numero < ultimo:
-            continue
-        ultimo = numero
-        marcas.append((clave_art(m.group(1), m.group(2)), m.start()))
     tramos = []
-    for i, (c, ini) in enumerate(marcas):
-        fin = marcas[i + 1][1] if i + 1 < len(marcas) else len(plano_norma)
-        tramos.append((c, ini, fin))
+    for i, (orden, clave, pos) in enumerate(marcas):
+        if clave != quiere:
+            continue
+        fin_t = None
+        for orden2, _, pos2 in marcas[i + 1:]:
+            if orden2 > orden:
+                fin_t = pos2
+                break
+        tramos.append((pos, fin_t))
     return tramos
-
-
-def art_en(tramos, pos):
-    """El articulo dentro de cuyo tramo cae 'pos', o None."""
-    for c, ini, fin in tramos:
-        if ini <= pos < fin:
-            return c
-    return None
 
 
 def bajar(id_norma, timeout=60):
@@ -232,21 +234,25 @@ def verificar(id_norma, frase, timeout=60, articulo=None):
         return OK, contexto_de(posiciones[0])
 
     quiere = clave_art(articulo)
-    tramos = articulos(plano_norma)
-    if not any(c == quiere for c, _, _ in tramos):
+    marcas = encabezados(plano_norma)
+    tramos = tramos_de(marcas, quiere)
+    if not tramos:
         return ART_NO_UBICADO, ("la frase SI esta en la norma %s, pero no se pudo ubicar el "
                                 "articulo %s para cotejar. Revisalo a mano antes de publicar. "
                                 "contexto: ...%s..." % (id_norma, articulo, contexto_de(posiciones[0])))
 
     # Una frase puede repetirse en varios articulos -la prohibicion en uno y la pena en otro-.
     # Basta con que UNA aparicion caiga en el articulo citado para que la cita sea correcta.
+    for i in posiciones:
+        for ini_t, fin_t in tramos:
+            if ini_t <= i and (fin_t is None or i < fin_t):
+                return OK, contexto_de(i)
+
     donde = []
     for i in posiciones:
-        a = art_en(tramos, i)
-        if a == quiere:
-            return OK, contexto_de(i)
-        if a and a not in donde:
-            donde.append(a)
+        previo = [c for _, c, pos in marcas if pos <= i]
+        if previo and previo[-1] not in donde:
+            donde.append(previo[-1])
     return OTRO_ARTICULO, ("la frase esta en la norma %s pero en el articulo %s, NO en el %s que "
                            "cita la pieza. Corrige la cita o cambia el articulo. contexto: ...%s..."
                            % (id_norma, ", ".join(donde) or "?", articulo, contexto_de(posiciones[0])))
