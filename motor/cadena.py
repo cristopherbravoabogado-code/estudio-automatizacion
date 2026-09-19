@@ -99,11 +99,16 @@ EXIGE = {
     "publicado": ("publish_id",),
 }
 
-# Diez ranuras repartidas entre las 07:00 y las 22:30 de Chile. La rev. 12 del archivo cerebro
-# cerro que la hora no es la variable que decide (H-12: manda el TEMA), asi que se reparten
-# parejo y no se optimiza una franja que los datos no sostienen.
-HORARIOS = ["07:00", "09:00", "11:00", "12:30", "14:00",
-            "15:30", "17:00", "19:00", "21:00", "22:30"]
+# Diez ranuras entre las 07:00 y las 22:00 de Chile. Dos decisiones, las dos medidas:
+#
+#  - REPARTIDAS PAREJO, sin franja preferida: la rev. 12 del archivo cerebro cerro H-12 -lo que
+#    separa una pieza de 150 vistas de una de 5.000 es el TEMA, no la hora-, asi que optimizar
+#    una franja seria optimizar una variable que los datos no sostienen.
+#  - EN HORAS EN PUNTO: asi una sola tarea horaria publica lo que este vencido, en vez de diez
+#    tareas de un disparo que hay que crear cada dia. Menos piezas moviles, y la tarea de la
+#    hora siguiente reintenta sola lo que la anterior no alcanzo a publicar.
+HORARIOS = ["07:00", "09:00", "11:00", "13:00", "15:00",
+            "17:00", "19:00", "20:00", "21:00", "22:00"]
 
 RESERVA_MINIMA = 3          # tareas/INDEX.md, regla 2 del sistema
 CUOTA_TIKTOK_24H = 13       # motor/PUBLICAR.md, via B

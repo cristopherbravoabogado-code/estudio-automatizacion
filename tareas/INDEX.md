@@ -1,5 +1,26 @@
 # Tareas programadas del Estudio Jurídico San Bernardo
 
+> **Rediseño del 19/09/2026 — la cadena de 10 piezas diarias.** El diseño que describe el resto
+> de este archivo (11/09) sigue siendo el registro de respaldo de las tareas que no cambiaron,
+> pero la columna vertebral de producción y publicación se reemplazó. Los prompts vigentes están
+> en `tareas/PROMPTS-CADENA.md` y la doctrina en `motor/CADENA.md`.
+>
+> **Qué cambió y por qué.** La lectura del 19/09 mostró "SB 06:00 Producción del día: ABANDONED"
+> y "M8 Verificación legal: ABANDONED". Ninguna pieza de código estaba mala: nada en el sistema
+> sabía cuántas piezas debía tener el día ni en qué estado iba cada una, así que una tarea que
+> moría a la mitad perdía su trabajo sin dejar rastro. Ahora el día vive en `estado/<fecha>.json`,
+> versionado, y cada tarea lee y escribe ahí.
+>
+> | Antes | Ahora |
+> |---|---|
+> | Una tarea larga produce el día entero | Actions renderiza; las tareas de Claude solo encolan y publican |
+> | 3 piezas por tanda (tope de caracteres del sandbox) | sin tope: las upload_url van en un archivo del repo |
+> | 10 tareas de un disparo, creadas cada día | una tarea horaria que publica lo vencido y reintenta sola |
+> | El antidoble es una regla escrita en prosa | `cadena.py` sale con código 2 si intentas republicar |
+> | Metricool programaba | descartada el 19/09 por el tope de la cuenta; solo vía B |
+>
+> Las tareas M1 a M10 y las de causas y consultas **no se tocaron**.
+
 Respaldo del diseño del sistema al **11/09/2026**. Si una tarea se borra o se corrompe, se reconstruye desde aquí con `create_trigger`.
 
 **La hora de Chile es la hora UTC menos 3** (Chile está en UTC−3 desde el 06/09/2026). Los cron están en UTC.
