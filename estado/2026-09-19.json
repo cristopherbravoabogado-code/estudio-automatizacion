@@ -8,7 +8,7 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-19T10:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 2,
       "historia": [
         {
@@ -42,6 +42,14 @@
         {
           "cuando": "2026-09-19T04:23:35-03:00",
           "que": "rehacer: alojado -> guion (el TTS decia un termino juridico inexistente; guion reescrito)"
+        },
+        {
+          "cuando": "2026-09-19T04:30:22-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-19T04:30:22-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
@@ -57,7 +65,62 @@
         "No hace falta que choques: manejar así ya es delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1201"
+      "pieza_id": "1201",
+      "control": {
+        "pieza": "1201.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 24.1,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -18.4,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": [
+            -91.0,
+            -91.0,
+            -91.0
+          ],
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1201.mp4\", \"cuadros\": 8, \"palabras_medidas\": 42, \"recall_pantalla_chica\": 0.62, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 42, \"alto_texto_mediana_px\": 34.0, \"cajas_bajo_80px\": 42, \"seg\": 13.7, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [
+              "atropeyes"
+            ],
+            "dicho": "Tres fallecidos y cincuenta y dos detenidos en el primer balance del dieciocho.  Treinta y cinco de ellos iban con alcohol al volante.  La ley de tránsito sanciona manejar con alcohol en la sangre.  No hace falta que choques ni que atropeyes, manejar así ya es delito.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1201.mp4"
     },
     {
       "slot": 2,
@@ -366,7 +429,7 @@
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-19T18:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 2,
       "historia": [
         {
@@ -400,6 +463,14 @@
         {
           "cuando": "2026-09-19T04:23:35-03:00",
           "que": "rehacer: alojado -> guion (el TTS decia un termino juridico inexistente; guion reescrito)"
+        },
+        {
+          "cuando": "2026-09-19T04:30:23-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-19T04:30:23-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
@@ -415,7 +486,60 @@
         "La licencia es para recuperarse, no para viajar.",
         "Si te acusan de esto, escríbenos."
       ],
-      "pieza_id": "1205"
+      "pieza_id": "1205",
+      "control": {
+        "pieza": "1205.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 24.41,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -18.6,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": [
+            -91.0,
+            -91.0,
+            -91.0
+          ],
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1205.mp4\", \"cuadros\": 8, \"palabras_medidas\": 55, \"recall_pantalla_chica\": 0.21, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 55, \"alto_texto_mediana_px\": 31.0, \"cajas_bajo_80px\": 55, \"seg\": 15.0, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "La Corte Suprema removió a 11 jueces que viajaron con licencia médica.  En el mundo, privado, eso tiene nombre en el Código del Trabajo.  Es una falta grave a la honestidad y permite despedir sin indemnización.  La licencia médica es para recuperarse, no para tomarse un viaje.  Si te acusan de algo así, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1205.mp4"
     },
     {
       "slot": 6,
@@ -937,5 +1061,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T04:23:35-03:00"
+  "actualizado": "2026-09-19T04:30:23-03:00"
 }
