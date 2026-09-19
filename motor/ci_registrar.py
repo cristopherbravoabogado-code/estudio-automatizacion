@@ -18,14 +18,19 @@ paso, aqui se respeta el rechazo y la pieza se marca fallida con el motivo.
 
 QUE ESPERA
 ----------
-  cola/<fecha>.json   la tanda: {"piezas":[{"id","slot","media_id","url","upload_url",...}]}
-                      (formato de job.json de produce.py + los campos slot, media_id y url)
+  cola/<fecha>.json   la tanda: {"piezas":[{"id","slot",...}]}
   resultado.json      lo que dejo produce.py en el directorio de trabajo
+  --base-url          donde quedo alojado el mp4. El workflow sube cada pieza como asset de una
+                      Release de GitHub y pasa aqui la base de descarga; la url de la pieza es
+                      <base-url>/<id>.mp4. Antes la pieza traia una upload_url presignada de
+                      Higgsfield, de ~2.400 caracteres, que la sesion que armaba la cola copiaba
+                      A MANO: diez piezas eran 24.000 caracteres transcritos sin un solo error,
+                      todos los dias. La url de la Release es corta, publica y no caduca.
 
 QUE HACE, POR PIEZA
 -------------------
-  control.pasa true y subida 200  ->  marcar renderizado  y luego  marcar alojado
-  cualquier otra cosa             ->  fallar con el motivo exacto
+  control.pasa true  ->  marcar renderizado  y luego  marcar alojado con la url de la Release
+  cualquier otra cosa ->  fallar con el motivo exacto
 
 Una pieza solo puede marcarse renderizada si su ranura ya esta en `guion`: la tarea de la manana
 tiene que haber anotado tema, derecho y guion antes de que el render corra. Si no lo esta,
@@ -69,6 +74,7 @@ def main():
     ap.add_argument("--cola", required=True)
     ap.add_argument("--resultado", required=True)
     ap.add_argument("--fecha", help="AAAA-MM-DD; por defecto el del nombre de la cola")
+    ap.add_argument("--base-url", help="base publica donde el workflow dejo los mp4")
     args = ap.parse_args()
 
     fecha = args.fecha or os.path.basename(args.cola).replace(".json", "")
@@ -93,10 +99,15 @@ def main():
             continue
         slot = str(pieza["slot"])
         c = res.get("control") or {}
-        subio = c.get("pasa") is True and "200" in str(res.get("subida", ""))
+        # La pieza esta alojada si paso la puerta Y hay donde apuntarla: la Release que subio el
+        # workflow (--base-url) o, por la via vieja, un PUT a una upload_url que devolvio 200.
+        paso = c.get("pasa") is True
+        url = ("%s/%s.mp4" % (args.base_url.rstrip("/"), pid)) if args.base_url else pieza.get("url")
+        subio = paso and (bool(args.base_url) or "200" in str(res.get("subida", "")))
 
         if not subio:
-            motivo = motivo_de(res)
+            motivo = motivo_de(res) if not paso else (
+                "la pieza paso los controles pero no quedo alojada: ni Release ni upload_url")
             ok, salida = cadena("fallar", slot, "--fecha", fecha, "--motivo", motivo)
             print("  #%s FALLIDA: %s" % (slot, motivo))
             if not ok:
@@ -114,14 +125,15 @@ def main():
             rechazadas += 1
             continue
 
-        ok, salida = cadena("marcar", slot, "alojado", "--fecha", fecha,
-                            "--campo", "media_id=%s" % pieza["media_id"],
-                            "--campo", "url=%s" % pieza["url"])
+        campos = ["--campo", "url=%s" % url]
+        if pieza.get("media_id"):
+            campos += ["--campo", "media_id=%s" % pieza["media_id"]]
+        ok, salida = cadena("marcar", slot, "alojado", "--fecha", fecha, *campos)
         if not ok:
             print("  #%s renderizada pero NO alojada: %s" % (slot, salida))
             rechazadas += 1
             continue
-        print("  #%s alojada: %s" % (slot, pieza["url"]))
+        print("  #%s alojada: %s" % (slot, url))
         alojadas += 1
 
     print("REGISTRO %s: %d alojadas, %d fallidas, %d rechazadas" %

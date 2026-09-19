@@ -94,7 +94,10 @@ EXIGE = {
     "derecho": ("norma", "articulo", "frase"),
     "guion": ("gancho", "tramos"),
     "renderizado": ("control",),
-    "alojado": ("media_id", "url"),
+    # Desde el 19/09 basta la url: el mp4 lo aloja el propio workflow como asset de una Release
+    # de GitHub y la url es publica y no caduca. El media_id de Higgsfield quedo opcional -solo
+    # aparece si la pieza se subio por la via vieja, con una upload_url presignada.
+    "alojado": ("url",),
     "programado": ("trigger_id", "hora_utc"),
     "publicado": ("publish_id",),
 }

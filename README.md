@@ -1,8 +1,30 @@
 # Estudio Automatizacion
 
-Repositorio privado del **Estudio Juridico San Bernardo**.
-Guarda el codigo, la documentacion y los calendarios de la fabrica de
-contenido del estudio. No guarda videos ni audio: eso se regenera.
+Repositorio del **Estudio Juridico San Bernardo**. Guarda el codigo, la
+documentacion y los calendarios de la fabrica de contenido. No guarda videos
+ni audio: eso se regenera.
+
+## ⚠️ ESTE REPOSITORIO ES PUBLICO (verificado el 19/09/2026)
+
+Hasta el 19/09 este archivo decia "repositorio privado". **Es falso**: la API
+de GitHub responde `"private": false` y el sandbox de Higgsfield, que no tiene
+credenciales de GitHub, baja cualquier archivo con HTTP 200.
+
+Revisado ese mismo dia, **no hay datos de clientes, ni RUT, ni numeros de
+causa, ni claves**: las reglas de abajo funcionaron. Lo que si esta expuesto es
+la estrategia -el banco de ganchos, los analisis de que funciona, los
+procedimientos-, que es la ventaja competitiva del estudio.
+
+**No se puede hacer privado sin romper la fabrica**, porque dos cosas dependen
+de que se lea sin credenciales:
+
+1. `produce.py` baja su propio codigo desde `raw.githubusercontent.com` cuando
+   corre en el sandbox (en Actions ya no: usa `PRODUCE_LOCAL`).
+2. Las piezas se alojan como assets de una Release y TikTok las importa desde
+   esa url publica.
+
+El camino para cerrarlo, pendiente: un repositorio aparte y publico solo con
+los mp4 -que van a TikTok de todos modos- y este privado.
 
 ## Por que existe este repo
 

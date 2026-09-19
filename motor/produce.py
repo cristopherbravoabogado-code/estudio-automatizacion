@@ -239,6 +239,14 @@ def una(p):
     if not c["pasa"]:
         r["subida"] = "NO SUBIDA: " + ", ".join(c["falla"])
         return r
+    if not p.get("upload_url"):
+        # Desde el 19/09 el alojamiento lo hace el workflow, que sube el mp4 como asset de una
+        # Release de GitHub. La razon es de transcripcion, no de gusto: una upload_url presignada
+        # mide ~2.400 caracteres y la escribia a mano -literalmente, caracter por caracter- la
+        # sesion que armaba la cola. Diez piezas eran 24.000 caracteres copiados sin equivocarse
+        # ni una vez, todos los dias. La url de la Release es corta, publica y no caduca.
+        r["subida"] = "SIN SUBIDA AQUI: el mp4 queda en disco y lo aloja el workflow"
+        return r
     r["subida"] = control.subir(f"{i}.mp4", p["upload_url"], c)
     return r
 

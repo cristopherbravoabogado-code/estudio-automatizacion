@@ -27,7 +27,12 @@ Los controles que corre, todos BLOQUEANTES:
      de prensa, cuyo gancho es el titular del dia).
   C. estructura: 5 tramos de voz, 3 puntos, y los campos que produce.py necesita.
   D. derecho: norma (idNorma de LeyChile), articulo y frase verificada. PRODUCIR.md paso 1.
-  E. destino: upload_url y media_id, que salen de `media_upload` de Higgsfield.
+  E. (retirado el 19/09) destino. Antes se exigia una `upload_url` presignada de Higgsfield
+     escrita en la pieza. Se quito por una razon de transcripcion, no de gusto: esa url mide
+     ~2.400 caracteres y la copiaba A MANO la sesion que armaba la cola, caracter por caracter.
+     Diez piezas al dia eran 24.000 caracteres transcritos sin equivocarse ni una vez. Ahora el
+     mp4 lo aloja el workflow como asset de una Release de GitHub: url corta, publica, sin
+     caducidad y sin que nadie copie nada.
 
 Si pasa los cinco, la pieza entra a la cola Y la ranura avanza en el libro de cuentas hasta
 `guion`, llamando a `cadena.py` (las reglas viven en un solo lugar).
@@ -48,8 +53,7 @@ Formato de pieza.json (es el job.json de produce.py mas los campos de trazabilid
      "gancho":"Te pusieron turno el 18 y el 19 sin preguntarte.",
      "puntos":[{"t":"...","d":"..."},{"t":"...","d":"..."},{"t":"...","d":"..."}],
      "cierre":"...",
-     "voz":["tramo1","tramo2","tramo3","tramo4","tramo5"],
-     "upload_url":"https://...s3.amazonaws.com/...","media_id":"aaa111"}
+     "voz":["tramo1","tramo2","tramo3","tramo4","tramo5"]}
 """
 
 import argparse
@@ -70,8 +74,7 @@ BANCO = os.path.join(RAIZ, "motor", "ganchos", "cola.json")
 CADENA_PY = os.path.join(RAIZ, "motor", "cadena.py")
 
 CAMPOS = ("id", "materia", "rotulo", "hook", "gancho", "puntos", "cierre", "voz",
-          "upload_url", "media_id", "tema", "fuente", "norma", "articulo", "frase")
-CDN = "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/%s.mp4"
+          "tema", "fuente", "norma", "articulo", "frase")
 
 
 def ruta_cola(fecha):
@@ -166,8 +169,8 @@ def estructura(p):
     puntos = p.get("puntos") or []
     if len(puntos) != 3:
         fallas.append("hay %d puntos y el formato pide 3" % len(puntos))
-    if p.get("upload_url") and not p["upload_url"].startswith("http"):
-        fallas.append("upload_url no parece una URL")
+    if not str(p.get("hook", "")).startswith("http"):
+        fallas.append("el clip de gancho ('hook') no parece una URL")
     return fallas
 
 
@@ -187,7 +190,6 @@ def cmd_agregar(args):
         p = json.load(f)
     p["slot"] = args.slot
     p.setdefault("prensa", False)
-    p["url"] = CDN % p.get("media_id", "")
 
     fallas = validar(p)
     if fallas:
