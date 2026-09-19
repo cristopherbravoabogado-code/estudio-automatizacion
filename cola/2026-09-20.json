@@ -1,0 +1,115 @@
+{
+ "fecha": "2026-09-20",
+ "piezas": [
+  {
+   "id": "1301",
+   "materia": "transito",
+   "formato": "F15",
+   "prensa": false,
+   "tag": "BALANCE FINAL",
+   "credito": "Carabineros · 19/09/2026",
+   "titular": "13 fallecidos y 170 detenidos en el balance de Fiestas Patrias",
+   "tema": "Balance final de Fiestas Patrias: 13 fallecidos y 170 detenidos",
+   "fuente": "Carabineros de Chile, balance nacional, 19/09/2026",
+   "norma": "29708",
+   "articulo": "196 E",
+   "frase": "estado de ebriedad",
+   "voz": [
+    "Trece personas murieron en accidentes de tránsito durante estas Fiestas Patrias.",
+    "Carabineros informó ciento setenta detenidos, y ciento treinta y nueve de ellos fueron por alcohol.",
+    "Manejar en estado de ebriedad es delito: el artículo ciento noventa y seis E de la Ley de Tránsito lo castiga con presidio menor en su grado mínimo.",
+    "No hace falta chocar ni atropellar a nadie. Basta con manejar así.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "slot": 1
+  },
+  {
+   "id": "1302",
+   "materia": "transito",
+   "formato": "F15",
+   "prensa": false,
+   "tag": "ALCOHOL AL VOLANTE",
+   "credito": "Carabineros · 19/09/2026",
+   "titular": "139 de los 170 detenidos fueron por alcohol al volante",
+   "tema": "139 de los 170 detenidos del 18 fueron por alcohol al volante",
+   "fuente": "Carabineros de Chile, balance nacional, 19/09/2026",
+   "norma": "29708",
+   "articulo": "196 C",
+   "frase": "bajo la influencia del alcohol",
+   "voz": [
+    "De los ciento setenta detenidos este dieciocho, ciento treinta y nueve fueron por alcohol.",
+    "La ley distingue dos situaciones, y la diferencia entre una y otra es enorme.",
+    "Manejar bajo la influencia del alcohol es multa y suspensión de la licencia por un mes.",
+    "Pero de un gramo por mil hacia arriba ya es estado de ebriedad, y eso se castiga con cárcel.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "slot": 2
+  },
+  {
+   "id": "1303",
+   "materia": "civil",
+   "formato": "F15",
+   "prensa": false,
+   "tag": "SUBIERON 87%",
+   "credito": "Carabineros · 19/09/2026",
+   "titular": "Las muertes en carretera subieron 87% respecto del año pasado",
+   "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
+   "fuente": "Carabineros de Chile, balance nacional, 19/09/2026",
+   "norma": "172986",
+   "articulo": "2314",
+   "frase": "ha inferido daño a otro",
+   "voz": [
+    "Los fallecidos en carretera este dieciocho subieron ochenta y siete por ciento respecto del año pasado.",
+    "Detrás de cada cifra queda una familia que además tiene un juicio por delante.",
+    "El artículo dos mil trescientos catorce del Código Civil obliga a indemnizar a quien causó el daño.",
+    "Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "slot": 3
+  },
+  {
+   "id": "1304",
+   "materia": "laboral",
+   "formato": "F15",
+   "prensa": false,
+   "tag": "VOLVIENDO A CASA",
+   "credito": "Ley 16.744 · artículo 5",
+   "titular": "Accidente volviendo del trabajo: también es accidente laboral",
+   "tema": "Accidente de trayecto: volver del trabajo también está cubierto",
+   "fuente": "Ley 16.744 sobre accidentes del trabajo, artículo 5",
+   "norma": "28650",
+   "articulo": "5",
+   "frase": "de ida o regreso",
+   "voz": [
+    "Si te accidentas yendo o volviendo del trabajo, eso también es accidente laboral.",
+    "El artículo quinto de la Ley dieciséis mil setecientos cuarenta y cuatro cubre el trayecto directo, de ida o regreso, entre tu casa y tu trabajo.",
+    "Lo cubre tu mutual o el Instituto de Seguridad Laboral, no tu Fonasa ni tu isapre.",
+    "Denúncialo el mismo día: el parte de Carabineros y un testigo son lo que después te sostiene el caso.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "slot": 4
+  },
+  {
+   "id": "1305",
+   "materia": "laboral",
+   "formato": "F15",
+   "prensa": false,
+   "tag": "FALTAR TRAS EL 18",
+   "credito": "Código del Trabajo · artículo 160",
+   "titular": "Faltar dos días seguidos tras el 18 puede costarte el trabajo",
+   "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
+   "fuente": "Código del Trabajo, artículo 160 número 3",
+   "norma": "207436",
+   "articulo": "160",
+   "frase": "No concurrencia del trabajador a sus labores",
+   "voz": [
+    "Faltar sin justificación después del dieciocho tiene un nombre en la ley.",
+    "El artículo ciento sesenta del Código del Trabajo permite despedir por no concurrir dos días seguidos.",
+    "También por faltar dos lunes en el mismo mes, o tres días en total dentro de ese mes.",
+    "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "slot": 5
+  }
+ ]
+}
