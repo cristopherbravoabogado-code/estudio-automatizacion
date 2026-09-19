@@ -203,6 +203,10 @@
         {
           "cuando": "2026-09-19T05:29:58-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:34:11-03:00",
+          "que": "anotado: cdn, media_id"
         }
       ],
       "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
@@ -271,7 +275,9 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1202.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1202.mp4",
+      "media_id": "673e7ea8-6cc3-4aa2-9c05-b39d9c68ce32",
+      "cdn": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/673e7ea8-6cc3-4aa2-9c05-b39d9c68ce32.mp4"
     },
     {
       "slot": 3,
@@ -1304,5 +1310,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T07:23:05-03:00"
+  "actualizado": "2026-09-19T07:34:11-03:00"
 }
