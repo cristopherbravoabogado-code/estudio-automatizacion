@@ -109,11 +109,26 @@ def licencia_sirve(nombre):
                for a in ACEPTADAS)
 
 
-def buscar(consulta, limite=6, max_mb=120, timeout=45):
-    """Devuelve candidatos de Commons, ya filtrados por licencia y tamano."""
+def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
+    """Devuelve candidatos de Commons, ya filtrados por licencia y tamano.
+
+    tipo="imagen" es lo que hace autosuficiente a la cadena. Medido el 19/09 sobre los temas
+    reales del dia: en VIDEO Commons devolvio candidatos en 1 de cada 3 busquedas ("poder
+    judicial chile" y "policia chile" no devolvieron nada). En FOTOGRAFIA devolvio 8 de 8, en
+    los ocho temas probados: Carabineros, Poder Judicial, Corte Suprema, Congreso, PDI, Fiestas
+    Patrias, carretera y Direccion del Trabajo.
+
+    Por eso las piezas se arman con FOTOGRAFIA real animada y no con video de banco: una foto
+    del frontis de la Corte Suprema es la noticia; un clip generico de un martillo de juez, no.
+
+    OJO, y es el limite honesto de esto: la licencia se filtra sola, la PERTINENCIA no. En la
+    prueba, "Direccion del Trabajo Chile" devolvio un logo que no tenia nada que ver. El filtro
+    garantiza que se puede usar, no que sirva. Quien arma la cola tiene que mirar lo que eligio.
+    """
+    filtro = "filetype:bitmap" if tipo == "imagen" else "filetype:video"
     params = {
         "action": "query", "format": "json", "generator": "search",
-        "gsrsearch": "filetype:video %s" % consulta, "gsrlimit": str(limite * 3),
+        "gsrsearch": "%s %s" % (filtro, consulta), "gsrlimit": str(limite * 3),
         "gsrnamespace": "6", "prop": "imageinfo",
         "iiprop": "url|size|mime|extmetadata|user",
     }
@@ -148,6 +163,8 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45):
         if not licencia_sirve(lic):
             continue
         if mb > max_mb or mb == 0:
+            continue
+        if tipo == "imagen" and not (ii.get("mime") or "").startswith("image/"):
             continue
         salida.append({
             "titulo": pag["title"][5:],
@@ -225,7 +242,7 @@ def credito(clip):
 
 def cmd_buscar(a):
     try:
-        res = buscar(a.consulta, limite=a.limite, max_mb=a.max_mb)
+        res = buscar(a.consulta, limite=a.limite, max_mb=a.max_mb, tipo=a.tipo)
     except SinRed as e:
         # Codigo 2: NO SE PUDO MIRAR. Distinto de 1, que es "se miro y no hay". Misma
         # distincion que leychile.py, y por la misma razon: confundirlas hace que una tarea
@@ -274,6 +291,7 @@ def main():
     b.add_argument("--limite", type=int, default=6)
     b.add_argument("--max-mb", type=float, default=120)
     b.add_argument("--json", help="escribe los candidatos en este archivo")
+    b.add_argument("--tipo", default="video", choices=("video", "imagen"))
     b.set_defaults(func=cmd_buscar)
     v = sub.add_parser("validar", help="aplica la puerta a un clip o lista de clips")
     v.add_argument("archivo")
