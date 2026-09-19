@@ -49,3 +49,33 @@ Un clip **no entra** a una pieza sin tres datos anotados: **de dónde salió, co
 quién hay que acreditar**. Sin eso, el control lo rechaza. Es la misma doctrina de `control.py`:
 un control que se apaga por omisión no es un control. Y aquí tiene una razón extra: la atribución
 no es burocracia, es literalmente la condición de la licencia CC BY.
+
+## Cómo lo lleva una pieza
+
+La pieza puede traer un objeto `metraje`. Si lo trae, **manda sobre el crédito del estudio**:
+
+```json
+"metraje": {
+  "url": "https://upload.wikimedia.org/.../Archivo.webm",
+  "licencia": "CC BY 3.0 cl",
+  "atribucion": "Dirección de Prensa, Presidencia de la República de Chile",
+  "fuente": "Wikimedia Commons"
+}
+```
+
+En pantalla sale `Dirección de Prensa, Presidencia de la República de Chile / Wikimedia Commons
+(CC BY 3.0 cl)`, en el lugar donde antes iba el nombre del estudio.
+
+`produce.py` **no renderiza** una pieza cuyo `metraje` no traiga los tres campos. No es una
+validación de formato: es que un clip prestado sin acreditar incumple la licencia con la que se
+tomó, y eso lo firma el estudio.
+
+## Lo que esto NO resuelve
+
+El clip **del hecho concreto de cada día** —ese control carretero, esa audiencia— no está en
+Commons ni en las páginas institucionales. Para eso hay una sola vía limpia: **licenciar agencia**
+(ATON o AgenciaUno en Chile; AP, Reuters o Getty fuera). Cuesta dinero y se contrata a nombre del
+estudio. El módulo queda preparado para recibir esa fuente el día que exista contrato.
+
+Mientras tanto, lo honesto es la combinación que ya rinde: **placa con el titular real citado a su
+medio** + metraje temático con licencia + el gancho en los primeros segundos.

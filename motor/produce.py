@@ -251,7 +251,21 @@ def una(p):
     tramos = json.load(open(f"{i}.mp3.tramos.json"))
     if es_f15:
         tag = p.get("tag", "NOTICIA DE HOY")
-        cred = p.get("credito", "Estudio Juridico San Bernardo")
+        # EL CREDITO NO ES ADORNO CUANDO EL CLIP ES PRESTADO (19/09/2026).
+        # Si la pieza trae metraje con licencia (motor/metraje.py), la atribucion es la
+        # CONDICION de esa licencia: publicar sin acreditar es incumplirla. Por eso pisa al
+        # credito por defecto del estudio, y por eso mas abajo la pieza no se rinde si el
+        # metraje viene sin licencia o sin a quien acreditar.
+        met = p.get("metraje") or {}
+        if met:
+            faltan = [c for c in ("url", "licencia", "atribucion") if not str(met.get(c) or "").strip()]
+            if faltan:
+                r["error"] = ("metraje sin %s: un clip prestado no entra sin decir de donde "
+                              "salio y a quien se acredita (motor/METRAJE.md)" % ", ".join(faltan))
+                return r
+            cred = "%s / %s (%s)" % (met["atribucion"], met.get("fuente", "?"), met["licencia"])
+        else:
+            cred = p.get("credito", "Estudio Juridico San Bernardo")
         # El titular REAL, citado con su medio, abre la pieza los primeros 4,2 s. Es lo que
         # convierte una pieza de archivo en una pieza de noticia a los ojos de quien pasa.
         tit = (p.get("titular") or "").replace('"', "'")
