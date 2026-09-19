@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""control.py v2 (16/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
+"""control.py v3 (19/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
 
 POR QUE EXISTE
 --------------
@@ -9,10 +9,6 @@ del motor se los saltaba entera. El 14/09/2026 eso salio al aire: el SUPERVIDEO 
 (`videolab/supervideo/build_sv.py`) subio `aac,48000,1` - MONO -, 60,74 s y volumen medio
 -19,8 dB, rompiendo las reglas 3 y 5 a la vez. Su `final()` medias las cosas con `print("VERIF")`
 y despues subia igual: **medir no es controlar si el resultado no puede bloquear la subida.**
-
-Esto es la regla dura 3-ter de `motor/RECETA-MOTOR-NUBE.md` convertida en codigo: ninguna pieza
-se sube sin pasar por aqui, la produzca quien la produzca. Una receta nueva no "nace con los
-controles": importa este modulo o no sube.
 
 v2 (16/09/2026) - EL AGUJERO DE LA VOZ. El 15/09 la pieza 967b salio al aire diciendo
 *"indemnizacion por ANOS de servicio"*. Es exactamente el ejemplo con el que la regla dura 2 de
@@ -32,6 +28,34 @@ gastar TTS. El 7 (`voz`) escucha la pieza y BLOQUEA SOLO por n-tilde perdida; la
 fuera del guion las INFORMA, porque whisper se equivoca solo -en esta misma pieza escribio
 "haya impactado" por "hayan pactado"- y bloquear a ciegas lleva a re-renderizar piezas sanas.
 
+v3 (19/09/2026) - LA PUERTA FALLABA ABIERTA. Regla dura 2-ter de la receta.
+El QC del 19/09 midio las tres piezas publicadas el 18/09 (1001c, R03 y 1002): las tres limpias
+en los siete controles. El defecto no estaba en ninguna pieza, estaba AQUI. Medido sobre esta
+misma funcion, con la R03 ya publicada:
+
+    >>> control.controlar("R03.mp4")          # sin guion
+    pasa = True | falla = []
+    texto: {'ok': True, 'valor': 'sin guion; control omitido'}
+    voz  : {'ok': True, 'valor': 'sin guion; control omitido'}
+
+O sea: **los dos controles de CONTENIDO se apagaban solos con no pasarles el guion, y la pieza
+pasaba la puerta igual.** Es el agujero de la 967b una capa mas arriba. No es hipotetico: el
+docstring de `produce.py` v3 dice, textual, *"se ABREN los controles 6 y 7 (voz), que control.py
+v2 traia pero que aqui quedaban inertes porque `controlar()` los omite si no se le pasa el guion
+- y no se le pasaba"*. Ese arreglo se hizo EN EL LLAMADOR, asi que cubrio a `produce.py` y a
+nadie mas: cualquier receta nueva -un supervideo, una serie, una reaccion escrita a mano- vuelve
+a nacer con los controles 6 y 7 apagados y no se entera, porque la puerta le dice `pasa: True`.
+Un control que se apaga por omision no es un control: es una intencion con nombre de funcion.
+
+  - `controlar()` ahora exige el guion (`exigir_guion=True` por defecto): sin guion, los
+    controles 6 y 7 quedan `ok: False` y **`pasa: False`**. Falla CERRADA.
+  - `voz()` sin `faster-whisper` instalado tambien BLOQUEA. Antes devolvia `None` ("control
+    omitido") y `controlar()` lo dejaba pasar con `z_ok is not False`: un sandbox sin el paquete
+    borraba el control de voz entero sin que nadie lo viera.
+  - `auditar(mp4)` es el unico camino sin guion, y NO sube nada: es para revisar lo YA publicado
+    dias despues, cuando el `urls/<n>.txt` murio con el sandbox que lo escribio. Busca la n-tilde
+    perdida en lo que se OYE, sin nada con que comparar (ver su docstring).
+
 LOS CONTROLES
 -------------
  1. AUDIO      ffprobe tiene que decir exactamente aac,48000,2          (regla dura 3)
@@ -42,19 +66,23 @@ LOS CONTROLES
                -> se delega en videolab/pantalla_chica.py; INFORMA, no bloquea (ver PRODUCIR.md)
  6. TEXTO      el guion, antes del TTS: n-tilde y tildes                (regla dura 2) BLOQUEA
  7. VOZ        lo que se OYE contra el guion, n-tilde sensible          (regla dura 2) BLOQUEA
-               solo por n-tilde; lo demas informa. Se omite si no se le pasa el guion.
+               solo por n-tilde; lo demas informa.
+ -> Los controles 6 y 7 YA NO SE OMITEN: sin guion, `controlar()` devuelve `pasa: False`
+    (regla dura 2-ter). Para mirar una pieza sin guion existe `auditar()`, que no sube.
 
 USO COMO MODULO
 ---------------
-    from control import controlar, subir, texto
+    from control import controlar, subir, texto, auditar
     ok, malas = texto(guion_completo)            # ANTES de sintetizar: coste cero
-    r = controlar("981.mp4", uniones=[6.1, 12.4, 18.9, 24.2], guion=guion_completo)
+    r = controlar("981.mp4", cortes=[6.1, 12.4, 18.9, 24.2], guion=guion_completo)
     subir("981.mp4", upload_url, r)              # levanta RuntimeError si r["pasa"] es False
+    auditar("ya_publicada.mp4")                  # QC sin guion; NO sube
 
 USO COMO CLI
 ------------
     python3 control.py 981.mp4 --uniones 6.1,12.4,18.9 --guion urls/981.txt --put "<upload_url>"
     python3 control.py --solo-texto urls/981.txt          # el control 6 suelto, antes del TTS
+    python3 control.py ya_publicada.mp4 --auditar         # QC de lo ya publicado, sin guion
     exit 0 = PASA (y subio, si habia --put) | exit 1 = NO PASA (y NO subio nada)
 
 ARREGLO SIN RE-RENDER
@@ -73,6 +101,13 @@ VOL_MIN, VOL_MAX = -21.0, -13.0
 UNION_MAX_DBFS = -35.0
 VENTANA_UNION = 0.12          # s a cada lado del corte que se mide
 ZONA = (95, 930, 200, 1586)   # x0, x1, y0, y1 - zona segura de TikTok
+
+# Regla dura 2-ter: lo que dice la puerta cuando le falta el guion. No es un aviso, es un NO.
+FALTA_GUION = ("SIN GUION: los controles 6 y 7 (contenido de la voz) NO se pueden correr, "
+               "asi que la pieza NO SE SUBE. Regla dura 2-ter. Para mirar una pieza ya "
+               "publicada sin guion, usar auditar(), que no sube nada.")
+FALTA_WHISPER = ("faster-whisper NO esta instalado: el control 7 no se puede correr, asi que "
+                 "la pieza NO SE SUBE. `pip install -q faster-whisper`. Regla dura 2-ter.")
 
 # Palabras que en estos guiones SIEMPRE llevan n-tilde. Si aparecen asi, la perdieron.
 # Solo coincidencia de palabra entera: "mano", "sano" y "plano" no se tocan.
@@ -187,10 +222,21 @@ def texto(guion):
     return (not malas), malas
 
 
+def _transcribir(media, modelo="small"):
+    """Transcribe con faster-whisper. Devuelve (texto, None) o (None, motivo del fallo)."""
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError:
+        return None, FALTA_WHISPER
+    wav = os.path.splitext(media)[0] + ".ctrl.wav"
+    _sh(f'ffmpeg -y -v error -i "{media}" -vn -ac 1 -ar 16000 "{wav}"')
+    m = WhisperModel(modelo, device="cpu", compute_type="int8")
+    segs, _ = m.transcribe(wav, language="es", vad_filter=False, word_timestamps=True)
+    return " ".join(s.text for s in segs).strip(), None
+
+
 def voz(media, guion, modelo="small"):
     """Control 7 - lo que se OYE contra el guion. BLOQUEA SOLO por n-tilde perdida.
-
-    Se omite solo si no hay guion, asi que ninguna receta vieja se rompe al actualizar.
 
     Por que la n-tilde bloquea y el resto no: whisper conserva los diacriticos cuando estan
     (en la 991 del 15/09 escribio "daños" sin ayuda), asi que oir "anos" donde el guion dice
@@ -208,18 +254,15 @@ def voz(media, guion, modelo="small"):
 
     ⚠️ En piezas de REACCION hay que pasarle el **mp3 de la voz**, no el mp4: el mp4 lleva a
     proposito el audio del noticiero durante el gancho y su texto no esta en el guion.
+
+    v3: sin guion o sin faster-whisper devuelve False (BLOQUEA). Antes devolvia True y None
+    respectivamente, y en los dos casos la pieza subia con el control de voz apagado.
     """
     if not guion:
-        return True, "sin guion; control omitido"
-    try:
-        from faster_whisper import WhisperModel
-    except ImportError:
-        return None, "faster-whisper no instalado; control omitido"
-    wav = os.path.splitext(media)[0] + ".ctrl.wav"
-    _sh(f'ffmpeg -y -v error -i "{media}" -vn -ac 1 -ar 16000 "{wav}"')
-    m = WhisperModel(modelo, device="cpu", compute_type="int8")
-    segs, _ = m.transcribe(wav, language="es", vad_filter=False, word_timestamps=True)
-    dicho = " ".join(s.text for s in segs).strip()
+        return False, FALTA_GUION
+    dicho, fallo = _transcribir(media, modelo)
+    if fallo:
+        return False, fallo
 
     oido = set(_tok(dicho))
     oido_plano = {_plano(w) for w in oido}
@@ -240,19 +283,69 @@ def voz(media, guion, modelo="small"):
                             "dicho": dicho[:500]}
 
 
-def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_voz=None):
+def auditar(mp4, media_voz=None, modelo="small"):
+    """QC de una pieza YA PUBLICADA, cuando el guion ya no existe. NO SUBE NADA.
+
+    Por que existe (19/09/2026): el guion vive en `urls/<n>.txt` dentro del sandbox, y el
+    sandbox se descarta ~10 s despues de la llamada que lo escribio. Dias despues, la revision
+    que audita lo que salio al aire tiene el mp4 de CloudFront y NADA con que compararlo, asi
+    que los controles 6 y 7 son inaplicables por construccion. Antes de v3 eso se veia como
+    "control omitido" y la pieza figuraba aprobada; desde v3 `controlar()` lo rechaza. Este es
+    el camino correcto para ese caso, y es explicitamente una auditoria, no una puerta.
+
+    Como caza la 967b SIN guion: no compara contra nada, busca en lo que se OYE las palabras
+    que en estos guiones SIEMPRE llevan n-tilde (`anos`, `dano`, `senor`, `nino`...) y sus
+    formas pegadas (`poranos` = `por` + `anos`). Si la pieza dice "por anos de servicio", aqui
+    sale `anos` aunque nadie tenga ya el guion. Es lo que el QC del 19/09 tuvo que escribir a
+    mano para poder revisar las tres piezas del 18/09.
+    """
+    dicho, fallo = _transcribir(media_voz or mp4, modelo)
+    if fallo:
+        return {"pieza": os.path.basename(mp4), "error": fallo}
+    toks = _tok(dicho)
+    sueltas = sorted({w for w in toks if w in SIN_ENIE})
+    pegadas = sorted({w for w in toks if w not in SIN_ENIE and
+                      any(w != k and w.endswith(k) and len(w) - len(k) >= 2 for k in SIN_ENIE)})
+    tildes = sorted({w for w in toks if w in SIN_TILDE or
+                     re.fullmatch(r"[a-z]{4,}cion", w) or re.fullmatch(r"[a-z]{4,}sion", w)})
+    a_ok, a = audio(mp4)
+    d_ok, d = duracion(mp4)
+    v_ok, v = volumen(mp4)
+    return {"pieza": os.path.basename(mp4),
+            "audio": {"ok": a_ok, "valor": a, "esperado": AUDIO_OK},
+            "duracion": {"ok": d_ok, "valor": d, "franja": [DUR_MIN, DUR_MAX]},
+            "volumen": {"ok": v_ok, "valor": v, "franja": [VOL_MIN, VOL_MAX]},
+            "enie": {"ok": not (sueltas or pegadas), "sueltas": sueltas, "pegadas": pegadas},
+            "tildes_oidas": {"ok": not tildes, "valor": tildes},
+            "dicho": dicho,
+            "nota": "AUDITORIA sin guion: no reemplaza a los controles 6 y 7 ni habilita subir."}
+
+
+def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_voz=None,
+              exigir_guion=True):
     """Corre los controles y devuelve el informe. 'pasa' es la conjuncion de los que BLOQUEAN.
 
-    guion:      texto completo de la voz. Sin el, los controles 6 y 7 se omiten.
-    media_voz:  en piezas de REACCION, el mp3 de la voz; el control 7 lo escucha en vez del mp4.
+    guion:         texto completo de la voz. OBLIGATORIO: sin el, 'pasa' es False (v3).
+    media_voz:     en piezas de REACCION, el mp3 de la voz; el control 7 lo escucha en vez del mp4.
+    exigir_guion:  solo se pone en False para mirar una pieza a sabiendas de que los controles de
+                   contenido no corren. No lo usa ninguna receta de produccion: lo que necesita
+                   revisar algo ya publicado es `auditar()`. Dejarlo en False para poder subir es
+                   exactamente el agujero que v3 vino a tapar (regla dura 2-ter).
     """
     a_ok, a = audio(mp4)
     d_ok, d = duracion(mp4, dmin, dmax)
     v_ok, v = volumen(mp4)
     u_ok, u = uniones(mp4, cortes)
     _, p = pantalla(mp4)
-    t_ok, t = texto(guion) if guion else (True, "sin guion; control omitido")
-    z_ok, z = voz(media_voz or mp4, guion)
+    if guion:
+        t_ok, t = texto(guion)
+        z_ok, z = voz(media_voz or mp4, guion)
+    elif exigir_guion:
+        t_ok, t = False, FALTA_GUION
+        z_ok, z = False, FALTA_GUION
+    else:
+        t_ok, t = True, "sin guion y exigir_guion=False; control 6 omitido - NO habilita subir"
+        z_ok, z = True, "sin guion y exigir_guion=False; control 7 omitido - NO habilita subir"
     r = {"pieza": os.path.basename(mp4),
          "audio": {"ok": a_ok, "valor": a, "esperado": AUDIO_OK},
          "duracion": {"ok": d_ok, "valor": d, "franja": [dmin, dmax]},
@@ -261,7 +354,7 @@ def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_vo
          "pantalla_chica": {"ok": None, "valor": p},
          "texto": {"ok": t_ok, "valor": t},
          "voz": {"ok": z_ok, "valor": z},
-         "pasa": bool(a_ok and d_ok and v_ok and u_ok and t_ok and z_ok is not False)}
+         "pasa": bool(a_ok and d_ok and v_ok and u_ok and t_ok and z_ok)}
     r["falla"] = [k for k in ("audio", "duracion", "volumen", "uniones", "texto", "voz")
                   if r[k]["ok"] is False]
     return r
@@ -281,7 +374,11 @@ def remux(mp4, salida=None):
 def subir(mp4, upload_url, informe=None, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None,
           guion=None, media_voz=None):
     """PUT a la upload_url presignada. NO sube si el control no pasa: ese es todo el punto.
-    Devuelve el codigo HTTP (200 = subida buena)."""
+    Devuelve el codigo HTTP (200 = subida buena).
+
+    v3: sin guion esto ya no sube. Si una receta llega aqui sin el, el error dice que falta el
+    guion, no que el video este malo: el video puede estar perfecto y aun asi nadie escucho
+    lo que dice."""
     r = informe or controlar(mp4, dmin, dmax, cortes, guion, media_voz)
     if not r["pasa"]:
         raise RuntimeError(f"CONTROL NO PASA ({', '.join(r['falla'])}) -> no se sube {mp4}. "
@@ -297,9 +394,11 @@ def main():
     ap.add_argument("--dur-min", type=float, default=DUR_MIN)
     ap.add_argument("--dur-max", type=float, default=DUR_MAX)
     ap.add_argument("--uniones", default="", help="tiempos de corte en segundos, separados por coma")
-    ap.add_argument("--guion", default="", help="archivo urls/<n>.txt; activa los controles 6 y 7")
+    ap.add_argument("--guion", default="", help="archivo urls/<n>.txt; OBLIGATORIO para subir")
     ap.add_argument("--voz", default="", help="mp3 de la voz; en piezas de reaccion, en vez del mp4")
     ap.add_argument("--solo-texto", default="", help="corre SOLO el control 6 sobre ese archivo")
+    ap.add_argument("--auditar", action="store_true",
+                    help="QC de una pieza YA PUBLICADA sin guion; no sube nada")
     ap.add_argument("--put", default="", help="upload_url presignada; solo sube si el control pasa")
     ap.add_argument("--remux", action="store_true", help="arregla el audio a 48k estereo y re-mide")
     a = ap.parse_args()
@@ -315,6 +414,18 @@ def main():
 
     if not a.mp4:
         ap.error("falta el mp4 (o usa --solo-texto)")
+
+    # Auditoria de lo ya publicado: sin guion, sin subida, sin veredicto de puerta.
+    if a.auditar:
+        r = auditar(a.mp4, a.voz or None)
+        print(json.dumps(r, ensure_ascii=False, indent=1))
+        malo = bool(r.get("error")) or r.get("enie", {}).get("ok") is False
+        if malo:
+            print("AUDITORIA CON HALLAZGOS -> anotar el defecto; NO se republica lo que ya salio",
+                  file=sys.stderr)
+            return 1
+        return 0
+
     mp4 = a.mp4
     cortes = [float(x) for x in a.uniones.split(",") if x.strip()]
     guion = open(a.guion, encoding="utf-8").read() if a.guion else None
@@ -328,6 +439,9 @@ def main():
     print(json.dumps(r, ensure_ascii=False, indent=1))
     if not r["pasa"]:
         print("NO PASA:", ", ".join(r["falla"]), "-> no se sube nada", file=sys.stderr)
+        if not guion:
+            print("FALTA EL GUION: pasalo con --guion urls/<n>.txt. Para revisar una pieza ya "
+                  "publicada sin guion, usa --auditar.", file=sys.stderr)
         return 1
     if a.put:
         print("PUT", subir(mp4, a.put, r))
