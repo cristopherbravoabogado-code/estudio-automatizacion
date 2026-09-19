@@ -870,6 +870,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:38:52-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
@@ -940,7 +944,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1207.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1207.mp4",
+      "media_id": "a428dce9-9081-40df-9f80-7bff3baa7167"
     },
     {
       "slot": 8,
@@ -1000,6 +1005,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:38:52-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
@@ -1071,7 +1080,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1208.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1208.mp4",
+      "media_id": "9b1c793e-4b0c-44ca-a010-cf5ab7d95687"
     },
     {
       "slot": 9,
@@ -1330,5 +1340,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T07:37:58-03:00"
+  "actualizado": "2026-09-19T07:38:52-03:00"
 }
