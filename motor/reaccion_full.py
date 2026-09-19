@@ -30,6 +30,15 @@ clip, voz, ass, out, tag, cred = sys.argv[1:7]
 # retencion: los tres primeros segundos.
 titular = sys.argv[7] if len(sys.argv) > 7 else ""
 
+# EL PIE NEGRO SOLO SI HAY CINTILLO QUE TAPAR (19/09/2026)
+# Las dos franjas oscuras del final existen, en palabras del docstring original, para "tapar el
+# cintillo del canal". Con un clip de noticiero eso es imprescindible. Con metraje de archivo no
+# hay cintillo que tapar y esas franjas se comen un QUINTO de la pantalla: medido en el fotograma
+# del segundo 12 de la pieza 1201, la imagen muere en y=1545 de 1920 y debajo queda un bloque
+# negro que hace parecer la pieza un repost recortado. Se controla con REACCION_PIE (1 por
+# defecto, 0 cuando el clip no trae cintillo).
+PIE = os.environ.get("REACCION_PIE", "1") != "0"
+
 # LA FUENTE, RESUELTA Y NO SUPUESTA (19/09/2026)
 # Hasta hoy FONT era una ruta fija del sandbox de Higgsfield. Al conectar este formato a la
 # cadena automatica quedo a la vista: en un runner de GitHub Actions esa carpeta NO existe, y
@@ -122,10 +131,13 @@ tx = (f"[vv]trim=0:{T},setpts=PTS-STARTPTS,"
       # rotulo propio arriba, dentro de la zona segura (x 130-925, y >= 245)
       f"drawtext=fontfile={FONT}:text='{esc(tag)}':fontsize=40:fontcolor=white:x=130:y=272:"
       f"box=1:boxcolor=0xE5261F@0.92:boxborderw=16,"
-      f"drawtext=fontfile={FONT}:text='{esc(cred)}':fontsize=26:fontcolor=white@0.85:x=130:y=348:"
-      f"shadowcolor=black@0.7:shadowx=2:shadowy=2,"
+      # El credito va ARRIBA solo si no hay tarjeta: con tarjeta ya aparece dentro de ella y
+      # repetirlo dos veces en los mismos 4 segundos se ve como un error. (Medido en el
+      # fotograma del segundo 2 de la pieza 1201.)
+      + ((f"drawtext=fontfile={FONT}:text='{esc(cred)}':fontsize=26:fontcolor=white@0.85:"
+          f"x=130:y=348:shadowcolor=black@0.7:shadowx=2:shadowy=2,") if not titular else "")
       # CTA final sobre las palabras del cierre (y 1080-1230, encima del karaoke)
-      f"drawbox=x=130:y=1080:w=795:h=150:color=0x101010@0.86:t=fill:enable='gte(t,{cta_in:.2f})',"
+      + f"drawbox=x=130:y=1080:w=795:h=150:color=0x101010@0.86:t=fill:enable='gte(t,{cta_in:.2f})',"
       f"drawtext=fontfile={FONT}:text='¿Necesitas asesoría? Escríbenos':fontsize=40:fontcolor=0xFFE500:"
       f"x=(1080-tw)/2:y=1102:enable='gte(t,{cta_in:.2f})',"
       f"drawtext=fontfile={FONT}:text='WhatsApp +56 9 9690 5994 · Estudio Jurídico San Bernardo':fontsize=24:"
@@ -145,9 +157,9 @@ tx = (f"[vv]trim=0:{T},setpts=PTS-STARTPTS,"
           + f"drawtext=fontfile={FONT}:text='{esc(cred)}':fontsize=28:fontcolor=0xFFE500:"
             f"x=130:y={TIT_Y + 30 + len(TIT_LINEAS) * 60 + 14}:enable='lt(t,{TIT_T})',"
          ).replace("markY", str(TIT_Y)).replace("markH", str(TIT_H)) if titular else "")
-      + (f"drawbox=x=0:y=1545:w=1080:h=45:color=black@0.55:t=fill,"
-      f"drawbox=x=0:y=1590:w=1080:h=330:color=black@0.94:t=fill,"
-      f"ass={ass}[vout]"))
+      + ((f"drawbox=x=0:y=1545:w=1080:h=45:color=black@0.55:t=fill,"
+          f"drawbox=x=0:y=1590:w=1080:h=330:color=black@0.94:t=fill,") if PIE else "")
+      + f"ass={ass}[vout]")
 fc.append(tx)
 # audio: noticia audible 1,2 s, luego cama a -30 dB (0.032, bajo el tope de uniones de control.py);
 # voz encima con 0,5 s de entrada; loudnorm al final
