@@ -1,0 +1,365 @@
+{
+ "fecha": "2026-09-19",
+ "piezas": [
+  {
+   "id": "1101",
+   "materia": "laboral",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/18261/18261-720.mp4",
+   "gancho": "Te pagan la mitad por fuera y cotizas por la mitad.",
+   "puntos": [
+    {
+     "t": "Todo es remuneración",
+     "d": "Aunque te lo pasen por fuera"
+    },
+    {
+     "t": "Cotizas por menos",
+     "d": "Y tu pensión paga la cuenta"
+    },
+    {
+     "t": "También la indemnización",
+     "d": "Se calcula sobre lo declarado"
+    }
+   ],
+   "cierre": "Si te pagan así, escríbeme.",
+   "voz": [
+    "Te pagan la mitad por fuera y cotizas por la mitad.",
+    "La ley llama remuneración a las contraprestaciones en dinero por causa del contrato.",
+    "El sobre no cambia eso, pero sí baja tus cotizaciones.",
+    "Y la indemnización se calcula sobre lo declarado.",
+    "Si te pagan así, escríbeme."
+   ],
+   "tema": "Sueldo pagado por fuera: qué pierdes sin darte cuenta",
+   "fuente": "Código del Trabajo, artículo 41",
+   "norma": "207436",
+   "articulo": "41",
+   "frase": "contraprestaciones en dinero",
+   "slot": 1
+  },
+  {
+   "id": "1102",
+   "materia": "laboral",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/45922/45922-720.mp4",
+   "gancho": "Te despidieron por WhatsApp un viernes y nadie te explicó nada.",
+   "puntos": [
+    {
+     "t": "Tiene forma",
+     "d": "Personalmente o por carta certificada"
+    },
+    {
+     "t": "Debe decir la causal",
+     "d": "Y los hechos en que se funda"
+    },
+    {
+     "t": "Va al domicilio",
+     "d": "El que está en tu contrato"
+    }
+   ],
+   "cierre": "Si te pasó, escríbeme.",
+   "voz": [
+    "Te despidieron por WhatsApp y nadie te explicó nada.",
+    "La ley exige comunicarlo personalmente o por carta certificada.",
+    "Tiene que decir la causal y los hechos en que se funda.",
+    "Un mensaje suelto no cumple esa forma.",
+    "Si te pasó, escríbeme."
+   ],
+   "tema": "Despido por WhatsApp: la comunicación tiene una forma obligatoria",
+   "fuente": "Código del Trabajo, artículo 162",
+   "norma": "207436",
+   "articulo": "162",
+   "frase": "personalmente o por carta certificada",
+   "slot": 2
+  },
+  {
+   "id": "1103",
+   "materia": "laboral",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/22835/22835-720.mp4",
+   "gancho": "Llevas tres años a honorarios, con horario, jefe y uniforme.",
+   "puntos": [
+    {
+     "t": "Manda la realidad",
+     "d": "No el papel que firmaste"
+    },
+    {
+     "t": "Horario y jefe",
+     "d": "Son señales de subordinación"
+    },
+    {
+     "t": "La ley lo presume",
+     "d": "Existencia de un contrato de trabajo"
+    }
+   ],
+   "cierre": "Si es tu caso, escríbeme.",
+   "voz": [
+    "Llevas tres años a honorarios, con horario y jefe.",
+    "La boleta no decide: decide cómo trabajas de verdad.",
+    "Con horario, jefatura y uniforme hay subordinación.",
+    "La ley presume la existencia de un contrato de trabajo.",
+    "Si es tu caso, escríbeme."
+   ],
+   "tema": "Honorarios con horario y jefe: lo que la ley presume",
+   "fuente": "Código del Trabajo, artículo 8",
+   "norma": "207436",
+   "articulo": "8",
+   "frase": "existencia de un contrato de trabajo",
+   "slot": 3
+  },
+  {
+   "id": "1104",
+   "materia": "laboral",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/45923/45923-720.mp4",
+   "gancho": "Renunciaste presionado y te dijeron que así no hay finiquito.",
+   "puntos": [
+    {
+     "t": "Es falso",
+     "d": "Renunciar no borra lo devengado"
+    },
+    {
+     "t": "Se ratifica",
+     "d": "Ante el inspector del trabajo"
+    },
+    {
+     "t": "Revisa antes de firmar",
+     "d": "Lo firmado con reserva se puede reclamar"
+    }
+   ],
+   "cierre": "Si te presionaron, escríbeme.",
+   "voz": [
+    "Renunciaste presionado y te dijeron que así no hay finiquito.",
+    "Renunciar no borra lo que ya ganaste.",
+    "El finiquito se ratifica ante el inspector del trabajo.",
+    "Ahí puedes firmarlo con reserva de derechos.",
+    "Si te presionaron, escríbeme."
+   ],
+   "tema": "Renuncia presionada: el finiquito y la ratificación",
+   "fuente": "Código del Trabajo, artículo 177",
+   "norma": "207436",
+   "articulo": "177",
+   "frase": "ante el inspector del trabajo",
+   "slot": 4
+  },
+  {
+   "id": "1105",
+   "materia": "laboral",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/41574/41574-720.mp4",
+   "gancho": "Renunciaste y te descontaron las vacaciones que nunca te dejaron tomar.",
+   "puntos": [
+    {
+     "t": "No es un premio",
+     "d": "Es un derecho que se acumula"
+    },
+    {
+     "t": "No se cambia por plata",
+     "d": "Mientras el contrato siga vigente"
+    },
+    {
+     "t": "Se paga al final",
+     "d": "Si no alcanzaste a tomarlas"
+    }
+   ],
+   "cierre": "Si te lo descontaron, escríbeme.",
+   "voz": [
+    "Te descontaron vacaciones que nunca te dejaron tomar.",
+    "El feriado no es un premio: es un derecho.",
+    "Vigente el contrato, no podrá compensarse en dinero.",
+    "Y si no las tomaste, se pagan al terminar.",
+    "Si te lo descontaron, escríbeme."
+   ],
+   "tema": "Vacaciones que nunca te dejaron tomar: no se cambian por plata",
+   "fuente": "Código del Trabajo, descanso y feriado",
+   "norma": "207436",
+   "articulo": "73",
+   "frase": "no podrá compensarse en dinero",
+   "slot": 5
+  },
+  {
+   "id": "1106",
+   "materia": "laboral",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/40102/40102-720.mp4",
+   "gancho": "Te mandaron a una sucursal a dos horas de tu casa.",
+   "puntos": [
+    {
+     "t": "Puede cambiarte",
+     "d": "Pero con límites claros"
+    },
+    {
+     "t": "Misma ciudad",
+     "d": "Y labores similares"
+    },
+    {
+     "t": "Sin menoscabo",
+     "d": "Ése es el límite de la ley"
+    }
+   ],
+   "cierre": "Si te perjudicó, escríbeme.",
+   "voz": [
+    "Te mandaron a una sucursal a dos horas de tu casa.",
+    "El empleador puede cambiar el sitio, pero con límites.",
+    "Tiene que ser el mismo lugar o ciudad y labores similares.",
+    "Y sin que ello importe menoscabo para el trabajador.",
+    "Si te perjudicó, escríbeme."
+   ],
+   "tema": "Te cambiaron de sucursal: hasta dónde puede llegar el empleador",
+   "fuente": "Código del Trabajo, artículo 12",
+   "norma": "207436",
+   "articulo": "12",
+   "frase": "sin que ello importe menoscabo para el trabajador",
+   "slot": 6
+  },
+  {
+   "id": "1107",
+   "materia": "penal",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/23429/23429-720.mp4",
+   "gancho": "Pasó la noche detenido y a ti nadie te avisó.",
+   "puntos": [
+    {
+     "t": "Necesita orden",
+     "d": "O delito flagrante"
+    },
+    {
+     "t": "Debe ser intimada",
+     "d": "En forma legal"
+    },
+    {
+     "t": "Tiene derecho a abogado",
+     "d": "Desde el primer momento"
+    }
+   ],
+   "cierre": "Si le pasó a alguien tuyo, escríbeme.",
+   "voz": [
+    "Pasó la noche detenido y a ti nadie te avisó.",
+    "Nadie puede ser detenido sino por orden de funcionario público facultado por la ley.",
+    "La excepción es el delito flagrante.",
+    "Y tiene derecho a abogado desde el primer momento.",
+    "Si le pasó a alguien tuyo, escríbeme."
+   ],
+   "tema": "Detención en Fiestas Patrias: cuándo es legal",
+   "fuente": "Código Procesal Penal, artículo 125",
+   "norma": "176595",
+   "articulo": "125",
+   "frase": "sino por orden de funcionario público expresamente facultado por la ley",
+   "slot": 7
+  },
+  {
+   "id": "1108",
+   "materia": "civil",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/22856/22856-720.mp4",
+   "gancho": "Firmaste como aval y ahora te llega la deuda entera.",
+   "puntos": [
+    {
+     "t": "No es un favor",
+     "d": "Es una obligación tuya"
+    },
+    {
+     "t": "Es accesoria",
+     "d": "Vive mientras viva la deuda"
+    },
+    {
+     "t": "Te pueden cobrar a ti",
+     "d": "Aunque no gastaste un peso"
+    }
+   ],
+   "cierre": "Si te está pasando, escríbeme.",
+   "voz": [
+    "Firmaste como aval y ahora te llega la deuda entera.",
+    "Avalar no es un favor de palabra.",
+    "La fianza es una obligación accesoria.",
+    "Te pueden cobrar a ti aunque no gastaste un peso.",
+    "Si te está pasando, escríbeme."
+   ],
+   "tema": "Firmaste como aval: qué significa de verdad",
+   "fuente": "Código Civil, artículo 2335",
+   "norma": "172986",
+   "articulo": "2335",
+   "frase": "La fianza es una obligación accesoria",
+   "slot": 8
+  },
+  {
+   "id": "1109",
+   "materia": "penal",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/13168/13168-720.mp4",
+   "gancho": "Grabaron tu pelea en la fonda y ya circula en TikTok.",
+   "puntos": [
+    {
+     "t": "Es delito",
+     "d": "Aunque haya sido en la fonda"
+    },
+    {
+     "t": "El video es prueba",
+     "d": "Y puede ser en tu contra"
+    },
+    {
+     "t": "La gravedad importa",
+     "d": "Define la pena que arriesgas"
+    }
+   ],
+   "cierre": "Si estás en eso, escríbeme.",
+   "voz": [
+    "Grabaron tu pelea en la fonda y ya circula.",
+    "El que hiriere, golpeare o maltratare de obra a otro comete delito.",
+    "Que haya sido en la fonda no lo borra.",
+    "Y ese video puede ser prueba en tu contra.",
+    "Si estás en eso, escríbeme."
+   ],
+   "tema": "Pelea grabada en la fonda: el video como prueba",
+   "fuente": "Código Penal, artículo 397 y siguientes",
+   "norma": "1984",
+   "articulo": "397",
+   "frase": "El que hiriere, golpeare o maltratare de obra a otro",
+   "slot": 9
+  },
+  {
+   "id": "1110",
+   "materia": "civil",
+   "rotulo": "NOTICIA DE HOY",
+   "prensa": false,
+   "hook": "https://assets.mixkit.co/videos/23500/23500-720.mp4",
+   "gancho": "Te entregaron el departamento con las cañerías malas.",
+   "puntos": [
+    {
+     "t": "Ambos se obligan",
+     "d": "No solo tú con la renta"
+    },
+    {
+     "t": "Debe entregarlo útil",
+     "d": "Para lo que se arrendó"
+    },
+    {
+     "t": "Las reparaciones",
+     "d": "No siempre son tuyas"
+    }
+   ],
+   "cierre": "Si te pasó, escríbeme.",
+   "voz": [
+    "Te entregaron el departamento con las cañerías malas.",
+    "El arrendamiento es un contrato en que las dos partes se obligan recíprocamente.",
+    "Tú pagas la renta, él entrega algo que sirva.",
+    "Las reparaciones mayores no son tuyas.",
+    "Si te pasó, escríbeme."
+   ],
+   "tema": "Departamento entregado con fallas: qué debe el arrendador",
+   "fuente": "Código Civil, artículo 1915",
+   "norma": "172986",
+   "articulo": "1915",
+   "frase": "El arrendamiento es un contrato en que las dos partes se obligan recíprocamente",
+   "slot": 10
+  }
+ ]
+}

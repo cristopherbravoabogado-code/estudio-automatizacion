@@ -8,82 +8,352 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-19T10:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:23:05-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:23:05-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:23:05-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Sueldo pagado por fuera: qué pierdes sin darte cuenta",
+      "fuente": "Código del Trabajo, artículo 41",
+      "norma": "207436",
+      "articulo": "41",
+      "frase": "contraprestaciones en dinero",
+      "gancho": "Te pagan la mitad por fuera y cotizas por la mitad.",
+      "tramos": [
+        "Te pagan la mitad por fuera y cotizas por la mitad.",
+        "La ley llama remuneración a las contraprestaciones en dinero por causa del contrato.",
+        "El sobre no cambia eso, pero sí baja tus cotizaciones.",
+        "Y la indemnización se calcula sobre lo declarado.",
+        "Si te pagan así, escríbeme."
+      ],
+      "pieza_id": "1101"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-19T12:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Despido por WhatsApp: la comunicación tiene una forma obligatoria",
+      "fuente": "Código del Trabajo, artículo 162",
+      "norma": "207436",
+      "articulo": "162",
+      "frase": "personalmente o por carta certificada",
+      "gancho": "Te despidieron por WhatsApp un viernes y nadie te explicó nada.",
+      "tramos": [
+        "Te despidieron por WhatsApp y nadie te explicó nada.",
+        "La ley exige comunicarlo personalmente o por carta certificada.",
+        "Tiene que decir la causal y los hechos en que se funda.",
+        "Un mensaje suelto no cumple esa forma.",
+        "Si te pasó, escríbeme."
+      ],
+      "pieza_id": "1102"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-19T14:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Honorarios con horario y jefe: lo que la ley presume",
+      "fuente": "Código del Trabajo, artículo 8",
+      "norma": "207436",
+      "articulo": "8",
+      "frase": "existencia de un contrato de trabajo",
+      "gancho": "Llevas tres años a honorarios, con horario, jefe y uniforme.",
+      "tramos": [
+        "Llevas tres años a honorarios, con horario y jefe.",
+        "La boleta no decide: decide cómo trabajas de verdad.",
+        "Con horario, jefatura y uniforme hay subordinación.",
+        "La ley presume la existencia de un contrato de trabajo.",
+        "Si es tu caso, escríbeme."
+      ],
+      "pieza_id": "1103"
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-19T16:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Renuncia presionada: el finiquito y la ratificación",
+      "fuente": "Código del Trabajo, artículo 177",
+      "norma": "207436",
+      "articulo": "177",
+      "frase": "ante el inspector del trabajo",
+      "gancho": "Renunciaste presionado y te dijeron que así no hay finiquito.",
+      "tramos": [
+        "Renunciaste presionado y te dijeron que así no hay finiquito.",
+        "Renunciar no borra lo que ya ganaste.",
+        "El finiquito se ratifica ante el inspector del trabajo.",
+        "Ahí puedes firmarlo con reserva de derechos.",
+        "Si te presionaron, escríbeme."
+      ],
+      "pieza_id": "1104"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-19T18:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:00-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Vacaciones que nunca te dejaron tomar: no se cambian por plata",
+      "fuente": "Código del Trabajo, descanso y feriado",
+      "norma": "207436",
+      "articulo": "73",
+      "frase": "no podrá compensarse en dinero",
+      "gancho": "Renunciaste y te descontaron las vacaciones que nunca te dejaron tomar.",
+      "tramos": [
+        "Te descontaron vacaciones que nunca te dejaron tomar.",
+        "El feriado no es un premio: es un derecho.",
+        "Vigente el contrato, no podrá compensarse en dinero.",
+        "Y si no las tomaste, se pagan al terminar.",
+        "Si te lo descontaron, escríbeme."
+      ],
+      "pieza_id": "1105"
     },
     {
       "slot": 6,
       "hora_chile": "17:00",
       "hora_utc": "2026-09-19T20:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Te cambiaron de sucursal: hasta dónde puede llegar el empleador",
+      "fuente": "Código del Trabajo, artículo 12",
+      "norma": "207436",
+      "articulo": "12",
+      "frase": "sin que ello importe menoscabo para el trabajador",
+      "gancho": "Te mandaron a una sucursal a dos horas de tu casa.",
+      "tramos": [
+        "Te mandaron a una sucursal a dos horas de tu casa.",
+        "El empleador puede cambiar el sitio, pero con límites.",
+        "Tiene que ser el mismo lugar o ciudad y labores similares.",
+        "Y sin que ello importe menoscabo para el trabajador.",
+        "Si te perjudicó, escríbeme."
+      ],
+      "pieza_id": "1106"
     },
     {
       "slot": 7,
       "hora_chile": "19:00",
       "hora_utc": "2026-09-19T22:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Detención en Fiestas Patrias: cuándo es legal",
+      "fuente": "Código Procesal Penal, artículo 125",
+      "norma": "176595",
+      "articulo": "125",
+      "frase": "sino por orden de funcionario público expresamente facultado por la ley",
+      "gancho": "Pasó la noche detenido y a ti nadie te avisó.",
+      "tramos": [
+        "Pasó la noche detenido y a ti nadie te avisó.",
+        "Nadie puede ser detenido sino por orden de funcionario público facultado por la ley.",
+        "La excepción es el delito flagrante.",
+        "Y tiene derecho a abogado desde el primer momento.",
+        "Si le pasó a alguien tuyo, escríbeme."
+      ],
+      "pieza_id": "1107"
     },
     {
       "slot": 8,
       "hora_chile": "20:00",
       "hora_utc": "2026-09-19T23:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Firmaste como aval: qué significa de verdad",
+      "fuente": "Código Civil, artículo 2335",
+      "norma": "172986",
+      "articulo": "2335",
+      "frase": "La fianza es una obligación accesoria",
+      "gancho": "Firmaste como aval y ahora te llega la deuda entera.",
+      "tramos": [
+        "Firmaste como aval y ahora te llega la deuda entera.",
+        "Avalar no es un favor de palabra.",
+        "La fianza es una obligación accesoria.",
+        "Te pueden cobrar a ti aunque no gastaste un peso.",
+        "Si te está pasando, escríbeme."
+      ],
+      "pieza_id": "1108"
     },
     {
       "slot": 9,
       "hora_chile": "21:00",
       "hora_utc": "2026-09-20T00:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Pelea grabada en la fonda: el video como prueba",
+      "fuente": "Código Penal, artículo 397 y siguientes",
+      "norma": "1984",
+      "articulo": "397",
+      "frase": "El que hiriere, golpeare o maltratare de obra a otro",
+      "gancho": "Grabaron tu pelea en la fonda y ya circula en TikTok.",
+      "tramos": [
+        "Grabaron tu pelea en la fonda y ya circula.",
+        "El que hiriere, golpeare o maltratare de obra a otro comete delito.",
+        "Que haya sido en la fonda no lo borra.",
+        "Y ese video puede ser prueba en tu contra.",
+        "Si estás en eso, escríbeme."
+      ],
+      "pieza_id": "1109"
     },
     {
       "slot": 10,
       "hora_chile": "22:00",
       "hora_utc": "2026-09-20T01:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-19T01:22:01-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Departamento entregado con fallas: qué debe el arrendador",
+      "fuente": "Código Civil, artículo 1915",
+      "norma": "172986",
+      "articulo": "1915",
+      "frase": "El arrendamiento es un contrato en que las dos partes se obligan recíprocamente",
+      "gancho": "Te entregaron el departamento con las cañerías malas.",
+      "tramos": [
+        "Te entregaron el departamento con las cañerías malas.",
+        "El arrendamiento es un contrato en que las dos partes se obligan recíprocamente.",
+        "Tú pagas la renta, él entrega algo que sirva.",
+        "Las reparaciones mayores no son tuyas.",
+        "Si te pasó, escríbeme."
+      ],
+      "pieza_id": "1110"
     }
   ],
-  "actualizado": "2026-09-19T00:47:12-03:00"
+  "actualizado": "2026-09-19T01:23:05-03:00"
 }
