@@ -12,9 +12,10 @@ name: Render diario
 # (motor/PUBLICAR.md, via B), porque la via de Higgsfield es MCP y no tiene API REST documentada.
 # Este workflow deja las piezas ALOJADAS y anotadas; publicar es un paso aparte y corto.
 #
-# CUOTA: plan Free en repo privado, 2.000 min/mes. Una pieza tarda ~3-4 min (pip + TTS + render
-# + los siete controles). Diez piezas ~35 min. Cuatro corridas diarias con rescate: ~900 min/mes
-# si todas las corridas rinden; las de rescate salen en menos de un minuto cuando no hay nada.
+# CUOTA: el repositorio es PUBLICO, asi que los minutos de Actions no se cobran (hasta el 19/09
+# este comentario decia "plan Free en repo privado, 2.000 min/mes", igual que el README, y era
+# falso). Una pieza tarda ~3-4 min (pip + TTS + render + los siete controles); diez piezas ~35 min;
+# las corridas de rescate salen en menos de un minuto cuando no hay nada que hacer.
 
 on:
   schedule:
@@ -229,16 +230,23 @@ jobs:
           # caracter por caracter. Diez piezas al dia son 24.000 caracteres transcritos sin
           # equivocarse ni una vez; un solo caracter malo invalida la firma y pierde la pieza.
           # La url de una Release es corta, publica, no caduca y no la copia nadie.
+          # EL TIPO IMPORTA. `gh release upload` no dice que sube y GitHub lo guarda como
+          # application/octet-stream; ese tipo viaja dentro de la url firmada de descarga y
+          # Higgsfield rechaza la pieza: "Unsupported content-type: application/octet-stream".
+          # Sin media_import_url la tarea que publica cae a la via larga (copiar a mano una url
+          # firmada de 1.808 caracteres), se alarga y no cierra. El 19/09 el dia quedo en cero
+          # hasta que hubo que publicar a mano. Por eso alojar_release.py sube diciendo
+          # video/mp4 y despues RELEE lo que GitHub guardo: si no es video/mp4, este paso falla.
           TAG="piezas-${{ steps.dia.outputs.fecha }}"
-          gh release view "$TAG" >/dev/null 2>&1 || \
-            gh release create "$TAG" --title "Piezas ${{ steps.dia.outputs.fecha }}" \
-              --notes "mp4 del dia, subidos por render-diario. Se regeneran: no son un respaldo."
-          subidos=0
-          for f in _salida/*.mp4; do
-            [ -e "$f" ] || continue
-            gh release upload "$TAG" "$f" --clobber && subidos=$((subidos+1))
-          done
-          echo "subidos $subidos mp4 a la release $TAG"
+          shopt -s nullglob
+          archivos=(_salida/*.mp4)
+          echo "mp4 listos para alojar: ${#archivos[@]}"
+          if [ ${#archivos[@]} -gt 0 ]; then
+            python3 motor/alojar_release.py subir "${archivos[@]}" --tag "$TAG"
+          fi
+          # Repara de paso lo que quedo mal tipado en corridas anteriores a este arreglo.
+          python3 motor/alojar_release.py retipar --tag "$TAG" || true
+          python3 motor/alojar_release.py verificar --tag "$TAG"
           echo "base=https://github.com/${{ github.repository }}/releases/download/$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Anotar en el libro de cuentas

@@ -1,0 +1,54 @@
+name: Retipar piezas de una Release
+
+# Repara una Release cuyos mp4 quedaron guardados como application/octet-stream.
+#
+# POR QUE EXISTE: hasta el 19/09/2026 el render subia los mp4 con `gh release upload`, que no
+# declara el tipo. GitHub los guardaba como "un monton de bytes" y ese tipo viaja dentro de la url
+# firmada de descarga, asi que Higgsfield rechazaba la pieza:
+#     media_import_url -> "Unsupported content-type: application/octet-stream"
+# Sin esa llamada, publicar exige la via larga (copiar a mano una url firmada de 1.808 caracteres),
+# la tarea se alarga y no cierra, y el dia queda en cero. Paso el 19/09.
+#
+# El render ya sube bien y repara de paso, pero eso solo ocurre cuando hay cola. Esto permite
+# arreglar AHORA un dia ya alojado, sin volver a renderizar nada y sin esperar al proximo cron.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag de la Release (ej: piezas-2026-09-19). Vacio = el dia de hoy en Chile.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write          # las Releases y sus assets viven en contents
+
+concurrency:
+  # No puede pisarse con el render, que sube assets a la misma Release.
+  group: render-diario
+  cancel-in-progress: false
+
+jobs:
+  retipar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag a reparar
+        id: t
+        run: |
+          TAG="${{ inputs.tag }}"
+          [ -z "$TAG" ] && TAG="piezas-$(TZ=America/Santiago date +%F)"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Reparando la Release $TAG"
+
+      - name: Como estan ahora
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 motor/alojar_release.py verificar --tag "${{ steps.t.outputs.tag }}" || true
+
+      - name: Rescatar y volver a subir con video/mp4
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 motor/alojar_release.py retipar --tag "${{ steps.t.outputs.tag }}"
