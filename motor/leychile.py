@@ -149,18 +149,18 @@ def verificar(id_norma, frase, timeout=60):
 
     i = plano_norma.find(plano_frase)
     if i < 0:
-        aviso = ""
-        if len(plano_frase) > 45:
-            # El XML intercala las notas al margen DENTRO del texto: en el articulo 12 se lee
-            # "la naturaleza de L. 18.620 los servicios o el sitio o recinto en que ellos deban
-            # ART. PRIMERO prestarse". Una frase larga puede quedar partida por una de esas
-            # notas y dar falso negativo, asi que se avisa en vez de sentenciar a secas.
-            aviso = (" AVISO: la frase tiene %d caracteres; el XML de LeyChile intercala notas "
-                     "al margen dentro del texto y puede partir una cita larga. Antes de darla "
-                     "por falsa, reintenta con un tramo mas corto y continuo."
-                     % len(plano_frase))
+        # El XML intercala las notas al margen DENTRO del texto. Medido el 19/09 en el articulo
+        # 8 del Codigo del Trabajo, que se lee literalmente:
+        #     "hace presumir la ART. PRIMERO existencia de un contrato de trabajo"
+        # La ley SI dice lo que se le atribuye, pero "hace presumir la existencia" -veintisiete
+        # caracteres- no aparece, porque una nota la parte por la mitad. El aviso va SIEMPRE y
+        # no solo en citas largas: ese caso demostro que basta con muy poco para cruzar una nota.
+        aviso = (" AVISO: el XML de LeyChile intercala notas al margen DENTRO del texto (medido: "
+                 "'hace presumir la ART. PRIMERO existencia de un contrato de trabajo'), asi que "
+                 "una cita puede quedar partida y dar falso negativo. Antes de darla por falsa, "
+                 "reintenta con un tramo mas corto y continuo.")
         return NO_ESTA, ("la norma %s se leyo completa (%d caracteres) y NO contiene esa frase. "
-                         "O la cita esta mal o el articulo es otro.%s"
+                         "O la cita esta mal, o el articulo es otro, o la partio una nota.%s"
                          % (id_norma, len(texto), aviso))
 
     # Contexto en el texto ORIGINAL, con sus tildes, anclado en la posicion real de la frase.
