@@ -1,0 +1,140 @@
+name: Render diario
+
+# Saca el render del camino critico de una sesion de Claude.
+#
+# POR QUE: al 19/09/2026 el render vivia dentro de una llamada `sandbox_exec`, de a 3 piezas por
+# vez (tope de 16.000 caracteres del comando; cada upload_url presignada mide ~2.400). Para 10
+# piezas diarias son 4 llamadas encadenadas dentro de una sesion que, medido, ABANDONA. Aqui el
+# runner corre solo, con internet sin proxy (docs/RED-Y-BLOQUEOS.md) y sin tope de caracteres:
+# las upload_url viajan en un archivo del repo, no dentro de un comando.
+#
+# QUE NO HACE: no publica en TikTok. Publicar sigue siendo una micro-tarea de Claude por pieza
+# (motor/PUBLICAR.md, via B), porque la via de Higgsfield es MCP y no tiene API REST documentada.
+# Este workflow deja las piezas ALOJADAS y anotadas; publicar es un paso aparte y corto.
+#
+# CUOTA: plan Free en repo privado, 2.000 min/mes. Una pieza tarda ~3-4 min (pip + TTS + render
+# + los siete controles). Diez piezas ~35 min. Cuatro corridas diarias con rescate: ~900 min/mes
+# si todas las corridas rinden; las de rescate salen en menos de un minuto cuando no hay nada.
+
+on:
+  schedule:
+    # UTC. Chile es UTC-3 desde el 06/09/2026 (REVISAR en abril de 2027).
+    - cron: '0 8 * * *'    # 05:00 Chile - tanda principal, antes de la ranura de las 07:00
+    - cron: '0 12 * * *'   # 09:00 Chile - rescate
+    - cron: '0 16 * * *'   # 13:00 Chile - rescate
+    - cron: '0 20 * * *'   # 17:00 Chile - rescate
+  workflow_dispatch:
+    inputs:
+      fecha:
+        description: 'Dia a renderizar (AAAA-MM-DD). Vacio = hoy en Chile.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write          # para commitear estado/<fecha>.json de vuelta
+
+concurrency:
+  # Dos corridas a la vez se pisarian el estado y podrian subir la misma pieza dos veces.
+  group: render-diario
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fecha de trabajo (hora de Chile)
+        id: dia
+        run: |
+          FECHA="${{ inputs.fecha }}"
+          [ -z "$FECHA" ] && FECHA=$(TZ=America/Santiago date +%F)
+          echo "fecha=$FECHA" >> "$GITHUB_OUTPUT"
+          echo "Renderizando el dia $FECHA"
+
+      - name: ¿Hay cola para hoy?
+        id: cola
+        run: |
+          COLA="cola/${{ steps.dia.outputs.fecha }}.json"
+          if [ ! -f "$COLA" ]; then
+            echo "No existe $COLA: la tarea de la manana no dejo tanda. Nada que renderizar."
+            echo "hay=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "hay=si" >> "$GITHUB_OUTPUT"
+            echo "cola=$COLA" >> "$GITHUB_OUTPUT"
+            python3 -c "import json;print('piezas en la cola:', len(json.load(open('$COLA'))['piezas']))"
+          fi
+
+      - name: Python
+        if: steps.cola.outputs.hay == 'si'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: ffmpeg y fuentes
+        if: steps.cola.outputs.hay == 'si'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg fonts-noto-color-emoji
+          mkdir -p _salida/fonts
+          for f in Poppins-Bold Poppins-Regular Poppins-SemiBold; do
+            curl -sL "https://github.com/google/fonts/raw/main/ofl/poppins/$f.ttf" -o "_salida/fonts/$f.ttf"
+          done
+          ffmpeg -version | head -1
+
+      - name: Renderizar la tanda
+        if: steps.cola.outputs.hay == 'si'
+        env:
+          # PRODUCE_LOCAL hace que produce.py use el codigo de ESTE checkout y no el de `main`:
+          # sin esto, un arreglo en rama se renderizaria con el motor viejo sin avisar.
+          PRODUCE_LOCAL: ${{ github.workspace }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          cp "${{ steps.cola.outputs.cola }}" _salida/job.json
+          cd _salida
+          # produce.py hace todo: deps, pip, gancho, voz, karaoke, motor, los siete controles
+          # y el PUT a la upload_url. No sube nada que control.py no haya aprobado.
+          python3 "$GITHUB_WORKSPACE/motor/produce.py" job.json 2>&1 | tail -60
+        continue-on-error: true      # una pieza mala no puede llevarse la tanda entera
+
+      - name: Anotar en el libro de cuentas
+        if: steps.cola.outputs.hay == 'si'
+        run: |
+          python3 motor/ci_registrar.py \
+            --cola "${{ steps.cola.outputs.cola }}" \
+            --resultado _salida/resultado.json \
+            --fecha "${{ steps.dia.outputs.fecha }}" || true
+
+      - name: Auditar el dia
+        if: steps.cola.outputs.hay == 'si'
+        run: python3 motor/cadena.py auditar --fecha "${{ steps.dia.outputs.fecha }}" || true
+
+      - name: Commitear el estado
+        if: steps.cola.outputs.hay == 'si'
+        run: |
+          git config user.name  "render-diario"
+          git config user.email "actions@github.com"
+          git add estado/ cola/ || true
+          if git diff --cached --quiet; then
+            echo "Sin cambios en el estado."
+          else
+            git commit -m "render diario ${{ steps.dia.outputs.fecha }}: estado actualizado por Actions"
+            # Otra corrida pudo empujar mientras esta renderizaba: reintentar con rebase.
+            for i in 1 2 3; do
+              git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              echo "reintento $i"; sleep $((i*5))
+            done
+          fi
+
+      - name: Guardar los mp4 por si hay que revisarlos
+        if: steps.cola.outputs.hay == 'si'
+        uses: actions/upload-artifact@v4
+        with:
+          name: piezas-${{ steps.dia.outputs.fecha }}
+          path: |
+            _salida/*.mp4
+            _salida/resultado.json
+          retention-days: 3
+          if-no-files-found: warn

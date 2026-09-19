@@ -1,0 +1,89 @@
+{
+  "fecha": "2026-09-19",
+  "meta": 10,
+  "formato": "noticia-vertical-relatada-sin-rostro",
+  "creado": "2026-09-19T00:47:12-03:00",
+  "piezas": [
+    {
+      "slot": 1,
+      "hora_chile": "07:00",
+      "hora_utc": "2026-09-19T10:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 2,
+      "hora_chile": "09:00",
+      "hora_utc": "2026-09-19T12:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 3,
+      "hora_chile": "11:00",
+      "hora_utc": "2026-09-19T14:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 4,
+      "hora_chile": "13:00",
+      "hora_utc": "2026-09-19T16:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 5,
+      "hora_chile": "15:00",
+      "hora_utc": "2026-09-19T18:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 6,
+      "hora_chile": "17:00",
+      "hora_utc": "2026-09-19T20:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 7,
+      "hora_chile": "19:00",
+      "hora_utc": "2026-09-19T22:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 8,
+      "hora_chile": "20:00",
+      "hora_utc": "2026-09-19T23:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 9,
+      "hora_chile": "21:00",
+      "hora_utc": "2026-09-20T00:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 10,
+      "hora_chile": "22:00",
+      "hora_utc": "2026-09-20T01:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    }
+  ],
+  "actualizado": "2026-09-19T00:47:12-03:00"
+}
