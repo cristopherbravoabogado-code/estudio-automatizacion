@@ -348,6 +348,42 @@ def cmd_marcar(args):
     return 0
 
 
+def cmd_anotar(args):
+    """Guarda un dato en una ranura SIN moverla de paso.
+
+    Nace el 19/09 con la pre-subida. Una pieza que ya tiene su `media_id` de Higgsfield sigue
+    estando 'alojado': subirla no es publicarla. `marcar` no sirve para esto -solo avanza, y con
+    razon-, y forzar un avance para guardar un dato seria justo la clase de mentira que el libro
+    de cuentas existe para impedir. Asi que el dato se anota y el estado no se toca.
+
+    Lo que NO hace: mover la ranura, tocar una publicada, ni inventar el paso que falte.
+    """
+    fecha = args.fecha or hoy()
+    dia = cargar(fecha)
+    p = buscar(dia, args.slot)
+
+    if p["estado"] == "publicado":
+        salir("la ranura #%d ya esta publicada (%s). No se le anota nada mas."
+              % (p["slot"], p.get("publish_id", "?")))
+
+    campos = dict(kv.split("=", 1) for kv in args.campo) if args.campo else {}
+    if args.json:
+        campos.update(json.loads(args.json))
+    if not campos:
+        salir("no hay nada que anotar: pasa al menos un --campo k=v.")
+
+    prohibidos = [k for k in campos if k in ("estado", "slot", "historia")]
+    if prohibidos:
+        salir("estos campos no se anotan a mano: %s. El estado se mueve con 'marcar'."
+              % ", ".join(prohibidos))
+
+    p.update(campos)
+    anotar(p, "anotado: %s" % ", ".join(sorted(campos)))
+    guardar(dia)
+    print("ranura #%d (sigue en '%s'): %s" % (p["slot"], p["estado"], ", ".join(sorted(campos))))
+    return 0
+
+
 def cmd_fallar(args):
     fecha = args.fecha or hoy()
     dia = cargar(fecha)
@@ -505,6 +541,12 @@ def main():
     m.add_argument("--campo", action="append", metavar="k=v")
     m.add_argument("--json", help="campos adicionales como objeto JSON")
     m.set_defaults(func=cmd_marcar)
+
+    n = con_fecha(sub.add_parser("anotar", help="guarda un dato sin mover la ranura de paso"))
+    n.add_argument("slot", type=int)
+    n.add_argument("--campo", action="append", metavar="k=v")
+    n.add_argument("--json", help="campos adicionales como objeto JSON")
+    n.set_defaults(func=cmd_anotar)
 
     f = con_fecha(sub.add_parser("fallar", help="marca una ranura como fallida"))
     f.add_argument("slot", type=int)

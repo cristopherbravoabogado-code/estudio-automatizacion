@@ -40,6 +40,43 @@ import cadena as C                                            # noqa: E402
 
 CONNECTOR = "f23f2205-1ae6-4259-8240-e6f4165bbe79"            # motor/PUBLICAR.md
 
+# El pie de todas las piezas. Fijo a proposito: la marca se reconoce por repeticion, y ademas
+# una sesion que improvisa el texto cada vez es una sesion que tarda y que un dia escribe algo
+# que no corresponde firmar.
+PIE = "Estudio Juridico San Bernardo - orientacion inicial sin costo."
+ETIQUETAS = "#chile #derecho #noticias #abogado #leychile"
+
+
+def texto_tiktok(p):
+    """El texto del post, armado SOLO con lo que ya esta verificado en el libro de cuentas.
+
+    POR QUE AQUI Y NO EN LA CABEZA DE LA SESION: hasta el 19/09 la ficha imprimia los pasos pero
+    no el texto, asi que cada tarea horaria lo inventaba. Eso es un problema de tres caras: la
+    tarea se alarga (y las largas no cierran), la voz del estudio cambia de pieza en pieza, y
+    -la grave- un texto improvisado puede afirmar de derecho algo que la pieza no verifico.
+    Aqui no se inventa nada: el gancho, el tema, el articulo y la frase salen tal cual del dia,
+    y la frase entre comillas es la que `leychile.py` encontro literalmente en la norma.
+    """
+    tema = (p.get("tema") or "").strip()
+    gancho = (p.get("gancho") or "").strip()
+    art = (p.get("articulo") or "").strip()
+    frase = (p.get("frase") or "").strip()
+
+    lineas = []
+    if gancho and tema:
+        lineas.append("%s: %s" % (gancho, tema))
+    else:
+        lineas.append(tema or gancho or "Noticia del dia")
+    if art:
+        # Sin nombre de ley a menos que el dia lo traiga: el 19/09 una ley "recordada" de memoria
+        # resulto ser otra norma. Se cita lo que esta verificado y nada mas.
+        ley = (p.get("ley") or "").strip()
+        cita = "Art. %s%s" % (art, " de la %s" % ley if ley else "")
+        lineas.append('%s: "%s".' % (cita, frase) if frase else "%s." % cita)
+    lineas.append(PIE)
+    lineas.append(ETIQUETAS)
+    return "\n".join(lineas)
+
 
 def listas(dia, solo_vencidas=True):
     out = []
@@ -91,9 +128,26 @@ def cmd_ficha(args):
     print("tema: %s" % p.get("tema", "(sin tema)"))
     print("hoy van %d publicadas; el tope de la via B son %d/24 h."
           % (publicadas, C.CUOTA_TIKTOK_24H))
+    print("pre-subida: %s" % ("SI, media_id=%s" % p["media_id"] if p.get("media_id")
+                              else "NO - esta tarea va a ser larga (ver paso 1)"))
     print()
-    print("LOS CUATRO PASOS (motor/PUBLICAR.md, via B):")
-    print("  1. media_import_url  con: %s" % p.get("url"))
+    print("EL TEXTO DEL POST (copiar TAL CUAL, no reescribir):")
+    print("---8<---")
+    print(texto_tiktok(p))
+    print("--->8---")
+    print()
+    print("LOS PASOS (motor/PUBLICAR.md, via B):")
+    if p.get("media_id"):
+        print("  1. NADA QUE SUBIR. media_id=%s (pre-subido)." % p["media_id"])
+    else:
+        print("  1. FALTA EL media_id. La pieza no esta pre-subida, asi que hay que subirla:")
+        print("       media_upload (nombre %s.mp4, video/mp4) -> upload_url"
+              % (p.get("pieza_id") or p["slot"]))
+        print("       bajar los bytes:  curl -sL '%s' -o /tmp/p.mp4" % p.get("url"))
+        print("       PUT de /tmp/p.mp4 a esa upload_url, y despues media_confirm.")
+        print("       anotalo:  python3 motor/cadena.py anotar %d --campo media_id=<id>" % p["slot"])
+        print("     OJO: media_import_url con la url de la Release NO funciona. GitHub la sirve")
+        print("     como application/octet-stream y Higgsfield la rechaza. Medido el 19/09.")
     print("  2. tiktok_prepare_publish  connector_id=%s  -> publish_session_id" % CONNECTOR)
     print("  3. tiktok_publish  con ESE publish_session_id.")
     print("     El clasificador rechaza el PRIMER intento con 'Permission denied':")

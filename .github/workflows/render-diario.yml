@@ -230,24 +230,27 @@ jobs:
           # caracter por caracter. Diez piezas al dia son 24.000 caracteres transcritos sin
           # equivocarse ni una vez; un solo caracter malo invalida la firma y pierde la pieza.
           # La url de una Release es corta, publica, no caduca y no la copia nadie.
-          # EL TIPO IMPORTA. `gh release upload` no dice que sube y GitHub lo guarda como
-          # application/octet-stream; ese tipo viaja dentro de la url firmada de descarga y
-          # Higgsfield rechaza la pieza: "Unsupported content-type: application/octet-stream".
-          # Sin media_import_url la tarea que publica cae a la via larga (copiar a mano una url
-          # firmada de 1.808 caracteres), se alarga y no cierra. El 19/09 el dia quedo en cero
-          # hasta que hubo que publicar a mano. Por eso alojar_release.py sube diciendo
-          # video/mp4 y despues RELEE lo que GitHub guardo: si no es video/mp4, este paso falla.
           TAG="piezas-${{ steps.dia.outputs.fecha }}"
-          shopt -s nullglob
-          archivos=(_salida/*.mp4)
-          echo "mp4 listos para alojar: ${#archivos[@]}"
-          if [ ${#archivos[@]} -gt 0 ]; then
-            python3 motor/alojar_release.py subir "${archivos[@]}" --tag "$TAG"
-          fi
-          # Repara de paso lo que quedo mal tipado en corridas anteriores a este arreglo.
-          python3 motor/alojar_release.py retipar --tag "$TAG" || true
-          python3 motor/alojar_release.py verificar --tag "$TAG"
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --title "Piezas ${{ steps.dia.outputs.fecha }}" \
+              --notes "mp4 del dia, subidos por render-diario. Se regeneran: no son un respaldo."
+          subidos=0
+          for f in _salida/*.mp4; do
+            [ -e "$f" ] || continue
+            gh release upload "$TAG" "$f" --clobber && subidos=$((subidos+1))
+          done
+          echo "subidos $subidos mp4 a la release $TAG"
           echo "base=https://github.com/${{ github.repository }}/releases/download/$TAG" >> "$GITHUB_OUTPUT"
+
+          # OJO, MEDIDO EL 19/09: esta url NO sirve para `media_import_url` de Higgsfield, y no
+          # es culpa de como se sube. GitHub GUARDA bien el tipo -la API dice video/mp4 en los 24
+          # assets del dia- pero al servir el archivo fuerza en la url firmada
+          #     response-content-type=application/octet-stream
+          # y Higgsfield responde "Unsupported content-type: application/octet-stream". El que
+          # sube no puede cambiarlo: es como GitHub entrega TODOS los assets de una Release.
+          # Por eso las piezas se suben a Higgsfield ANTES de su hora y el libro de cuentas se
+          # queda con el media_id (motor/PUBLICAR.md). Esta Release sigue siendo util: es de
+          # donde la pre-subida saca los bytes, y para curl el tipo servido da igual.
 
       - name: Anotar en el libro de cuentas
         if: steps.cola.outputs.hay == 'si'
