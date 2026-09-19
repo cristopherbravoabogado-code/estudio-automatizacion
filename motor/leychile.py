@@ -79,9 +79,32 @@ def _plano(s):
     bien escrito. Aqui la pregunta es otra -si la frase citada aparece en la norma- y un acento
     de mas o de menos en la cita no puede decidirla.
     """
-    s = unicodedata.normalize("NFD", (s or "").lower())
-    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
-    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9 ]", " ", s)).strip()
+    return _plano_con_mapa(s)[0]
+
+
+def _plano_con_mapa(s):
+    """Como _plano, pero devuelve ademas el indice ORIGINAL de cada caracter plegado.
+
+    Hace falta para citar el contexto correcto. Estimar la posicion por regla de tres sobre
+    los largos -que era la primera version- apunta a otro parrafo de la norma, y el contexto
+    existe justamente para que un humano compruebe de un vistazo que la cita es la que dice
+    ser. Un contexto que apunta a otra parte es peor que no mostrarlo.
+    """
+    salida, mapa = [], []
+    for i, ch in enumerate(s or ""):
+        d = unicodedata.normalize("NFD", ch.lower())
+        d = "".join(c for c in d if unicodedata.category(c) != "Mn")
+        for c in d:
+            if not re.match(r"[a-z0-9]", c):
+                c = " "
+            if c == " " and (not salida or salida[-1] == " "):
+                continue
+            salida.append(c)
+            mapa.append(i)
+    while salida and salida[-1] == " ":
+        salida.pop()
+        mapa.pop()
+    return "".join(salida), mapa
 
 
 def bajar(id_norma, timeout=60):
@@ -119,18 +142,31 @@ def verificar(id_norma, frase, timeout=60):
     if texto is None:
         return NO_VERIFICABLE, motivo
 
-    plano_norma = _plano(texto)
+    plano_norma, mapa = _plano_con_mapa(texto)
     plano_frase = _plano(frase)
     if not plano_frase:
         return NO_VERIFICABLE, "la frase a buscar esta vacia"
 
     i = plano_norma.find(plano_frase)
     if i < 0:
+        aviso = ""
+        if len(plano_frase) > 45:
+            # El XML intercala las notas al margen DENTRO del texto: en el articulo 12 se lee
+            # "la naturaleza de L. 18.620 los servicios o el sitio o recinto en que ellos deban
+            # ART. PRIMERO prestarse". Una frase larga puede quedar partida por una de esas
+            # notas y dar falso negativo, asi que se avisa en vez de sentenciar a secas.
+            aviso = (" AVISO: la frase tiene %d caracteres; el XML de LeyChile intercala notas "
+                     "al margen dentro del texto y puede partir una cita larga. Antes de darla "
+                     "por falsa, reintenta con un tramo mas corto y continuo."
+                     % len(plano_frase))
         return NO_ESTA, ("la norma %s se leyo completa (%d caracteres) y NO contiene esa frase. "
-                         "O la cita esta mal o el articulo es otro." % (id_norma, len(texto)))
-    # Para el contexto se usa el texto con tildes, no el plegado.
-    j = max(0, int(i * len(texto) / max(len(plano_norma), 1)) - 180)
-    return OK, texto[j:j + 420].strip()
+                         "O la cita esta mal o el articulo es otro.%s"
+                         % (id_norma, len(texto), aviso))
+
+    # Contexto en el texto ORIGINAL, con sus tildes, anclado en la posicion real de la frase.
+    ini = mapa[i]
+    fin = mapa[min(i + len(plano_frase), len(mapa)) - 1] + 1
+    return OK, texto[max(0, ini - 170):fin + 170].strip()
 
 
 def cmd_cola(ruta, timeout=60):
