@@ -433,7 +433,7 @@
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-19T16:00:00Z",
-      "estado": "alojado",
+      "estado": "publicado",
       "intentos": 2,
       "historia": [
         {
@@ -483,6 +483,10 @@
         {
           "cuando": "2026-09-19T07:37:06-03:00",
           "que": "anotado: media_id"
+        },
+        {
+          "cuando": "2026-09-19T13:27:59-03:00",
+          "que": "alojado -> publicado"
         }
       ],
       "tema": "Feriado irrenunciable: la DT fiscaliza y multa por trabajador afectado",
@@ -552,7 +556,10 @@
         "falla": []
       },
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1204.mp4",
-      "media_id": "21a50e66-f026-4954-a70b-0a3dceb60f9a"
+      "media_id": "21a50e66-f026-4954-a70b-0a3dceb60f9a",
+      "publish_id": "SIN-ID-REGISTRADO-publico-T2-16:08",
+      "nota": "T2 corrio 16:08-16:11, cerro SUCCEEDED, 113.870 tokens y USD 2,33 de trabajo real: el mismo patron de la ranura 3, que si salio. No se pudo recuperar el publish_id porque la tarea no puede escribir en el repo. Se marca publicada por la misma asimetria de siempre.",
+      "publicado_en": "2026-09-19T13:27:59-03:00"
     },
     {
       "slot": 5,
@@ -1364,5 +1371,5 @@
       "media_id": "afd4eea2-5de9-402f-80e3-d2a7f306f439"
     }
   ],
-  "actualizado": "2026-09-19T11:26:19-03:00"
+  "actualizado": "2026-09-19T13:27:59-03:00"
 }
