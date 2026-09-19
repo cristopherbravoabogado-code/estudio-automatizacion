@@ -71,6 +71,43 @@ Ese es el reparto que importa: lo lento, temprano y reanudable; lo de la hora, c
 - Ajustes fijos del estudio: `privacy_level PUBLIC_TO_EVERYONE`, `is_aigc true`, comentarios/dúo/stitch habilitados,
   sin divulgación de contenido comercial, sin música añadida.
 
+## ⛔ 19/09/2026, 16:50 Chile: `tiktok_publish` DESAPARECIÓ de la caja de herramientas
+
+Las ranuras 1 a 4 de hoy salieron por la vía B y quedaron con su `publish_id`. A las 16:50, al
+publicar la pieza de Cerro Chuño, el paso 3 **ya no existía**:
+
+- `tiktok_prepare_publish` responde bien y entrega `publish_session_id` (probado: sesión
+  `793d0f7f-7c6c-4157-9233-8f96795e9c6b`, válida 2 h).
+- `tiktok_publish_status` sigue disponible.
+- `tiktok_publish` **no aparece** en la lista de herramientas, ni por nombre exacto
+  (`select:mcp__Higgsfield__tiktok_publish` → *No matching deferred tools found*) ni por búsqueda.
+- La cuenta NO es el problema: `tiktok_accounts` la da `active`.
+- Tampoco hay una app del Marketplace que lo reemplace: `apps_search("tiktok")` → vacío.
+
+Lo dice el propio `tiktok_prepare_publish` en su respuesta: *"Publication requires authorization
+supplied privately to the widget. **Clients without MCP Apps cannot publish**"*. O sea: el paso 3
+se sirve solo a clientes que saben dibujar el formulario. Una sesión de Claude Code —esta y, por lo
+mismo, **también las tareas programadas**— no lo es.
+
+**Consecuencia para la fábrica:** mientras esto siga así, la vía B produce, sube y prepara, pero
+**no publica sola**. El último clic queda en la app. No se arregla reintentando ni cambiando el
+título; no es un error, es un permiso que no se entrega por aquí. Antes de dar por perdida la
+tarde, el paso 3 se vuelve a buscar: si reaparece, la ficha sigue sirviendo tal cual está.
+
+### Y la vía A no es el respaldo: está muerta
+El 19/09 se probó Metricool con esta misma pieza (post 378684028). Lo aceptó y quedó `PENDING`…
+y Cristopher lo cortó de inmediato: **"Metricool no funciona hace tiempo, eso ya se sabe."**
+El post se dejó en borrador y fuera de fecha. **No volver a proponerlo.** Lo del tope de la cuenta
+sigue siendo cierto, pero el punto es más simple: esa vía no se usa más.
+
+### Lo que queda mientras tanto
+1. La pieza se termina igual: render, subida a Higgsfield y `tiktok_prepare_publish`.
+2. Se le pasa a Cristopher el link de CloudFront y el texto ya contado, y él publica desde su
+   teléfono. Es un minuto suyo, no una tarde.
+3. **Lo pendiente de verdad:** una tercera vía que publique sin formulario, o confirmar que
+   `tiktok_publish` vuelve. Hasta que eso exista, "10 al día sin tocar nada" es prometer de más,
+   y decirlo es parte del trabajo.
+
 ## ⛔ La causa de verdad por la que el día no salía (19/09/2026)
 
 Durante semanas la explicación fue "las tareas largas de esta cuenta arrancan y nunca cierran".
