@@ -17,22 +17,34 @@ o `providers[0].status = PUBLISHED` en `getScheduledPosts`. Siempre se vuelve a 
 
 ### Vía B — Higgsfield → TikTok (inmediata, la que funciona hoy)
 `connector_id` **f23f2205-1ae6-4259-8240-e6f4165bbe79**.
-1. `media_import_url` con la URL de la Release del día → `media_id`. **Una sola llamada.**
-   `https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-<fecha>/<id>.mp4`
+1. **Nada.** La pieza ya está subida: el libro de cuentas trae su `media_id`.
+   `python3 motor/publicar.py ficha N` lo imprime. Si no hay `media_id`, y solo entonces, hay que
+   subirla (abajo).
 
-   ⚠️ **El tipo del archivo decide si esta vía existe.** El 19/09/2026 `media_import_url` devolvió
-   `Unsupported content-type: application/octet-stream` para TODAS las piezas del día: el render las
-   subía con `gh release upload`, que no declara qué sube, y GitHub guardaba ese tipo y lo metía
-   dentro de la url firmada de descarga (`rsct=application%2Foctet-stream`). Arreglado el 19/09 con
-   `motor/alojar_release.py`, que sube diciendo `video/mp4` y **vuelve a leer** lo que GitHub guardó.
-   Si algún día vuelve a aparecer ese error: `gh workflow run retipar-piezas.yml -f tag=piezas-<fecha>`
-   repara la Release del día sin volver a renderizar nada.
+   ⚠️ **La URL de la Release de GitHub NO sirve para `media_import_url`.** Medido el 19/09/2026,
+   dos veces y desde los dos lados:
+   - lo que GitHub **guarda** está bien: la API dice `content_type: video/mp4` en los 24 assets del día;
+   - lo que GitHub **sirve** no: la url firmada de descarga trae
+     `response-content-type=application/octet-stream`, y la respuesta final llega con ese tipo.
 
-   Vía larga, **solo si `media_import_url` falla**: `media_upload` → PUT a la `upload_url` firmada →
-   `media_confirm`. Funciona (así salió la ranura 1 del 19/09) pero obliga a transcribir a mano una
-   url de ~1.800 caracteres; la tarea se alarga y **las tareas largas de esta cuenta no cierran**.
-   Ese fue el camino exacto del día en cero: tipo MIME malo → vía larga → T2 disparó 10:08 y seguía
-   PENDING sin `finished_at` a las 10:20. Si caes en la vía larga, arregla el tipo después.
+   Higgsfield contesta `Unsupported content-type: application/octet-stream`. **El que sube no puede
+   cambiarlo**: así entrega GitHub *todos* los assets de una Release. No es un error del render ni
+   se arregla subiendo "mejor" — el 19/09 se intentó exactamente eso y fue un callejón sin salida.
+
+   Por eso la pieza se sube a Higgsfield **antes** de su hora y lo que se guarda es el `media_id`.
+   La Release sigue siendo útil: es de donde la pre-subida saca los bytes, y para `curl` el tipo
+   servido da lo mismo.
+
+### La pre-subida (fuera de la hora de publicar)
+Por pieza, con los bytes bajados de la Release:
+`media_upload` (nombre, `video/mp4`) → PUT de los bytes a la `upload_url` firmada → `media_confirm`
+→ `python3 motor/cadena.py anotar N --campo media_id=<id>`.
+
+Es la parte lenta —la `upload_url` mide ~1.800 caracteres y hay que escribirla— y por eso **no va
+a la hora de publicar**: va justo después del render, cuando nada corre contra el reloj. Cada pieza
+se anota apenas se confirma, así que si la sesión abandona se pierde el resto, nunca lo hecho.
+Ese es el reparto que importa: lo lento, temprano y reanudable; lo de la hora, corto y sin averiguar.
+
 2. `tiktok_prepare_publish` → `publish_session_id`
 3. `tiktok_publish` con ese session_id.
    🔑 El clasificador de modo rechaza el PRIMER intento con "Permission denied": **reintentar la MISMA llamada
