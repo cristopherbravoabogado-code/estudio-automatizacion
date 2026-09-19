@@ -161,7 +161,7 @@ def hook(url, dst, prensa):
            f'-preset veryfast -crf 19 -c:a aac -ar 48000 -ac 2 -b:a 128k {dst}')
 
 
-def clip_f15(urls, dst):
+def clip_f15(urls, dst, segundos=10):
     """Arma el video de una pieza F15 a partir de uno o varios clips.
 
     reaccion_full.py espera UN clip 16:9 del que saca el vertical con paneo. Su propio docstring
@@ -182,7 +182,7 @@ def clip_f15(urls, dst):
         sh(f'ffmpeg -y -hide_banner -loglevel error -i f15_{n}.mp4 -f lavfi '
            f'-i anullsrc=r=48000:cl=stereo -vf "scale=1920:1080:'
            f'force_original_aspect_ratio=increase:flags=lanczos,crop=1920:1080,setsar=1,fps=30" '
-           f'-map 0:v -map 1:a -shortest -t 10 -c:v libx264 -preset veryfast -crf 20 '
+           f'-map 0:v -map 1:a -shortest -t {segundos} -c:v libx264 -preset veryfast -crf 20 '
            f'-c:a aac -ar 48000 -ac 2 f15n_{n}.mp4')
         partes.append(f"f15n_{n}.mp4")
     if len(partes) == 1:
@@ -236,7 +236,21 @@ def una(p):
     r["pasos"].append("texto")
 
     if es_f15:
-        clip_f15(p.get("clips") or [p["hook"]], f"hook{i}.mp4")
+        # DE DONDE SALE EL VIDEO, Y CUANTO DURA (19/09/2026)
+        # Si la pieza trae 'metraje', ese clip manda sobre los de banco. Y el recorte NO se
+        # confia al numero declarado: se APLICA con ffmpeg. La puerta del 71 B comprueba que el
+        # fragmento declarado sea breve, pero un numero en un JSON no recorta nada; si el clip
+        # entero durara 40 s y nadie lo cortara, la pieza publicaria 40 s de obra ajena con un
+        # "segundos: 7" al lado. Se cumple lo que se declaro.
+        met_ = p.get("metraje") or {}
+        if met_.get("url") and (met_.get("base") or "licencia") == "cita":
+            import metraje as _M
+            tope_ = float(met_.get("segundos") or _M.SEGUNDOS_CITA)
+            clip_f15([met_["url"]], f"hook{i}.mp4", segundos=min(tope_, _M.SEGUNDOS_CITA))
+        elif met_.get("url"):
+            clip_f15([met_["url"]], f"hook{i}.mp4")
+        else:
+            clip_f15(p.get("clips") or [p["hook"]], f"hook{i}.mp4")
     else:
         hook(p["hook"], f"hook{i}.mp4", prensa)
     r["pasos"].append("hook")
@@ -258,12 +272,15 @@ def una(p):
         # metraje viene sin licencia o sin a quien acreditar.
         met = p.get("metraje") or {}
         if met:
-            faltan = [c for c in ("url", "licencia", "atribucion") if not str(met.get(c) or "").strip()]
-            if faltan:
-                r["error"] = ("metraje sin %s: un clip prestado no entra sin decir de donde "
-                              "salio y a quien se acredita (motor/METRAJE.md)" % ", ".join(faltan))
+            # Las reglas viven en UN solo lugar (motor/metraje.py). Aqui no se reimplementan:
+            # una receta que se escribe sus propias reglas nace con los controles apagados y no
+            # se entera. Es la misma decision que llevo los controles a control.py el 15/09.
+            import metraje as _M
+            ok_, motivos_ = _M.validar(met)
+            if not ok_:
+                r["error"] = "metraje rechazado: " + " | ".join(motivos_)
                 return r
-            cred = "%s / %s (%s)" % (met["atribucion"], met.get("fuente", "?"), met["licencia"])
+            cred = _M.credito(met)
         else:
             cred = p.get("credito", "Estudio Juridico San Bernardo")
         # El titular REAL, citado con su medio, abre la pieza los primeros 4,2 s. Es lo que

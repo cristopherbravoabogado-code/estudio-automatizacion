@@ -79,3 +79,32 @@ estudio. El módulo queda preparado para recibir esa fuente el día que exista c
 
 Mientras tanto, lo honesto es la combinación que ya rinde: **placa con el titular real citado a su
 medio** + metraje temático con licencia + el gancho en los primeros segundos.
+
+## La entrada de clips de prensa (`motor/crudo.py`)
+
+Cristopher consigue el clip y anota cuatro datos. De ahí en adelante la cadena sigue sola.
+
+```
+python3 motor/crudo.py agregar --slot 3 \
+    --url "https://.../clip.mp4" \
+    --fuente "24 Horas" --titulo "Balance de Fiestas Patrias" --segundos 7
+```
+
+- Si la ranura ya está encolada, el clip se pega ahí mismo.
+- Si todavía no existe, queda en `crudo/<fecha>.json` y `crudo.py aplicar` lo pega cuando la
+  tarea de la noche escriba la cola.
+- `crudo.py revisar` dice qué piezas del día llevan clip de prensa y cuáles no.
+
+**No se guarda el video.** Regla del repositorio: nada de media. Se guarda la URL y la cita.
+
+### El recorte se aplica, no se declara
+
+`--segundos 7` no es una promesa: `produce.py` corta el clip a esos segundos con ffmpeg, y nunca
+por encima del tope. Un número en un JSON no recorta nada; si el clip original durara 40 s y nadie
+lo cortara, la pieza publicaría 40 s de obra ajena con un `"segundos": 7` al lado.
+
+### El tope lo decide el abogado, no el programa
+
+El art. 71 B dice "fragmentos breves" y no da un número. El tope por defecto son 8 s y se mueve
+con `--tope`. Lo que aporta el programa no es saber cuánto es breve: es que la decisión se tome
+una vez y se cumpla igual en las diez piezas del día, incluso a las cuatro de la mañana.
