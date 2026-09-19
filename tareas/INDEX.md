@@ -63,7 +63,7 @@ Los prompts vigentes están en `tareas/PROMPTS-CADENA.md`.
 |---|---|---|---|---|
 | **T1-NOCHE** encolar mañana | `trig_01ByZCVLhuBMRvSAH1vjbP9v` | `0 22 * * *` | 19:00 | Encola las ranuras 1–5 de mañana |
 | **T1-MAÑANA** encolar la tarde | `trig_01R2vJVkPRhzSqfU7vt2Sehc` | `0 11 * * *` | 08:00 | Encola las ranuras 6–10 con noticia fresca |
-| **T1.5** Pre-subida | `trig_01JUV3SAyCc2ncatq5XfkFum` | `0 9 * * *` | 06:00 | Sube a Higgsfield las piezas ya renderizadas y guarda su `media_id` |
+| **T1.5** Pre-subida | `trig_01JUV3SAyCc2ncatq5XfkFum` | `0 9,13,17 * * *` | 06/10/14 | Sube a Higgsfield las piezas ya renderizadas y guarda su `media_id` |
 | **T2** Publicador | `trig_01NUjhWgu3AAA6ah6njxgVQy` | `0 0,1,10-23 * * *` | 16 veces/día | Publica lo vencido; reintenta solo a la hora siguiente |
 | **T3** Vigilante | `trig_018BGjU648of7vJq2YiRUhe7` | `34 */3 * * *` | cada 3 h | Audita; solo publica si algo venció hace +2 h |
 | SB 15:00 Viral y noticia | `trig_0131ftuMmRUmhdgoC47eaQiP` | `0 18 * * *` | 15:00 | Sin cambios: pieza de reacción del día |
@@ -71,6 +71,13 @@ Los prompts vigentes están en `tareas/PROMPTS-CADENA.md`.
 
 El render ya no lo hace ninguna de ellas: lo hace `.github/workflows/render-diario.yml` a las
 05:00, 09:00, 13:00 y 17:00 de Chile, sin sesión de por medio.
+
+**Por qué T1.5 corre tres veces y no una.** T1-MAÑANA encola las ranuras 6–10 a las 11:00 UTC,
+o sea *después* de la pasada de las 09:00. Con una sola corrida, esas cinco piezas se
+renderizarían pero nunca se pre-subirían, y la tarea horaria volvería al camino largo justo en la
+mitad del día. Las pasadas de 13:00 y 17:00 las recogen con horas de margen (la ranura 6 vence a
+las 20:00 UTC). Cuando no hay nada pendiente, `presubir` lo dice en una línea y la tarea cierra:
+una corrida vacía no cuesta casi nada, y una pieza sin pre-subir cuesta el hueco del día.
 
 **El reparto por tiempo (19/09).** T1.5 existe porque el trabajo pesado no puede caer a la hora de
 publicar. El 19/09 la ranura de las 07:00 no salió: T2 disparó a las 10:08 UTC y seguía `PENDING`
