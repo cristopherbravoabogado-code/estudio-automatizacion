@@ -108,3 +108,39 @@ lo cortara, la pieza publicaría 40 s de obra ajena con un `"segundos": 7` al la
 El art. 71 B dice "fragmentos breves" y no da un número. El tope por defecto son 8 s y se mueve
 con `--tope`. Lo que aporta el programa no es saber cuánto es breve: es que la decisión se tome
 una vez y se cumpla igual en las diez piezas del día, incluso a las cuatro de la mañana.
+
+## La vía autosuficiente: fotografía real animada (19/09/2026)
+
+Cristopher, después de ver la entrada manual: *"no es la idea, la idea es que sea autosuficiente"*.
+Tenía razón. Una entrada que él tiene que llenar todos los días es el mismo problema que
+arrastrábamos desde el principio, con otra cara.
+
+**Lo que lo desbloqueó fue mirar fotografía en vez de video.** Medido sobre los temas reales del
+día:
+
+| | candidatos con licencia usable |
+|---|---|
+| video | 1 de 3 búsquedas |
+| **fotografía** | **8 de 8 búsquedas** |
+
+Carabineros, Poder Judicial, Corte Suprema, Congreso, PDI, Fiestas Patrias, carretera, Dirección
+del Trabajo: las ocho devolvieron material. Así que una pieza sin clip propio se arma con
+**fotografía real con licencia, animada con zoom lento**, que el render busca solo a partir del
+titular. Nadie consigue nada.
+
+Una foto del frontis de la Corte Suprema ocupando la pantalla **es** la noticia. Un clip genérico
+de un martillo de juez no lo es.
+
+`clips` dejó de ser obligatorio en `cola.py`: era el último eslabón que obligaba a un humano a
+conseguir metraje. A cambio, sin clips se exige un **titular de 15 caracteres o más**, porque es
+lo que el render usa para buscar: un titular vago da fotos vagas.
+
+### El límite honesto
+
+La **licencia** se filtra sola; la **pertinencia** no. En la prueba, "Dirección del Trabajo Chile"
+devolvió un logo sin relación. El filtro garantiza que se *puede* usar, no que sirva. Con menos de
+dos fotos útiles la pieza se para y lo dice: una sola foto no es una pieza, es una diapositiva.
+
+Y algo que no se verificó: **el resultado no se ha mirado con ojos humanos.** Se comprobó que son
+1920x1080, 30 fps, 12,03 s y tres fotogramas distintos —o sea que el concat no colapsó— pero el
+proxy del contenedor no deja traer la imagen para verla. Queda pendiente mirar la primera pieza real.

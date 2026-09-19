@@ -80,7 +80,11 @@ CADENA_PY = os.path.join(RAIZ, "motor", "cadena.py")
 # publicaba solo laminas de relleno.
 CAMPOS = ("id", "materia", "voz", "tema", "fuente", "norma", "articulo", "frase")
 CAMPOS_LAMINA = ("rotulo", "hook", "gancho", "puntos", "cierre")
-CAMPOS_F15 = ("clips", "tag", "titular")
+# 'clips' salio de aqui el 19/09. Una pieza F15 puede venir SIN clips: en ese caso el render la
+# arma con fotografia real con licencia, que la busca el mismo (produce.fotos_a_clip). Era el
+# ultimo eslabon que obligaba a un humano a conseguir metraje, y con el puesto la cadena no era
+# autosuficiente, que es lo unico que Cristopher pidio de verdad.
+CAMPOS_F15 = ("tag", "titular")
 
 
 def ruta_cola(fecha):
@@ -185,11 +189,17 @@ def estructura(p):
 
     if es_f15(p):
         clips = p.get("clips") or []
-        if not isinstance(clips, list) or not clips:
-            fallas.append("'clips' tiene que ser una lista con al menos una URL de video")
-        for u in clips:
+        if clips and not isinstance(clips, list):
+            fallas.append("'clips', si viene, tiene que ser una lista de URLs de video")
+        for u in (clips if isinstance(clips, list) else []):
             if not str(u).startswith("http"):
                 fallas.append("un clip no parece una URL: %s" % str(u)[:60])
+        # Sin clips la pieza se arma con fotografia, y entonces el TITULAR es lo que decide que
+        # fotos se buscan. Un titular vago da fotos vagas: se exige algo con lo que buscar.
+        if not clips and len((p.get("titular") or "").strip()) < 15:
+            fallas.append("sin 'clips', el titular es lo que el render usa para buscar las "
+                          "fotos, y '%s' es muy corto para buscar nada util"
+                          % (p.get("titular") or ""))
         # reaccion_full.py v1.1: "el TAG cabe en ~20 caracteres; lo largo va al credito".
         # Con mas, el rotulo se sale de la zona segura y pantalla_chica.py lo cuenta fuera.
         if len(p.get("tag", "")) > 20:
