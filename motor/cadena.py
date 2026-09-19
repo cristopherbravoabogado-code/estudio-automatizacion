@@ -380,6 +380,42 @@ def cmd_reintentar(args):
     return 0
 
 
+def cmd_rehacer(args):
+    """Devuelve una pieza YA RENDERIZADA a 'guion' para volver a producirla.
+
+    POR QUE EXISTE (19/09/2026). Hasta hoy habia dos caminos y ninguno servia para esto:
+    `fallar` + `reintentar` devuelve la ranura a su paso ANTERIOR, que en una pieza ya alojada
+    es... 'alojado'. O sea, la pieza mala volvia a quedar lista para publicarse.
+
+    El caso que lo motivo: la pieza 1201 paso los siete controles -audio, duracion, volumen,
+    uniones, encuadre, texto y voz- y aun asi decia, al oirla, "conducir en estado de HEREDAD"
+    donde el guion decia "ebriedad". Tecnicamente impecable y editorialmente inservible para un
+    estudio juridico. Una pieza puede estar bien hecha y estar mal: hace falta poder decirlo.
+
+    No toca lo que sigue valiendo (tema, derecho, guion) y borra lo que hay que rehacer
+    (informe de control, url, media_id). Una pieza PUBLICADA no se rehace: ya salio al aire, y
+    lo que corresponde ahi es bajarla en TikTok, no reescribir el registro.
+    """
+    fecha = args.fecha or hoy()
+    dia = cargar(fecha)
+    p = buscar(dia, args.slot)
+    if p["estado"] == "publicado":
+        salir("la ranura #%d ya se publico (%s). Rehacerla aqui no la baja de TikTok: el "
+              "registro diria una cosa y la realidad otra." % (p["slot"], p.get("publicado_en")))
+    if indice(p["estado"]) < indice("guion"):
+        salir("la ranura #%d esta en '%s': todavia no hay nada hecho que rehacer."
+              % (p["slot"], p["estado"]))
+    antes = p["estado"]
+    for campo in ("control", "url", "media_id", "publish_id", "trigger_id", "estado_previo", "motivo"):
+        p.pop(campo, None)
+    p["estado"] = "guion"
+    p["intentos"] = p.get("intentos", 0) + 1
+    anotar(p, "rehacer: %s -> guion (%s)" % (antes, args.motivo))
+    guardar(dia)
+    print("ranura #%d vuelve de '%s' a 'guion' para rehacerse: %s" % (p["slot"], antes, args.motivo))
+    return 0
+
+
 def cmd_reserva(args):
     """Piezas alojadas y sin publicar, de cualquier dia. Regla 2: nunca menos de 3."""
     total = []
@@ -478,6 +514,11 @@ def main():
     r = con_fecha(sub.add_parser("reintentar", help="devuelve una ranura fallida a su paso previo"))
     r.add_argument("slot", type=int)
     r.set_defaults(func=cmd_reintentar)
+
+    h = con_fecha(sub.add_parser("rehacer", help="devuelve una pieza ya renderizada a 'guion'"))
+    h.add_argument("slot", type=int)
+    h.add_argument("--motivo", required=True)
+    h.set_defaults(func=cmd_rehacer)
 
     sub.add_parser("reserva", help="piezas alojadas sin publicar").set_defaults(func=cmd_reserva, fecha=None)
     con_fecha(sub.add_parser("auditar", help="discrepancias del dia")).set_defaults(func=cmd_auditar)

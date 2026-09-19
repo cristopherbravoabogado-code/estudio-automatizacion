@@ -8,8 +8,8 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-19T10:00:00Z",
-      "estado": "alojado",
-      "intentos": 0,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -30,6 +30,18 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:23:09-03:00",
+          "que": "alojado -> fallido: termino juridico mal pronunciado por el TTS (control 7 lo informo y no bloqueaba): rehecha con otra redaccion"
+        },
+        {
+          "cuando": "2026-09-19T04:23:09-03:00",
+          "que": "reintento desde fallido -> alojado (era: termino juridico mal pronunciado por el TTS (control 7 lo informo y no bloqueaba): rehecha con otra redaccion)"
+        },
+        {
+          "cuando": "2026-09-19T04:23:35-03:00",
+          "que": "rehacer: alojado -> guion (el TTS decia un termino juridico inexistente; guion reescrito)"
         }
       ],
       "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
@@ -45,62 +57,7 @@
         "No hace falta que choques: manejar así ya es delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1201",
-      "control": {
-        "pieza": "1201.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 23.14,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -20.4,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1201.mp4\", \"cuadros\": 8, \"palabras_medidas\": 44, \"recall_pantalla_chica\": 0.53, \"cajas_fuera_zona_segura\": 1, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 1}, \"cajas_dentro\": 43, \"alto_texto_mediana_px\": 33.0, \"cajas_bajo_80px\": 43, \"seg\": 13.5, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [
-              "dieciocho",
-              "heredad"
-            ],
-            "dicho": "Tres fallecidos y cincuenta y dos detenidos en el primer balance del dieciocho.  Treinta y cinco de ellos iban con alcohol al volante.  La ley de tránsito sanciona conducir en estado de heredad.  No hace falta que choques, manejar así ya es delito.  Si necesitas asesoría, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1201.mp4"
+      "pieza_id": "1201"
     },
     {
       "slot": 2,
@@ -128,6 +85,14 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:23:35-03:00",
+          "que": "alojado -> publicado"
+        },
+        {
+          "cuando": "2026-09-19T06:00:00-03:00",
+          "que": "REPARACION: se deshace un 'publicado' de PRUEBA con publish_id falso (pub_prueba) que se escribio al probar el porton de 'rehacer' sobre el dia real. La pieza NO se publico en TikTok. Leccion: los portones se prueban sobre una fecha de juguete, no sobre el dia en produccion."
         }
       ],
       "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
@@ -401,8 +366,8 @@
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-19T18:00:00Z",
-      "estado": "alojado",
-      "intentos": 0,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -423,6 +388,18 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:23:09-03:00",
+          "que": "alojado -> fallido: termino juridico mal pronunciado por el TTS (control 7 lo informo y no bloqueaba): rehecha con otra redaccion"
+        },
+        {
+          "cuando": "2026-09-19T04:23:09-03:00",
+          "que": "reintento desde fallido -> alojado (era: termino juridico mal pronunciado por el TTS (control 7 lo informo y no bloqueaba): rehecha con otra redaccion)"
+        },
+        {
+          "cuando": "2026-09-19T04:23:35-03:00",
+          "que": "rehacer: alojado -> guion (el TTS decia un termino juridico inexistente; guion reescrito)"
         }
       ],
       "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
@@ -438,61 +415,7 @@
         "La licencia es para recuperarse, no para viajar.",
         "Si te acusan de esto, escríbenos."
       ],
-      "pieza_id": "1205",
-      "control": {
-        "pieza": "1205.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 22.73,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -20.6,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1205.mp4\", \"cuadros\": 8, \"palabras_medidas\": 54, \"recall_pantalla_chica\": 0.19, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 54, \"alto_texto_mediana_px\": 31.0, \"cajas_bajo_80px\": 54, \"seg\": 15.2, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [
-              "providad"
-            ],
-            "dicho": "La Corte Suprema removió a 11 jueces que viajaron con licencia médica.  En el mundo privado eso tiene un nombre en el código del trabajo.  Se llama falta de providad y es causal de despido sin indemnización.  La licencia es para recuperarse, no para viajar.  Si te acusan de esto, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1205.mp4"
+      "pieza_id": "1205"
     },
     {
       "slot": 6,
@@ -1014,5 +937,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T02:29:39-03:00"
+  "actualizado": "2026-09-19T04:23:35-03:00"
 }

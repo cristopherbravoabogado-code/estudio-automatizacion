@@ -235,6 +235,28 @@ def _transcribir(media, modelo="small"):
     return " ".join(s.text for s in segs).strip(), None
 
 
+# PALABRAS CRITICAS (19/09/2026) - terminos juridicos que TIENEN que oirse como se escriben.
+#
+# Medido en la primera tanda real de piezas F15, transcribiendo el mp4 publicable:
+#     guion "conducir en estado de ebriedad"  ->  se oye "en estado de heredad"
+#     guion "se llama falta de probidad"      ->  se oye "se llama falta de providad"
+#
+# Las dos las CAZO el control 7 y las dos las dejo pasar, porque solo bloquea por n-tilde. Esa
+# regla es correcta para palabras corrientes -whisper se equivoca solo y bloquear por cada
+# rareza re-renderiza piezas sanas-, pero no para estas: "falta de providad" y "estado de
+# heredad" no son un desliz del transcriptor, son la pieza diciendo una palabra que no existe.
+# Y las dice un estudio juridico citando la ley.
+#
+# El criterio para entrar a esta lista: termino tecnico cuyo error cambia o destruye el sentido
+# juridico, y que por raro es dificil que whisper invente. No entran palabras comunes.
+PALABRAS_CRITICAS = {
+    "ebriedad", "probidad", "irrenunciable", "irrenunciables", "finiquito", "indemnizacion",
+    "prescripcion", "flagrante", "flagrancia", "imputado", "querella", "usufructo",
+    "subordinacion", "cotizaciones", "negligencia", "fianza", "arrendamiento", "microtrafico",
+    "estupefacientes", "sicotropicas", "emplazamiento", "caducidad", "menoscabo",
+}
+
+
 def voz(media, guion, modelo="small"):
     """Control 7 - lo que se OYE contra el guion. BLOQUEA SOLO por n-tilde perdida.
 
@@ -279,7 +301,16 @@ def voz(media, guion, modelo="small"):
         pegada = any(f != p and f.endswith(p) and f[:-len(p)] in vocab for f in fuera)
         if p in oido_plano or pegada:
             perdidas.append(w)
-    return (not perdidas), {"enie_perdida": perdidas, "fuera_del_guion": fuera[:15],
+    # BLOQUEA: los terminos juridicos criticos tienen que oirse. Misma forma que la n-tilde,
+    # distinta razon: alli el defecto es del TTS al leer; aqui es el TTS inventando una palabra.
+    criticas = []
+    for w in sorted({w for w in _tok(guion) if _plano(w) in PALABRAS_CRITICAS}):
+        if _plano(w) not in oido_plano:
+            criticas.append(w)
+
+    return (not perdidas and not criticas), {"enie_perdida": perdidas,
+                                             "termino_critico_no_oido": criticas,
+                                             "fuera_del_guion": fuera[:15],
                             "dicho": dicho[:500]}
 
 

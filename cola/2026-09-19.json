@@ -2,6 +2,56 @@
  "fecha": "2026-09-19",
  "piezas": [
   {
+   "id": "1201",
+   "materia": "transito",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/32770/32770-720.mp4",
+    "https://assets.mixkit.co/videos/14044/14044-720.mp4"
+   ],
+   "tag": "BALANCE DEL 18",
+   "credito": "Carabineros · balance nacional 18/09/2026",
+   "voz": [
+    "Tres fallecidos y cincuenta y dos detenidos en el primer balance del dieciocho.",
+    "Treinta y cinco de ellos iban con alcohol al volante.",
+    "La Ley de Tránsito sanciona manejar con alcohol en la sangre.",
+    "No hace falta que choques ni que atropelles: manejar así ya es delito.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
+   "fuente": "Carabineros de Chile, primer balance nacional, 18/09/2026",
+   "norma": "29708",
+   "articulo": "110",
+   "frase": "estado de ebriedad",
+   "prensa": false,
+   "slot": 1
+  },
+  {
+   "id": "1202",
+   "materia": "penal",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/23474/23474-720.mp4",
+    "https://assets.mixkit.co/videos/17396/17396-720.mp4"
+   ],
+   "tag": "ALCOHOL Y DROGAS",
+   "credito": "Carabineros · 16.400 vehículos fiscalizados",
+   "voz": [
+    "Diecisiete conductores dieron positivo por drogas este 18.",
+    "Carabineros fiscalizó dieciséis mil cuatrocientos vehículos.",
+    "La Ley de Tránsito castiga conducir bajo la influencia de sustancias.",
+    "Negarse a la prueba también tiene consecuencias.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
+   "fuente": "Carabineros, fiscalización vial 18/09/2026",
+   "norma": "29708",
+   "articulo": "110",
+   "frase": "bajo la influencia",
+   "slot": 2,
+   "prensa": false
+  },
+  {
    "id": "1203",
    "materia": "transito",
    "formato": "F15",
@@ -25,6 +75,56 @@
    "frase": "cinturón de seguridad",
    "prensa": false,
    "slot": 3
+  },
+  {
+   "id": "1204",
+   "materia": "laboral",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/3109/3109-720.mp4",
+    "https://assets.mixkit.co/videos/22827/22827-720.mp4"
+   ],
+   "tag": "FERIADO 18 Y 19",
+   "credito": "Dirección del Trabajo · fiscalización preventiva",
+   "voz": [
+    "La Dirección del Trabajo salió a fiscalizar el feriado del 18 y 19.",
+    "La ley los declara feriados obligatorios e irrenunciables para el comercio.",
+    "La multa se cuenta por cada trabajador afectado, no por local.",
+    "Quedan fuera clubes, restaurantes y cines.",
+    "Si te obligaron a trabajar, escríbenos."
+   ],
+   "tema": "Feriado irrenunciable: la DT fiscaliza y multa por trabajador afectado",
+   "fuente": "Dirección del Trabajo, programa nacional de fiscalización, 18/09/2026",
+   "norma": "230132",
+   "articulo": "2",
+   "frase": "feriados obligatorios e irrenunciables",
+   "slot": 4,
+   "prensa": false
+  },
+  {
+   "id": "1205",
+   "materia": "laboral",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/22836/22836-720.mp4",
+    "https://assets.mixkit.co/videos/45926/45926-720.mp4"
+   ],
+   "tag": "11 JUECES FUERA",
+   "credito": "Corte Suprema · remoción por licencias médicas",
+   "voz": [
+    "La Corte Suprema removió a once jueces que viajaron con licencia médica.",
+    "En el mundo privado eso tiene nombre en el Código del Trabajo.",
+    "Es una falta grave a la honestidad, y permite despedir sin indemnización.",
+    "La licencia médica es para recuperarse, no para tomarse un viaje.",
+    "Si te acusan de algo así, escríbenos."
+   ],
+   "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
+   "fuente": "Corte Suprema, cierre de 58 cuadernos de remoción, 09/2026",
+   "norma": "207436",
+   "articulo": "160",
+   "frase": "falta de probidad",
+   "prensa": false,
+   "slot": 5
   },
   {
    "id": "1206",

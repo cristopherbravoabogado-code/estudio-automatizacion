@@ -136,6 +136,7 @@ jobs:
           ffmpeg -version | head -1
 
       - name: Sacar de la tanda lo que ya esta alojado
+        id: tanda
         if: steps.cola.outputs.hay == 'si'
         run: |
           # Una corrida de RESCATE no puede re-renderizar lo que ya salio bien. Dos razones, y
@@ -144,11 +145,17 @@ jobs:
           #  2. ci_registrar intentaria marcar 'renderizado' una ranura que ya esta en 'alojado',
           #     cadena.py lo rechazaria por ser hacia atras -con razon- y la pieza BUENA quedaria
           #     marcada como fallida. El rescate destruiria justo lo que vino a rescatar.
-          python3 - "${{ steps.cola.outputs.cola }}" "${{ steps.dia.outputs.fecha }}" <<'PY'
+          # La TANDA se escribe aparte y el archivo de la cola NO se toca. La primera version
+          # filtraba sobre cola/<fecha>.json y el paso de commit lo subia: la corrida de rescate
+          # del 19/09 borro del registro las cuatro piezas buenas que acababa de respetar. La
+          # cola es el registro de lo que el dia DEBIA tener; la tanda es lo que toca renderizar
+          # ahora. Confundirlas hace que cada rescate amputue el historial del dia.
+          mkdir -p _salida
+          python3 - "${{ steps.cola.outputs.cola }}" "${{ steps.dia.outputs.fecha }}" _salida/tanda.json <<'PY'
           import json, sys
           sys.path.insert(0, "motor")
           import cadena as C
-          ruta, fecha = sys.argv[1], sys.argv[2]
+          ruta, fecha, destino = sys.argv[1], sys.argv[2], sys.argv[3]
           cola = json.load(open(ruta, encoding="utf-8"))
           dia = C.cargar(fecha, obligatorio=False)
           antes = len(cola["piezas"])
@@ -157,11 +164,12 @@ jobs:
               HECHO = ("alojado", "programado", "publicado")
               hechas = {q["slot"] for q in dia["piezas"] if q["estado"] in HECHO}
               cola["piezas"] = [p for p in cola["piezas"] if p.get("slot") not in hechas]
-              with open(ruta, "w", encoding="utf-8") as f:
-                  json.dump(cola, f, ensure_ascii=False, indent=1)
+          with open(destino, "w", encoding="utf-8") as f:
+              json.dump(cola, f, ensure_ascii=False, indent=1)
           print("tanda: %d en la cola, %d ya alojadas que se saltan, %d por renderizar"
                 % (antes, antes - len(cola["piezas"]), len(cola["piezas"])))
           PY
+          echo "tanda=_salida/tanda.json" >> "$GITHUB_OUTPUT"
 
       - name: Verificar el derecho contra LeyChile
         if: steps.cola.outputs.hay == 'si'
@@ -172,13 +180,13 @@ jobs:
           # El contenedor donde corren las tareas NO lo alcanza (el proxy de egress responde
           # connect_rejected, medido el 19/09), asi que al encolar no se puede verificar de
           # verdad. Aqui si, y antes de gastar un solo minuto de render.
-          python3 motor/leychile.py --cola "${{ steps.cola.outputs.cola }}" | tee _derecho.txt
+          python3 motor/leychile.py --cola "${{ steps.tanda.outputs.tanda }}" | tee _derecho.txt
 
       - name: Parar las piezas cuya cita legal no cuadra
         if: steps.cola.outputs.hay == 'si' && steps.derecho.outcome == 'failure'
         run: |
           echo "::warning::Hay piezas con cita legal falsa o no verificable; no se renderizan."
-          python3 - "${{ steps.cola.outputs.cola }}" "${{ steps.dia.outputs.fecha }}" <<'PY'
+          python3 - "${{ steps.tanda.outputs.tanda }}" "${{ steps.dia.outputs.fecha }}" <<'PY'
           import json, re, subprocess, sys
           ruta, fecha = sys.argv[1], sys.argv[2]
           cola = json.load(open(ruta, encoding="utf-8"))
@@ -203,7 +211,7 @@ jobs:
           PRODUCE_LOCAL: ${{ github.workspace }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: |
-          cp "${{ steps.cola.outputs.cola }}" _salida/job.json
+          cp "${{ steps.tanda.outputs.tanda }}" _salida/job.json
           cd _salida
           # produce.py hace todo: deps, pip, gancho, voz, karaoke, motor, los siete controles
           # y el PUT a la upload_url. No sube nada que control.py no haya aprobado.
@@ -237,7 +245,7 @@ jobs:
         if: steps.cola.outputs.hay == 'si'
         run: |
           python3 motor/ci_registrar.py \
-            --cola "${{ steps.cola.outputs.cola }}" \
+            --cola "${{ steps.tanda.outputs.tanda }}" \
             --resultado _salida/resultado.json \
             --base-url "${{ steps.alojar.outputs.base }}" \
             --fecha "${{ steps.dia.outputs.fecha }}" || true
@@ -251,7 +259,7 @@ jobs:
         run: |
           git config user.name  "render-diario"
           git config user.email "actions@github.com"
-          git add estado/ cola/ || true
+          git add estado/ || true   # cola/ NO: es el registro del dia y el render no lo edita
           if git diff --cached --quiet; then
             echo "Sin cambios en el estado."
           else
