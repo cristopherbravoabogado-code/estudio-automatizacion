@@ -57,7 +57,7 @@ Cada paso exige sus datos, y sin ellos **no se anota**:
 | `derecho` | `norma`, `articulo`, `frase` | `PRODUCIR.md` paso 1: el derecho se verifica **antes** del guion |
 | `guion` | `gancho`, `tramos` | los 5 tramos de la regla dura 1 |
 | `renderizado` | `control` con `pasa: true` | LA PUERTA. Si `control.py` reprobó, no se anota |
-| `alojado` | `media_id`, `url` | sin URL de CloudFront no hay qué publicar |
+| `alojado` | `url` | sin URL no hay qué publicar. Desde el 19/09 la pone el workflow: sube el mp4 como asset de una Release de GitHub y la url es corta, pública y sin caducidad. Antes la pieza traía una `upload_url` presignada de Higgsfield de ~2.400 caracteres que **una sesión copiaba a mano**: diez piezas al día eran 24.000 caracteres transcritos sin un solo error |
 | `programado` | `trigger_id`, `hora_utc` | para poder cancelar y para el antidoble |
 | `publicado` | `publish_id` | solo `PUBLISH_COMPLETE` cuenta |
 

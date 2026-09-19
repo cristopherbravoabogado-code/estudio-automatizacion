@@ -34,8 +34,8 @@ Encola las ranuras 1 a 5 de MAÑANA en el repo estudio-automatizacion (rama main
 2. Elige 5 noticias jurídicas chilenas del día de hoy. Para cada una, VERIFICA el derecho
    contra LeyChile ANTES de escribir el guion (motor/PRODUCIR.md paso 1): necesitas idNorma,
    artículo y una frase textual del articulado.
-3. Para cada pieza pide una upload_url con media_upload de Higgsfield, escribe el JSON de la
-   pieza (el formato está en el docstring de motor/cola.py) y encólala:
+3. Para cada pieza escribe el JSON (el formato está en el docstring de motor/cola.py) y
+   encólala. NO pidas upload_url ni media_id: el alojamiento lo hace el workflow.
        python3 motor/cola.py agregar --slot N --archivo pieza.json --fecha <mañana>
    Si cola.py rechaza la pieza, ARREGLA lo que te dice y vuelve a llamar: ninguno de sus
    reproches cuesta un render, todos se ven en el texto.

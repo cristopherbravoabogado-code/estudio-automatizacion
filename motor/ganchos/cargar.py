@@ -27,10 +27,25 @@ Tambien, y se pueden combinar en la misma llamada:
 El informe (agregados, rechazados con motivo, total y libres) sale por stderr; el JSON
 nuevo sale por stdout, asi que nunca se sobrescribe el banco a medias.
 
-Los ganchos se escriben SIN tildes ni n-tilde, como el resto del banco: el CONTROL 0
-compara plegado, y el guion de la pieza si lleva las tildes (regla dura 2, control 6).
+TILDES: CORREGIDO EL 19/09/2026. Hasta hoy este archivo decia que los ganchos se escriben
+SIN tildes ni n-tilde, "porque el CONTROL 0 compara plegado y el guion de la pieza si lleva
+las tildes". El razonamiento tiene un hueco: el gancho NO es solo una llave de busqueda. Es
+texto que sale EN PANTALLA y que la voz LEE, y la regla dura 2 pide tildes en los dos sitios.
+
+Medido ese dia: de los 49 ganchos libres del banco, ONCE reprobaban el control 6 de control.py
+-"Llevas tres anos a honorarios", "se llevo al nino", "orden de detencion"-. Cada uno de ellos
+era una pieza IMPOSIBLE de producir: el CONTROL 0 exige que el gancho salga del banco y el
+control 6 lo rechaza por no llevar tildes. Y "anos" leido por Kokoro es exactamente el defecto
+que puso la pieza 967b al aire el 15/09.
+
+Los once se corrigieron y ahora `cargar()` aplica el control 6 al entrar: un gancho sin tildes
+no entra al banco. El CONTROL 0 sigue comparando plegado, asi que corregir las tildes no rompe
+el seguimiento de "usado" de los que ya se ocuparon.
 """
-import json, sys, unicodedata
+import json, os, sys, unicodedata
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import control
 
 
 def fold(s):
@@ -48,6 +63,14 @@ def cargar(banco, nuevos, lote):
     vistos = {pref(e["texto"]): e["id"] for e in banco["cola"]}
     ag, rech, n = [], [], 0
     for materia, texto in nuevos:
+        # Regla dura 2 al entrar: el gancho sale en pantalla y lo lee la voz. Un gancho sin
+        # tildes que entra al banco es una pieza que despues NO se puede producir, porque el
+        # CONTROL 0 exige que salga de aqui y el control 6 la rechaza por lo mismo.
+        ok, malas = control.texto(texto)
+        if not ok:
+            rech.append((texto, "regla dura 2: %s" % ", ".join(
+                "'%s' deberia ser '%s'" % (m["dice"], m["deberia"]) for m in malas)))
+            continue
         p = pref(texto)
         if p in vistos:
             rech.append((texto, "mismo prefijo de 40 que %s" % vistos[p]))

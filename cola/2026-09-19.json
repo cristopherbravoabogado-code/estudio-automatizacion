@@ -1,0 +1,255 @@
+{
+ "fecha": "2026-09-19",
+ "piezas": [
+  {
+   "id": "1201",
+   "materia": "transito",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/32770/32770-720.mp4",
+    "https://assets.mixkit.co/videos/14044/14044-720.mp4"
+   ],
+   "tag": "BALANCE DEL 18",
+   "credito": "Carabineros · balance nacional 18/09/2026",
+   "voz": [
+    "Tres fallecidos y cincuenta y dos detenidos en el primer balance del 18.",
+    "Treinta y cinco de ellos iban con alcohol al volante.",
+    "La Ley de Tránsito sanciona conducir en estado de ebriedad.",
+    "No hace falta que choques: manejar así ya es delito.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
+   "fuente": "Carabineros de Chile, primer balance nacional, 18/09/2026",
+   "norma": "29708",
+   "articulo": "110",
+   "frase": "estado de ebriedad",
+   "slot": 1,
+   "prensa": false
+  },
+  {
+   "id": "1202",
+   "materia": "penal",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/23474/23474-720.mp4",
+    "https://assets.mixkit.co/videos/17396/17396-720.mp4"
+   ],
+   "tag": "ALCOHOL Y DROGAS",
+   "credito": "Carabineros · 16.400 vehículos fiscalizados",
+   "voz": [
+    "Diecisiete conductores dieron positivo por drogas este 18.",
+    "Carabineros fiscalizó dieciséis mil cuatrocientos vehículos.",
+    "La Ley de Tránsito castiga conducir bajo la influencia de sustancias.",
+    "Negarse a la prueba también tiene consecuencias.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
+   "fuente": "Carabineros, fiscalización vial 18/09/2026",
+   "norma": "29708",
+   "articulo": "110",
+   "frase": "bajo la influencia",
+   "slot": 2,
+   "prensa": false
+  },
+  {
+   "id": "1203",
+   "materia": "transito",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/41575/41575-720.mp4",
+    "https://assets.mixkit.co/videos/39912/39912-720.mp4"
+   ],
+   "tag": "245 PARTES",
+   "credito": "Carabineros · infracciones del 18/09/2026",
+   "voz": [
+    "Doscientos cuarenta y cinco partes en un solo día de carretera.",
+    "Velocidad, cinturón y sillas de niños mal puestas.",
+    "La Ley de Tránsito obliga al cinturón de seguridad.",
+    "Y el parte lo paga quien conduce, no el pasajero.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "245 infracciones: velocidad, cinturón y sillas de niños",
+   "fuente": "Carabineros, balance de infracciones 18/09/2026",
+   "norma": "29708",
+   "articulo": "75",
+   "frase": "cinturón de seguridad",
+   "slot": 3,
+   "prensa": false
+  },
+  {
+   "id": "1204",
+   "materia": "laboral",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/3109/3109-720.mp4",
+    "https://assets.mixkit.co/videos/22827/22827-720.mp4"
+   ],
+   "tag": "FERIADO 18 Y 19",
+   "credito": "Dirección del Trabajo · fiscalización preventiva",
+   "voz": [
+    "La Dirección del Trabajo salió a fiscalizar el feriado del 18 y 19.",
+    "La ley los declara feriados obligatorios e irrenunciables para el comercio.",
+    "La multa se cuenta por cada trabajador afectado, no por local.",
+    "Quedan fuera clubes, restaurantes y cines.",
+    "Si te obligaron a trabajar, escríbenos."
+   ],
+   "tema": "Feriado irrenunciable: la DT fiscaliza y multa por trabajador afectado",
+   "fuente": "Dirección del Trabajo, programa nacional de fiscalización, 18/09/2026",
+   "norma": "230132",
+   "articulo": "2",
+   "frase": "feriados obligatorios e irrenunciables",
+   "slot": 4,
+   "prensa": false
+  },
+  {
+   "id": "1205",
+   "materia": "laboral",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/22836/22836-720.mp4",
+    "https://assets.mixkit.co/videos/45926/45926-720.mp4"
+   ],
+   "tag": "11 JUECES FUERA",
+   "credito": "Corte Suprema · remoción por licencias médicas",
+   "voz": [
+    "La Corte Suprema removió a once jueces que viajaron con licencia médica.",
+    "En el mundo privado eso tiene un nombre en el Código del Trabajo.",
+    "Se llama falta de probidad, y es causal de despido sin indemnización.",
+    "La licencia es para recuperarse, no para viajar.",
+    "Si te acusan de esto, escríbenos."
+   ],
+   "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
+   "fuente": "Corte Suprema, cierre de 58 cuadernos de remoción, 09/2026",
+   "norma": "207436",
+   "articulo": "160",
+   "frase": "falta de probidad",
+   "slot": 5,
+   "prensa": false
+  },
+  {
+   "id": "1206",
+   "materia": "penal",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/31372/31372-720.mp4",
+    "https://assets.mixkit.co/videos/23429/23429-720.mp4"
+   ],
+   "tag": "ARMAS Y LA PENA",
+   "credito": "Corte Suprema · Segunda Sala",
+   "voz": [
+    "La Suprema confirmó condenas por porte ilegal de armas de fuego.",
+    "La Ley de Control de Armas no exige que dispares.",
+    "Basta con portarla sin autorización para arriesgar cárcel.",
+    "Y guardarla en la casa de otro no te saca del problema.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
+   "fuente": "Corte Suprema, Segunda Sala, fallo unánime 09/2026",
+   "norma": "29291",
+   "articulo": "9",
+   "frase": "armas de fuego",
+   "slot": 6,
+   "prensa": false
+  },
+  {
+   "id": "1207",
+   "materia": "penal",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/24632/24632-720.mp4",
+    "https://assets.mixkit.co/videos/23740/23740-720.mp4"
+   ],
+   "tag": "MICROTRÁFICO",
+   "credito": "Corte Suprema · fallo de nulidad 09/2026",
+   "voz": [
+    "La Suprema volvió a pronunciarse sobre microtráfico esta semana.",
+    "La ley distingue el tráfico de las pequeñas cantidades.",
+    "Esa diferencia cambia la pena por completo.",
+    "Y no la decide el detenido: la decide el tribunal con la prueba.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
+   "fuente": "Corte Suprema, rechazo de recursos de nulidad, 09/2026",
+   "norma": "235507",
+   "articulo": "4",
+   "frase": "pequeñas cantidades",
+   "slot": 7,
+   "prensa": false
+  },
+  {
+   "id": "1208",
+   "materia": "civil",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/23050/23050-720.mp4",
+    "https://assets.mixkit.co/videos/26094/26094-720.mp4"
+   ],
+   "tag": "PÉRDIDA DE CHANCE",
+   "credito": "Corte Suprema · responsabilidad civil",
+   "voz": [
+    "La Suprema confirmó una indemnización por pérdida de oportunidad.",
+    "El Código Civil dice que todo daño imputable a negligencia debe ser reparado.",
+    "No siempre hay que probar el resultado final.",
+    "A veces basta con probar la chance que te quitaron.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
+   "fuente": "Corte Suprema, fallo sobre pérdida de oportunidad, 09/2026",
+   "norma": "172986",
+   "articulo": "2329",
+   "frase": "todo daño que pueda imputarse a malicia o negligencia",
+   "slot": 8,
+   "prensa": false
+  },
+  {
+   "id": "1209",
+   "materia": "penal",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/14044/14044-720.mp4",
+    "https://assets.mixkit.co/videos/32770/32770-720.mp4"
+   ],
+   "tag": "DETENIDO EN LA FONDA",
+   "credito": "Código Procesal Penal · artículo 125",
+   "voz": [
+    "Cada 18 llegan detenciones por riñas en las fondas.",
+    "Nadie puede ser detenido sino por orden de funcionario facultado por la ley.",
+    "La excepción es el delito flagrante, y eso hay que probarlo.",
+    "Tienes derecho a abogado desde el primer minuto.",
+    "Si te pasó, escríbenos."
+   ],
+   "tema": "Detenido en la fonda: cuándo la detención es legal",
+   "fuente": "Fiestas Patrias 2026, detenciones por riñas y desórdenes",
+   "norma": "176595",
+   "articulo": "125",
+   "frase": "sino por orden de funcionario público expresamente facultado por la ley",
+   "slot": 9,
+   "prensa": false
+  },
+  {
+   "id": "1210",
+   "materia": "laboral",
+   "formato": "F15",
+   "clips": [
+    "https://assets.mixkit.co/videos/46503/46503-720.mp4",
+    "https://assets.mixkit.co/videos/4526/4526-720.mp4"
+   ],
+   "tag": "ACCIDENTE EL 18",
+   "credito": "Ley 16.744 · accidentes del trabajo",
+   "voz": [
+    "Mucha gente trabajó este 18 y algunos se accidentaron.",
+    "La ley cubre la lesión ocurrida a causa o con ocasión del trabajo.",
+    "También el trayecto entre la casa y la pega.",
+    "Que haya sido feriado no cambia nada.",
+    "Si te pasó, escríbenos."
+   ],
+   "tema": "Accidente trabajando el 18: sigue siendo accidente del trabajo",
+   "fuente": "Ley 16.744 sobre accidentes del trabajo",
+   "norma": "28650",
+   "articulo": "5",
+   "frase": "a causa o con ocasión del trabajo",
+   "slot": 10,
+   "prensa": false
+  }
+ ]
+}
