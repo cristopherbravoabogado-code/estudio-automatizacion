@@ -602,6 +602,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:37:58-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
@@ -670,7 +674,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1205.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1205.mp4",
+      "media_id": "7b1f0bd7-11c8-4f67-bddc-b8154eeee065"
     },
     {
       "slot": 6,
@@ -730,6 +735,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:37:58-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
@@ -800,7 +809,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1206.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1206.mp4",
+      "media_id": "abf6e019-8087-42ca-bbc4-2eb7ff19fc64"
     },
     {
       "slot": 7,
@@ -1320,5 +1330,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T07:37:06-03:00"
+  "actualizado": "2026-09-19T07:37:58-03:00"
 }
