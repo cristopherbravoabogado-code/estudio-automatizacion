@@ -8,11 +8,38 @@ averiguar. Un prompt breve que obliga a leer el estado, decidir qué pieza toca 
 es una tarea larga con un prompt breve. Por eso cada prompt de abajo empieza corriendo un
 comando que le dice exactamente qué hacer.
 
+## ⛔ La regla que va primera en los cinco prompts (19/09/2026)
+
+> En una tarea programada, el repositorio se toca con **`git` por Bash** y con nada más. Nunca
+> con las herramientas MCP de GitHub (`create_or_update_file`, `push_files`,
+> `search_repositories`, `get_file_contents`, ninguna).
+
+No es una preferencia de estilo. Las herramientas MCP de GitHub **no vienen aprobadas** en una
+sesión programada —la lista de esas sesiones es `Bash, Write, Edit, Read, Glob, Grep, …`— así que
+piden permiso, y a las 04:00 no hay nadie para darlo. La tarea entonces **no falla: espera**, con
+`status_bucket: SESSION_STATUS_BUCKET_BLOCKED`, para siempre.
+
+Eso, y no "las tareas largas no cierran", es la razón por la que el día no salía. El 19/09:
+
+| Corrida de T2 | Dónde quedó | Resultado |
+|---|---|---|
+| 10:08 | `search_repositories`, a los 19 s, primer paso | no publicó nada |
+| 12:08 | `create_or_update_file`, el commit, al final | **publicó bien**, quedó sin anotar |
+
+Las herramientas de Higgsfield sí están aprobadas: la corrida de las 12:08 publicó en TikTok sin
+pedirle permiso a nadie. El problema es específicamente el conector de GitHub.
+
+**Y una consecuencia que no es obvia:** publicar sin commitear es *peor* que no publicar. El
+antidoble de `cadena.py` lee el libro de cuentas; si el libro sigue diciendo `alojado`, la corrida
+siguiente ve la ranura vencida y **la publica de nuevo**. Por eso cada prompt commitea pieza por
+pieza, no todo junto al final.
+
 ## El día, de un vistazo
 
 | Hora Chile | Quién | Qué |
 |---|---|---|
 | 19:00 | **T1-NOCHE** (Claude) | Encola las ranuras 1–5 de mañana |
+| 06:00, 10:00, 14:00 | **T1.5** (Claude) | Sube a Higgsfield lo ya renderizado y guarda el `media_id` |
 | 05:00 | Actions | Renderiza las ranuras 1–5 |
 | 08:00 | **T1-MAÑANA** (Claude) | Encola las ranuras 6–10 con la noticia fresca |
 | 09:00 | Actions | Rescate: renderiza lo que quedó de la mañana |
