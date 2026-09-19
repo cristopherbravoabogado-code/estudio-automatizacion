@@ -1141,6 +1141,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:39:50-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "Detenido en la fonda: cuándo la detención es legal",
@@ -1209,7 +1213,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1209.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1209.mp4",
+      "media_id": "3d47be1e-6a95-464f-ac9c-f61e73db2c65"
     },
     {
       "slot": 10,
@@ -1269,6 +1274,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:39:50-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "Accidente trabajando el 18: sigue siendo accidente del trabajo",
@@ -1337,8 +1346,9 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4",
+      "media_id": "afd4eea2-5de9-402f-80e3-d2a7f306f439"
     }
   ],
-  "actualizado": "2026-09-19T07:38:52-03:00"
+  "actualizado": "2026-09-19T07:39:50-03:00"
 }
