@@ -84,6 +84,38 @@ jobs:
           done
           ffmpeg -version | head -1
 
+      - name: Verificar el derecho contra LeyChile
+        if: steps.cola.outputs.hay == 'si'
+        id: derecho
+        continue-on-error: true
+        run: |
+          # Este es el unico punto de la cadena con red hacia LeyChile Y con poder de bloquear.
+          # El contenedor donde corren las tareas NO lo alcanza (el proxy de egress responde
+          # connect_rejected, medido el 19/09), asi que al encolar no se puede verificar de
+          # verdad. Aqui si, y antes de gastar un solo minuto de render.
+          python3 motor/leychile.py --cola "${{ steps.cola.outputs.cola }}" | tee _derecho.txt
+
+      - name: Parar las piezas cuya cita legal no cuadra
+        if: steps.cola.outputs.hay == 'si' && steps.derecho.outcome == 'failure'
+        run: |
+          echo "::warning::Hay piezas con cita legal falsa o no verificable; no se renderizan."
+          python3 - "${{ steps.cola.outputs.cola }}" "${{ steps.dia.outputs.fecha }}" <<'PY'
+          import json, re, subprocess, sys
+          ruta, fecha = sys.argv[1], sys.argv[2]
+          cola = json.load(open(ruta, encoding="utf-8"))
+          informe = open("_derecho.txt", encoding="utf-8").read()
+          malas = dict(re.findall(r"#(\d+)\s+\S+\s+norma\s+\S+\s+art\s+\S+\s+(FALSA|NO VERIFICABLE)",
+                                  informe))
+          for slot, veredicto in malas.items():
+              subprocess.run([sys.executable, "motor/cadena.py", "fallar", slot, "--fecha", fecha,
+                              "--motivo", "cita legal %s (motor/leychile.py): no se renderiza"
+                                          % veredicto])
+          cola["piezas"] = [p for p in cola["piezas"] if str(p.get("slot")) not in malas]
+          with open(ruta, "w", encoding="utf-8") as f:
+              json.dump(cola, f, ensure_ascii=False, indent=1)
+          print("paradas %d piezas; quedan %d para renderizar" % (len(malas), len(cola["piezas"])))
+          PY
+
       - name: Renderizar la tanda
         if: steps.cola.outputs.hay == 'si'
         env:

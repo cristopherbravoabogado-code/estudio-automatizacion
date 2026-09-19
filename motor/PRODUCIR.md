@@ -6,9 +6,25 @@ entero dentro del comando del sandbox.
 
 ## El procedimiento (5 llamadas, no más)
 
-1. **Verificar el derecho ANTES de escribir el guion.** Una llamada `sandbox_exec` con
-   `https://www.leychile.cl/Consulta/obtxml?opt=7&idNorma=<id>`, normalizando espacios con
-   `re.sub(r'\s+',' ',...)` antes de buscar. ⚠️ **La búsqueda es sensible a mayúsculas**: buscar
+1. **Verificar el derecho ANTES de escribir el guion.** Desde el 19/09/2026 esto se hace con
+   **`python3 motor/leychile.py <idNorma> "<frase>"`**, no a mano. Dos razones medidas ese día:
+
+   - ⛔ **LeyChile devuelve HTTP 401 con cuerpo VACÍO si no le mandas User-Agent de navegador**,
+     y `curl` sale con código 0. El procedimiento anterior —un `curl` pelado— dejaba un archivo
+     de cero bytes sin que nadie se enterara, y buscar una frase ahí no distingue *"la ley no
+     dice eso"* de *"no descargué nada"*. Para un estudio jurídico ésa es la peor confusión.
+   - ⛔ **El XML trae las tildes como entidades**: dice `d&#237;as`, no `días`. Buscar con tildes
+     en el XML crudo da negativo sobre texto que sí está. Hay que desplegar las entidades antes
+     de comparar — es el defecto del 15/09 al revés.
+
+   `leychile.py` hace las dos cosas y devuelve **tres códigos distintos**: `0` la frase está,
+   `1` la norma se leyó y la frase NO está, `2` no se pudo verificar. El 1 y el 2 nunca se
+   confunden. Y LeyChile **no se alcanza desde el contenedor de Claude** (el proxy responde
+   `connect_rejected`): hay que llamarlo desde `sandbox_exec` o dejar que lo haga el paso de
+   verificación de `.github/workflows/render-diario.yml`, que además BLOQUEA el render de la
+   pieza cuya cita no cuadre.
+
+   Para el resto, normalizando espacios con `re.sub(r'\s+',' ',...)` antes de buscar. ⚠️ **La búsqueda es sensible a mayúsculas**: buscar
    `robidad` encuentra "Falta de probidad", buscar `falta de probidad` no. Y el número de
    artículo no siempre está en `NombreParte`: buscar por una frase del texto es más seguro.
    idNorma medidos: **Código del Trabajo 207436 · Código Penal 1984 · Código Procesal Penal
