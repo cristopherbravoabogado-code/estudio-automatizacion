@@ -8,7 +8,7 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-19T10:00:00Z",
-      "estado": "alojado",
+      "estado": "publicado",
       "intentos": 4,
       "historia": [
         {
@@ -66,6 +66,10 @@
         {
           "cuando": "2026-09-19T05:29:58-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:23:05-03:00",
+          "que": "alojado -> publicado"
         }
       ],
       "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
@@ -136,7 +140,10 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1201.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1201.mp4",
+      "publish_id": "v_pub_url~v2.7687189176312088594",
+      "post_id": "7687189260855758100",
+      "publicado_en": "2026-09-19T07:23:05-03:00"
     },
     {
       "slot": 2,
@@ -1297,5 +1304,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T05:29:59-03:00"
+  "actualizado": "2026-09-19T07:23:05-03:00"
 }
