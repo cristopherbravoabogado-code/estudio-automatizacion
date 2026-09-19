@@ -98,6 +98,19 @@ def main():
             print("  pieza %s no esta en la cola; se ignora." % pid)
             continue
         slot = str(pieza["slot"])
+        # Idempotencia: si la ranura ya esta alojada o publicada, re-anotarla NO es un fallo.
+        # Sin esto, una corrida de rescate marcaria fallidas las piezas buenas de la anterior.
+        ok_est, salida_est = cadena("json", "--fecha", fecha)
+        if ok_est:
+            try:
+                import json as _j
+                dia = _j.loads(salida_est)
+                est = next((q["estado"] for q in dia["piezas"] if str(q["slot"]) == slot), "")
+                if est in ("alojado", "programado", "publicado"):
+                    print("  #%s ya estaba en '%s': no se toca." % (slot, est))
+                    continue
+            except Exception:
+                pass
         c = res.get("control") or {}
         # La pieza esta alojada si paso la puerta Y hay donde apuntarla: la Release que subio el
         # workflow (--base-url) o, por la via vieja, un PUT a una upload_url que devolvio 200.

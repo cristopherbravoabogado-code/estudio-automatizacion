@@ -171,13 +171,17 @@ def clip_f15(urls, dst):
     Se concatena con el filtro `concat`, NUNCA con `-c copy`: es regla dura del motor, y con
     fuentes de distinto tamano o fps el copy produce saltos y desincroniza el audio.
     """
+    # setsar=1 en la normalizacion, y no es cosmetico: la pieza 1208 del 19/09 murio con
+    # "Failed to configure output pad on Parsed_concat_0 ... (1920x1080, SAR 1:1)". El filtro
+    # concat exige que TODAS las entradas coincidan tambien en relacion de pixel, no solo en
+    # resolucion y fps, y dos clips de Mixkit pueden traer SAR distinta sin que se note.
     partes = []
     for n, u in enumerate(urls):
         sh(f"curl -sL -A 'Mozilla/5.0' -o f15_{n}.mp4 '{u}'")
         # normalizar a 1920x1080/30fps y darle pista muda: sin audio el concat de audio falla
         sh(f'ffmpeg -y -hide_banner -loglevel error -i f15_{n}.mp4 -f lavfi '
            f'-i anullsrc=r=48000:cl=stereo -vf "scale=1920:1080:'
-           f'force_original_aspect_ratio=increase:flags=lanczos,crop=1920:1080,fps=30" '
+           f'force_original_aspect_ratio=increase:flags=lanczos,crop=1920:1080,setsar=1,fps=30" '
            f'-map 0:v -map 1:a -shortest -t 10 -c:v libx264 -preset veryfast -crf 20 '
            f'-c:a aac -ar 48000 -ac 2 f15n_{n}.mp4')
         partes.append(f"f15n_{n}.mp4")

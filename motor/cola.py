@@ -248,7 +248,15 @@ def cmd_agregar(args):
         ("guion", ["--campo", "gancho=%s" % (p.get("gancho") or p.get("tag", "")),
                    "--json", json.dumps({"tramos": p["voz"], "pieza_id": p["id"]}, ensure_ascii=False)]),
     ]
+    # Saltarse los pasos que la ranura YA dio. Hace falta para re-encolar una pieza caida:
+    # `reintentar` la devuelve a 'guion' y volver a marcar 'tema' seria ir hacia atras, que
+    # cadena.py rechaza -con razon-. Sin esto, arreglar un guion y reponerlo era imposible.
+    dia = C.cargar(fecha, obligatorio=False) or {"piezas": []}
+    actual = next((q["estado"] for q in dia.get("piezas", []) if q["slot"] == args.slot), "vacio")
     for estado, extra in pasos:
+        if C.indice(actual) >= C.indice(estado):
+            print("  ranura #%d ya estaba en '%s'; se salta '%s'" % (args.slot, actual, estado))
+            continue
         ok, salida = cadena_cmd("marcar", str(args.slot), estado, "--fecha", fecha, *extra)
         print("  %s" % salida.splitlines()[0] if salida else "")
         if not ok:

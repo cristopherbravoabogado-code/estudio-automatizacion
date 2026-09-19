@@ -62,19 +62,19 @@
    "tag": "245 PARTES",
    "credito": "Carabineros · infracciones del 18/09/2026",
    "voz": [
-    "Doscientos cuarenta y cinco partes en un solo día de carretera.",
-    "Velocidad, cinturón y sillas de niños mal puestas.",
-    "La Ley de Tránsito obliga al cinturón de seguridad.",
-    "Y el parte lo paga quien conduce, no el pasajero.",
-    "Si necesitas asesoría, escríbenos."
+    "Doscientos cuarenta y cinco partes en un solo día de carretera este dieciocho.",
+    "Velocidad, cinturón sin poner y sillas de niños mal instaladas.",
+    "La Ley de Tránsito obliga al cinturón de seguridad en todos los asientos.",
+    "El parte lo paga quien conduce, aunque el que iba suelto fuera el pasajero.",
+    "Si te cursaron uno y crees que está mal, escríbenos."
    ],
    "tema": "245 infracciones: velocidad, cinturón y sillas de niños",
    "fuente": "Carabineros, balance de infracciones 18/09/2026",
    "norma": "29708",
    "articulo": "75",
    "frase": "cinturón de seguridad",
-   "slot": 3,
-   "prensa": false
+   "prensa": false,
+   "slot": 3
   },
   {
    "id": "1204",
@@ -137,19 +137,19 @@
    "tag": "ARMAS Y LA PENA",
    "credito": "Corte Suprema · Segunda Sala",
    "voz": [
-    "La Suprema confirmó condenas por porte ilegal de armas de fuego.",
-    "La Ley de Control de Armas no exige que dispares.",
-    "Basta con portarla sin autorización para arriesgar cárcel.",
-    "Y guardarla en la casa de otro no te saca del problema.",
-    "Si necesitas asesoría, escríbenos."
+    "La Corte Suprema confirmó condenas por porte ilegal de armas de fuego.",
+    "La Ley de Control de Armas no exige que dispares ni que hieras a nadie.",
+    "Basta con portar el arma sin la autorización correspondiente.",
+    "Y dejarla guardada en la casa de un tercero tampoco te saca del problema.",
+    "Si tienes una causa así, escríbenos."
    ],
    "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
    "fuente": "Corte Suprema, Segunda Sala, fallo unánime 09/2026",
    "norma": "29291",
    "articulo": "9",
    "frase": "armas de fuego",
-   "slot": 6,
-   "prensa": false
+   "prensa": false,
+   "slot": 6
   },
   {
    "id": "1207",
@@ -162,19 +162,19 @@
    "tag": "MICROTRÁFICO",
    "credito": "Corte Suprema · fallo de nulidad 09/2026",
    "voz": [
-    "La Suprema volvió a pronunciarse sobre microtráfico esta semana.",
-    "La ley distingue el tráfico de las pequeñas cantidades.",
-    "Esa diferencia cambia la pena por completo.",
-    "Y no la decide el detenido: la decide el tribunal con la prueba.",
-    "Si necesitas asesoría, escríbenos."
+    "La Suprema volvió a pronunciarse esta semana sobre microtráfico.",
+    "La ley distingue el tráfico de las pequeñas cantidades, y esa línea es fina.",
+    "De qué lado caigas cambia la pena por completo.",
+    "No lo decide el detenido ni el que lo detuvo: lo decide el tribunal con la prueba.",
+    "Si te imputan esto, escríbenos."
    ],
    "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
    "fuente": "Corte Suprema, rechazo de recursos de nulidad, 09/2026",
    "norma": "235507",
    "articulo": "4",
    "frase": "pequeñas cantidades",
-   "slot": 7,
-   "prensa": false
+   "prensa": false,
+   "slot": 7
   },
   {
    "id": "1208",
@@ -189,17 +189,17 @@
    "voz": [
     "La Suprema confirmó una indemnización por pérdida de oportunidad.",
     "El Código Civil dice que todo daño imputable a negligencia debe ser reparado.",
-    "No siempre hay que probar el resultado final.",
-    "A veces basta con probar la chance que te quitaron.",
-    "Si necesitas asesoría, escríbenos."
+    "A veces no hay que probar que el resultado habría sido otro.",
+    "Basta con probar la posibilidad real que te quitaron por el error.",
+    "Si crees que te pasó, escríbenos."
    ],
    "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
    "fuente": "Corte Suprema, fallo sobre pérdida de oportunidad, 09/2026",
    "norma": "172986",
    "articulo": "2329",
    "frase": "todo daño que pueda imputarse a malicia o negligencia",
-   "slot": 8,
-   "prensa": false
+   "prensa": false,
+   "slot": 8
   },
   {
    "id": "1209",
@@ -212,19 +212,19 @@
    "tag": "DETENIDO EN LA FONDA",
    "credito": "Código Procesal Penal · artículo 125",
    "voz": [
-    "Cada 18 llegan detenciones por riñas en las fondas.",
+    "Cada dieciocho llegan detenciones por riñas y desórdenes en las fondas.",
     "Nadie puede ser detenido sino por orden de funcionario facultado por la ley.",
-    "La excepción es el delito flagrante, y eso hay que probarlo.",
-    "Tienes derecho a abogado desde el primer minuto.",
-    "Si te pasó, escríbenos."
+    "La única excepción es el delito flagrante, y eso hay que probarlo.",
+    "Tienes derecho a un abogado desde el primer minuto, no cuando te tomen declaración.",
+    "Si detuvieron a alguien tuyo, escríbenos."
    ],
    "tema": "Detenido en la fonda: cuándo la detención es legal",
    "fuente": "Fiestas Patrias 2026, detenciones por riñas y desórdenes",
    "norma": "176595",
    "articulo": "125",
    "frase": "sino por orden de funcionario público expresamente facultado por la ley",
-   "slot": 9,
-   "prensa": false
+   "prensa": false,
+   "slot": 9
   },
   {
    "id": "1210",
@@ -237,19 +237,19 @@
    "tag": "ACCIDENTE EL 18",
    "credito": "Ley 16.744 · accidentes del trabajo",
    "voz": [
-    "Mucha gente trabajó este 18 y algunos se accidentaron.",
-    "La ley cubre la lesión ocurrida a causa o con ocasión del trabajo.",
-    "También el trayecto entre la casa y la pega.",
-    "Que haya sido feriado no cambia nada.",
-    "Si te pasó, escríbenos."
+    "Mucha gente trabajó este dieciocho, y algunos se accidentaron en el turno.",
+    "La ley cubre toda lesión ocurrida a causa o con ocasión del trabajo.",
+    "También cubre el trayecto entre tu casa y la pega, en los dos sentidos.",
+    "Que haya sido feriado no cambia absolutamente nada de la cobertura.",
+    "Si te accidentaste trabajando, escríbenos."
    ],
    "tema": "Accidente trabajando el 18: sigue siendo accidente del trabajo",
    "fuente": "Ley 16.744 sobre accidentes del trabajo",
    "norma": "28650",
    "articulo": "5",
    "frase": "a causa o con ocasión del trabajo",
-   "slot": 10,
-   "prensa": false
+   "prensa": false,
+   "slot": 10
   }
  ]
 }

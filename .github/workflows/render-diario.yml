@@ -135,6 +135,34 @@ jobs:
           [ "$faltan" -eq 0 ] || exit 1
           ffmpeg -version | head -1
 
+      - name: Sacar de la tanda lo que ya esta alojado
+        if: steps.cola.outputs.hay == 'si'
+        run: |
+          # Una corrida de RESCATE no puede re-renderizar lo que ya salio bien. Dos razones, y
+          # la segunda es la grave:
+          #  1. gasta minutos de runner en piezas que ya estan hechas;
+          #  2. ci_registrar intentaria marcar 'renderizado' una ranura que ya esta en 'alojado',
+          #     cadena.py lo rechazaria por ser hacia atras -con razon- y la pieza BUENA quedaria
+          #     marcada como fallida. El rescate destruiria justo lo que vino a rescatar.
+          python3 - "${{ steps.cola.outputs.cola }}" "${{ steps.dia.outputs.fecha }}" <<'PY'
+          import json, sys
+          sys.path.insert(0, "motor")
+          import cadena as C
+          ruta, fecha = sys.argv[1], sys.argv[2]
+          cola = json.load(open(ruta, encoding="utf-8"))
+          dia = C.cargar(fecha, obligatorio=False)
+          antes = len(cola["piezas"])
+          if dia:
+              # Por nombre y no por indice: 'fallido' no esta en la cadena y C.indice() reventaria.
+              HECHO = ("alojado", "programado", "publicado")
+              hechas = {q["slot"] for q in dia["piezas"] if q["estado"] in HECHO}
+              cola["piezas"] = [p for p in cola["piezas"] if p.get("slot") not in hechas]
+              with open(ruta, "w", encoding="utf-8") as f:
+                  json.dump(cola, f, ensure_ascii=False, indent=1)
+          print("tanda: %d en la cola, %d ya alojadas que se saltan, %d por renderizar"
+                % (antes, antes - len(cola["piezas"]), len(cola["piezas"])))
+          PY
+
       - name: Verificar el derecho contra LeyChile
         if: steps.cola.outputs.hay == 'si'
         id: derecho

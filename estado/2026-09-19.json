@@ -201,7 +201,7 @@
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-19T14:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 1,
       "historia": [
         {
@@ -219,6 +219,10 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "guion -> fallido: control.py reprobo: duracion"
+        },
+        {
+          "cuando": "2026-09-19T02:14:52-03:00",
+          "que": "reintento desde fallido -> guion (era: control.py reprobo: duracion)"
         }
       ],
       "tema": "245 infracciones: velocidad, cinturón y sillas de niños",
@@ -234,9 +238,7 @@
         "Y el parte lo paga quien conduce, no el pasajero.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1203",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: duracion"
+      "pieza_id": "1203"
     },
     {
       "slot": 4,
@@ -434,7 +436,7 @@
       "slot": 6,
       "hora_chile": "17:00",
       "hora_utc": "2026-09-19T20:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 1,
       "historia": [
         {
@@ -452,6 +454,10 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "guion -> fallido: control.py reprobo: duracion"
+        },
+        {
+          "cuando": "2026-09-19T02:14:52-03:00",
+          "que": "reintento desde fallido -> guion (era: control.py reprobo: duracion)"
         }
       ],
       "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
@@ -467,15 +473,13 @@
         "Y guardarla en la casa de otro no te saca del problema.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1206",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: duracion"
+      "pieza_id": "1206"
     },
     {
       "slot": 7,
       "hora_chile": "19:00",
       "hora_utc": "2026-09-19T22:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 1,
       "historia": [
         {
@@ -493,6 +497,10 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "guion -> fallido: control.py reprobo: duracion"
+        },
+        {
+          "cuando": "2026-09-19T02:14:52-03:00",
+          "que": "reintento desde fallido -> guion (era: control.py reprobo: duracion)"
         }
       ],
       "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
@@ -508,15 +516,13 @@
         "Y no la decide el detenido: la decide el tribunal con la prueba.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1207",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: duracion"
+      "pieza_id": "1207"
     },
     {
       "slot": 8,
       "hora_chile": "20:00",
       "hora_utc": "2026-09-19T23:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 1,
       "historia": [
         {
@@ -534,6 +540,10 @@
         {
           "cuando": "2026-09-19T02:01:54-03:00",
           "que": "guion -> fallido: produce.py: ding output link in0:v0 parameters (1920x1080, SAR 1:1)\n[Parsed_concat_0 @ 0x55dcfe8213c0] Failed to configure output pad on Parsed_concat_0\n[fc#0 @ 0x55dcfe14d540] Error reinitializing filters!\nFailed to inject frame into filter network: Invalid argument\nError while filtering: Invalid argument\n[Par"
+        },
+        {
+          "cuando": "2026-09-19T02:14:52-03:00",
+          "que": "reintento desde fallido -> guion (era: produce.py: ding output link in0:v0 parameters (1920x1080, SAR 1:1)\n[Parsed_concat_0 @ 0x55dcfe8213c0] Failed to configure output pad on Parsed_concat_0\n[fc#0 @ 0x55dcfe14d540] Error reinitializing filters!\nFailed to inject frame into filter network: Invalid argument\nError while filtering: Invalid argument\n[Par)"
         }
       ],
       "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
@@ -549,15 +559,13 @@
         "A veces basta con probar la chance que te quitaron.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1208",
-      "estado_previo": "guion",
-      "motivo": "produce.py: ding output link in0:v0 parameters (1920x1080, SAR 1:1)\n[Parsed_concat_0 @ 0x55dcfe8213c0] Failed to configure output pad on Parsed_concat_0\n[fc#0 @ 0x55dcfe14d540] Error reinitializing filters!\nFailed to inject frame into filter network: Invalid argument\nError while filtering: Invalid argument\n[Par"
+      "pieza_id": "1208"
     },
     {
       "slot": 9,
       "hora_chile": "21:00",
       "hora_utc": "2026-09-20T00:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 1,
       "historia": [
         {
@@ -575,6 +583,10 @@
         {
           "cuando": "2026-09-19T02:01:54-03:00",
           "que": "guion -> fallido: control.py reprobo: duracion"
+        },
+        {
+          "cuando": "2026-09-19T02:14:52-03:00",
+          "que": "reintento desde fallido -> guion (era: control.py reprobo: duracion)"
         }
       ],
       "tema": "Detenido en la fonda: cuándo la detención es legal",
@@ -590,15 +602,13 @@
         "Tienes derecho a abogado desde el primer minuto.",
         "Si te pasó, escríbenos."
       ],
-      "pieza_id": "1209",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: duracion"
+      "pieza_id": "1209"
     },
     {
       "slot": 10,
       "hora_chile": "22:00",
       "hora_utc": "2026-09-20T01:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 1,
       "historia": [
         {
@@ -616,6 +626,10 @@
         {
           "cuando": "2026-09-19T02:01:54-03:00",
           "que": "guion -> fallido: control.py reprobo: duracion, volumen"
+        },
+        {
+          "cuando": "2026-09-19T02:14:52-03:00",
+          "que": "reintento desde fallido -> guion (era: control.py reprobo: duracion, volumen)"
         }
       ],
       "tema": "Accidente trabajando el 18: sigue siendo accidente del trabajo",
@@ -631,10 +645,8 @@
         "Que haya sido feriado no cambia nada.",
         "Si te pasó, escríbenos."
       ],
-      "pieza_id": "1210",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: duracion, volumen"
+      "pieza_id": "1210"
     }
   ],
-  "actualizado": "2026-09-19T02:01:54-03:00"
+  "actualizado": "2026-09-19T02:14:52-03:00"
 }

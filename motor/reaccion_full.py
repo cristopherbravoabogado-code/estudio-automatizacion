@@ -37,7 +37,34 @@ def dur(f):
     return float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",f]).decode().strip())
 V = dur(voz); C = dur(clip)
 LEAD = 0.5                      # la voz entra a los 0,5 s
-T = round(LEAD + V + 1.3, 2)    # cola de 1,3 s con el CTA visible
+COLA = 1.3                      # cola con el CTA visible
+
+# LA DURACION DEJA DE SER UNA LOTERIA (19/09/2026)
+# Primera tanda real de diez piezas F15: las cuatro que pasaron midieron 22,73 · 23,14 · 23,28
+# y 23,57 s, contra el minimo de 22,0 de control.py. TODAS al borde. Las otras cinco cayeron
+# por "duracion" quedando apenas por debajo. Y el largo no se puede predecir escribiendo mas
+# palabras: una pieza de 36 palabras dio 23,28 s y una de 51 dio 22,73, porque lo que manda son
+# los silencios que voz.py pone entre los cinco tramos, no el texto.
+#
+# Una pieza no puede morir por dos decimas despues de haber gastado el render entero. Si la
+# narracion queda corta, se alarga la cola con el CTA en pantalla -que es tiempo util, no
+# relleno- hasta entrar en la franja. Pero con tope: si hace falta estirar mas de PAD_MAX, el
+# guion es DEMASIADO corto y eso hay que arreglarlo escribiendo, no estirando. Ahi se para con
+# un mensaje que lo dice.
+T_MIN = float(os.environ.get("REACCION_T_MIN", "23.0"))   # con holgura sobre el minimo de 22,0
+T_MAX = float(os.environ.get("REACCION_T_MAX", "34.0"))   # el maximo de control.py
+PAD_MAX = 4.0
+T_nat = LEAD + V + COLA
+T = round(min(max(T_nat, T_MIN), T_nat + PAD_MAX), 2)
+if T < T_MIN:
+    print("GUION_CORTO: la narracion dura %.2f s y la pieza sale en %.2f s, bajo el minimo de "
+          "%.1f s incluso estirando la cola %.1f s. Alarga el guion: no se estira mas."
+          % (V, T, T_MIN, PAD_MAX))
+    sys.exit(3)
+if T > T_MAX:
+    print("GUION_LARGO: la narracion dura %.2f s y la pieza sale en %.2f s, sobre el maximo de "
+          "%.1f s. Acorta el guion." % (V, T, T_MAX))
+    sys.exit(4)
 s1 = 0.82; s2 = 0.75; a = 1.5; b = min(C, 13.0)
 d1 = C / s1; d2 = (b - a) / s2
 s3 = 0.7 if d1 + d2 < T + 0.5 else None
@@ -82,7 +109,12 @@ fc.append(tx)
 fc.append(f"[aa]atrim=0:{T},asetpts=PTS-STARTPTS,"
           f"volume='if(lt(t,1.2),0.55,max(0.032,0.55-0.518*(t-1.2)/1.0))':eval=frame[news]")
 fc.append(f"[1:a]adelay={int(LEAD*1000)}|{int(LEAD*1000)},aresample=48000[vz]")
-fc.append(f"[news][vz]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,"
+# loudnorm I=-14 desde el 19/09, no -16. Medido en la primera tanda real: las cuatro piezas que
+# pasaron dieron volumen medio -20,4 · -20,5 · -20,6 · -20,9 dB contra el piso de -21,0 de
+# control.py, y una quinta cayo por eso. Estaban todas a menos de un decibelio del borde, o sea
+# pasaban por suerte. Subir 2 dB no toca el control de uniones, que en esas mismas piezas midio
+# -91 dBFS contra un tope de -35: ahi sobra margen de sesenta decibelios.
+fc.append(f"[news][vz]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,"
           f"aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[aout]")
 cmd = ["ffmpeg","-y","-hide_banner","-loglevel","error","-i",clip,"-i",voz,
        "-filter_complex",";".join(fc),"-map","[vout]","-map","[aout]","-t",str(T),
