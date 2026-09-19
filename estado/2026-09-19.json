@@ -149,7 +149,7 @@
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-19T12:00:00Z",
-      "estado": "alojado",
+      "estado": "publicado",
       "intentos": 2,
       "historia": [
         {
@@ -207,6 +207,10 @@
         {
           "cuando": "2026-09-19T07:34:11-03:00",
           "que": "anotado: cdn, media_id"
+        },
+        {
+          "cuando": "2026-09-19T09:17:30-03:00",
+          "que": "alojado -> publicado"
         }
       ],
       "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
@@ -277,7 +281,10 @@
       },
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1202.mp4",
       "media_id": "673e7ea8-6cc3-4aa2-9c05-b39d9c68ce32",
-      "cdn": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/673e7ea8-6cc3-4aa2-9c05-b39d9c68ce32.mp4"
+      "cdn": "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/673e7ea8-6cc3-4aa2-9c05-b39d9c68ce32.mp4",
+      "publish_id": "v_pub_url~v2.7687217227452696577",
+      "post_id": "7687217488026733845",
+      "publicado_en": "2026-09-19T09:17:30-03:00"
     },
     {
       "slot": 3,
@@ -1350,5 +1357,5 @@
       "media_id": "afd4eea2-5de9-402f-80e3-d2a7f306f439"
     }
   ],
-  "actualizado": "2026-09-19T07:39:50-03:00"
+  "actualizado": "2026-09-19T09:17:30-03:00"
 }
