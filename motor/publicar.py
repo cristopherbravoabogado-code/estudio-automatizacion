@@ -166,6 +166,43 @@ def cmd_ficha(args):
     return 0
 
 
+def cmd_presubir(args):
+    """Las piezas alojadas que todavia no tienen su media_id de Higgsfield.
+
+    POR QUE ES UN COMANDO Y NO UN PARRAFO EN UN PROMPT: la tarea que pre-sube no tiene que
+    AVERIGUAR cuales faltan. Si tiene que leer el estado y decidir, ya es una tarea larga, y las
+    largas de esta cuenta no cierran. Aqui sale la lista y los comandos exactos, en orden.
+    """
+    fecha = args.fecha or C.hoy()
+    dia = C.cargar(fecha)
+    faltan = [p for p in dia["piezas"]
+              if p["estado"] in ("alojado", "programado") and not p.get("media_id")]
+
+    if not faltan:
+        listas = sum(1 for p in dia["piezas"] if p.get("media_id"))
+        print("NADA QUE PRE-SUBIR en %s: las %d piezas alojadas ya tienen su media_id." %
+              (fecha, listas))
+        print("Ese es el final normal. Responde una linea y termina.")
+        return 0
+
+    print("POR PRE-SUBIR EN %s: %d piezas." % (fecha, len(faltan)))
+    print("Una por una, y COMMITEA despues de cada una. Si la sesion se corta, lo anotado queda.")
+    print()
+    for p in faltan:
+        pid = p.get("pieza_id") or p["slot"]
+        print("--- ranura #%d (%s) ---" % (p["slot"], p["hora_chile"]))
+        print("  1. media_upload  filename=sb-%s.mp4  content_type=video/mp4" % pid)
+        print("  2. curl -sL '%s' -o /tmp/p%d.mp4" % (p.get("url"), p["slot"]))
+        print("  3. PUT /tmp/p%d.mp4 a la upload_url, con cabecera Content-Type: video/mp4." % p["slot"])
+        print("     La firma incluye content-type: sin esa cabecera el PUT falla.")
+        print("     Espera http=200 y que los bytes enviados cuadren con el archivo.")
+        print("  4. media_confirm  media_id=<el que devolvio media_upload>  type=video")
+        print("  5. python3 motor/cadena.py anotar %d --campo media_id=<ese id>" % p["slot"])
+        print()
+    print("NO publiques nada aqui: pre-subir no es publicar. De eso se encarga la tarea horaria.")
+    return 1
+
+
 def cmd_plan(args):
     """Las tareas de un disparo del dia. Una por pieza: si una falla, cae UNA, no el dia."""
     fecha = args.fecha or C.hoy()
@@ -206,6 +243,7 @@ def main():
     ap = argparse.ArgumentParser(description="Le deja resuelto el trabajo a la tarea que publica.")
     sub = ap.add_subparsers(dest="cmd", required=True)
     for nombre, fn, ayuda in (("listo", cmd_listo, "ranuras cuya hora ya llego"),
+                              ("presubir", cmd_presubir, "piezas alojadas sin media_id"),
                               ("plan", cmd_plan, "tareas de un disparo del dia"),
                               ("cupo", cmd_cupo, "cuantas van contra el tope de 13/24 h")):
         p = sub.add_parser(nombre, help=ayuda)
