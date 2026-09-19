@@ -14,9 +14,25 @@ audio ajeno queda en 0.032 (~-30 dB): con 0.045 las uniones median -34.4 dBFS y 
 El clip puede ser una concatenacion de clips de Mixkit (16:9, 30 fps, pista muda) cuando no hay clip de
 prensa utilizable: ver motor/lotes/1000_guion.txt (pieza 1000, clips 48973 + 12877 + 49020).
 """
-import json, subprocess, sys
+import json, os, subprocess, sys
 clip, voz, ass, out, tag, cred = sys.argv[1:7]
-FONT = "/usr/share/fonts/truetype/higgsfield/Montserrat-ExtraBold.ttf"
+
+# LA FUENTE, RESUELTA Y NO SUPUESTA (19/09/2026)
+# Hasta hoy FONT era una ruta fija del sandbox de Higgsfield. Al conectar este formato a la
+# cadena automatica quedo a la vista: en un runner de GitHub Actions esa carpeta NO existe, y
+# ffmpeg no avisa "falta la fuente" - falla el drawtext entero y la pieza muere sin decir por
+# que. Ahora se busca en varios sitios y, si no hay ninguna, se dice con todas sus letras.
+CANDIDATAS = [os.environ.get("REACCION_FONT", ""),
+              "/usr/share/fonts/truetype/higgsfield/Montserrat-ExtraBold.ttf",
+              "fonts/Montserrat-ExtraBold.ttf",
+              "Montserrat-ExtraBold.ttf",
+              "/usr/share/fonts/truetype/montserrat/Montserrat-ExtraBold.ttf",
+              "fonts/Poppins-Bold.ttf"]
+FONT = next((f for f in CANDIDATAS if f and os.path.exists(f)), None)
+if not FONT:
+    print("SIN_FUENTE: no se encontro Montserrat-ExtraBold.ttf en ninguna de estas rutas: "
+          + " | ".join(f for f in CANDIDATAS if f))
+    sys.exit(2)
 def dur(f):
     return float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",f]).decode().strip())
 V = dur(voz); C = dur(clip)

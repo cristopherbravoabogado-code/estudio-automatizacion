@@ -76,12 +76,63 @@ jobs:
       - name: ffmpeg y fuentes
         if: steps.cola.outputs.hay == 'si'
         run: |
+          set -euo pipefail
           sudo apt-get update -q
-          sudo apt-get install -y -q ffmpeg fonts-noto-color-emoji
+          # fonts-montserrat la pide reaccion_full.py (rotulo y CTA de las piezas F15);
+          # Poppins la pide motor.py (laminas). DejaVu viene siempre y queda de ultimo recurso.
+          sudo apt-get install -y -q ffmpeg fonts-noto-color-emoji fonts-montserrat fonts-dejavu-core || \
+            sudo apt-get install -y -q ffmpeg fonts-noto-color-emoji fonts-dejavu-core
           mkdir -p _salida/fonts
+
+          # POR QUE ESTE PASO ES DESCONFIADO (19/09/2026):
+          # `curl -sL URL -o f` ante un 403 escribe la PAGINA DE ERROR en el archivo y sale con
+          # codigo 0. Medido hoy: los tres .ttf de github.com/google/fonts devolvieron 403 y un
+          # archivo de 378 bytes. El paso marcaba verde con fuentes falsas dentro, y ffmpeg no
+          # dice "esta fuente es un HTML": falla el drawtext y la pieza muere sin explicacion.
+          # Por eso aqui toda fuente se COMPRUEBA por tamano antes de darla por buena.
+          traer () {   # traer <destino> <url...>
+            dst="$1"; shift
+            for u in "$@"; do
+              curl -sL --max-time 60 -o "$dst" "$u" || true
+              if [ -s "$dst" ] && [ "$(stat -c%s "$dst")" -gt 40000 ]; then
+                echo "  OK $(basename "$dst") <- $u ($(stat -c%s "$dst") bytes)"; return 0
+              fi
+            done
+            rm -f "$dst"; return 1
+          }
+
+          # Montserrat: primero la del sistema (apt), si no, Google Fonts.
+          SYS_MONT=$(fc-list 2>/dev/null | grep -i "montserrat" | grep -iE "extrabold|bold" | head -1 | cut -d: -f1 || true)
+          if [ -n "$SYS_MONT" ] && [ -s "$SYS_MONT" ]; then
+            cp "$SYS_MONT" _salida/fonts/Montserrat-ExtraBold.ttf
+            echo "  OK Montserrat <- sistema: $SYS_MONT"
+          else
+            traer _salida/fonts/Montserrat-ExtraBold.ttf \
+              "https://raw.githubusercontent.com/google/fonts/main/ofl/montserrat/static/Montserrat-ExtraBold.ttf" \
+              "https://raw.githubusercontent.com/google/fonts/main/ofl/montserrat/Montserrat%5Bwght%5D.ttf" || true
+          fi
+
           for f in Poppins-Bold Poppins-Regular Poppins-SemiBold; do
-            curl -sL "https://github.com/google/fonts/raw/main/ofl/poppins/$f.ttf" -o "_salida/fonts/$f.ttf"
+            traer "_salida/fonts/$f.ttf" \
+              "https://raw.githubusercontent.com/google/fonts/main/ofl/poppins/$f.ttf" || true
           done
+
+          # Ultimo recurso: DejaVu, que viene con el sistema. Fea pero real.
+          DEJA=$(fc-list 2>/dev/null | grep -i "DejaVuSans-Bold.ttf" | head -1 | cut -d: -f1 || true)
+          for f in Montserrat-ExtraBold Poppins-Bold Poppins-Regular Poppins-SemiBold; do
+            if [ ! -s "_salida/fonts/$f.ttf" ] && [ -n "$DEJA" ]; then
+              cp "$DEJA" "_salida/fonts/$f.ttf"; echo "  SUSTITUIDA $f por DejaVu"
+            fi
+          done
+
+          echo "--- fuentes finales ---"; ls -l _salida/fonts/
+          faltan=0
+          for f in Montserrat-ExtraBold Poppins-Bold Poppins-Regular Poppins-SemiBold; do
+            if [ ! -s "_salida/fonts/$f.ttf" ] || [ "$(stat -c%s "_salida/fonts/$f.ttf")" -lt 40000 ]; then
+              echo "::error::Falta la fuente $f y no hubo con que sustituirla."; faltan=1
+            fi
+          done
+          [ "$faltan" -eq 0 ] || exit 1
           ffmpeg -version | head -1
 
       - name: Verificar el derecho contra LeyChile
