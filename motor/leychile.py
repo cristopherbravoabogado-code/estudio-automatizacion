@@ -69,6 +69,13 @@ MIN_BYTES = 500          # una norma real no baja de esto; menos es un documento
 NO_VERIFICABLE = 2
 NO_ESTA = 1
 OK = 0
+OTRO_ARTICULO = 3        # la frase esta en la norma, pero en un articulo distinto del citado
+ART_NO_UBICADO = 4       # la frase esta, pero no se pudo ubicar el articulo citado para cotejar
+
+# Como LeyChile encabeza cada articulo. El Codigo Civil escribe "Art. 2314." y la Ley de
+# Transito "Articulo 196 C.-": el sufijo (bis, ter, o una letra) es parte del numero y sin el
+# "196" y "196 C" se confunden, que es justo la clase de error que este control existe para cazar.
+RE_ART = re.compile(r"art(?:iculo|\.)\s*(\d+)\s*(?:o|°|º)?\s*(bis|ter|quater|[a-z])?(?=[\s.,\-])")
 
 
 def _plano(s):
@@ -107,6 +114,37 @@ def _plano_con_mapa(s):
     return "".join(salida), mapa
 
 
+def clave_art(numero, sufijo=None):
+    """'196', 'C' -> '196c'. Normaliza para comparar la cita con el encabezado de la norma."""
+    n = re.sub(r"[^0-9a-z]", "", _plano(str(numero or "")))
+    if sufijo:
+        n += re.sub(r"[^0-9a-z]", "", _plano(str(sufijo)))
+    return n
+
+
+def articulos(plano_norma):
+    """[(clave, inicio, fin)] con el tramo que ocupa cada articulo en el texto plegado.
+
+    El tramo de un articulo va desde su encabezado hasta el del siguiente. No es exacto al
+    caracter -el XML intercala notas al margen- pero basta para lo unico que se le pide:
+    decidir si la frase citada cae dentro del articulo que la pieza dice citar.
+    """
+    marcas = [(clave_art(m.group(1), m.group(2)), m.start()) for m in RE_ART.finditer(plano_norma)]
+    tramos = []
+    for i, (c, ini) in enumerate(marcas):
+        fin = marcas[i + 1][1] if i + 1 < len(marcas) else len(plano_norma)
+        tramos.append((c, ini, fin))
+    return tramos
+
+
+def art_en(tramos, pos):
+    """El articulo dentro de cuyo tramo cae 'pos', o None."""
+    for c, ini, fin in tramos:
+        if ini <= pos < fin:
+            return c
+    return None
+
+
 def bajar(id_norma, timeout=60):
     """Devuelve (texto_plano, None) o (None, motivo_por_el_que_no_se_pudo)."""
     req = urllib.request.Request(URL % id_norma, headers={"User-Agent": UA})
@@ -136,8 +174,14 @@ def bajar(id_norma, timeout=60):
     return re.sub(r"\s+", " ", texto), None
 
 
-def verificar(id_norma, frase, timeout=60):
-    """Devuelve (codigo, detalle)."""
+def verificar(id_norma, frase, timeout=60, articulo=None):
+    """Devuelve (codigo, detalle).
+
+    Con 'articulo' no basta con que la frase este EN LA NORMA: tiene que estar en ESE articulo.
+    El 19/09/2026 tres piezas publicadas citaban 'Ley 18.290, articulo 110' para hablar de
+    manejar en estado de ebriedad. La frase existe en la ley -en los articulos 115 A y 196 E-
+    pero el articulo 110 trata de los semaforos. El control anterior las daba por buenas porque
+    solo preguntaba si la frase aparecia en alguna parte, y "en alguna parte" no es una cita."""
     texto, motivo = bajar(id_norma, timeout)
     if texto is None:
         return NO_VERIFICABLE, motivo
@@ -166,7 +210,24 @@ def verificar(id_norma, frase, timeout=60):
     # Contexto en el texto ORIGINAL, con sus tildes, anclado en la posicion real de la frase.
     ini = mapa[i]
     fin = mapa[min(i + len(plano_frase), len(mapa)) - 1] + 1
-    return OK, texto[max(0, ini - 170):fin + 170].strip()
+    contexto = texto[max(0, ini - 170):fin + 170].strip()
+
+    if not articulo:
+        return OK, contexto
+
+    quiere = clave_art(articulo)
+    tramos = articulos(plano_norma)
+    if not any(c == quiere for c, _, _ in tramos):
+        return ART_NO_UBICADO, ("la frase SI esta en la norma %s, pero no se pudo ubicar el "
+                                "articulo %s para cotejar. Revisalo a mano antes de publicar. "
+                                "contexto: ...%s..." % (id_norma, articulo, contexto))
+
+    donde = art_en(tramos, i)
+    if donde != quiere:
+        return OTRO_ARTICULO, ("la frase esta en la norma %s pero en el articulo %s, NO en el %s "
+                               "que cita la pieza. Corrige la cita o cambia el articulo. "
+                               "contexto: ...%s..." % (id_norma, donde or "?", articulo, contexto))
+    return OK, contexto
 
 
 def cmd_cola(ruta, timeout=60):
@@ -175,8 +236,10 @@ def cmd_cola(ruta, timeout=60):
         piezas = json.load(f)["piezas"]
     malas = 0
     for p in piezas:
-        codigo, detalle = verificar(p.get("norma", ""), p.get("frase", ""), timeout)
-        etiqueta = {OK: "OK", NO_ESTA: "FALSA", NO_VERIFICABLE: "NO VERIFICABLE"}[codigo]
+        codigo, detalle = verificar(p.get("norma", ""), p.get("frase", ""), timeout,
+                                    articulo=p.get("articulo"))
+        etiqueta = {OK: "OK", NO_ESTA: "FALSA", NO_VERIFICABLE: "NO VERIFICABLE",
+                    OTRO_ARTICULO: "OTRO ARTICULO", ART_NO_UBICADO: "ARTICULO SIN UBICAR"}[codigo]
         print("#%-2s %-6s norma %-8s art %-6s %s"
               % (p.get("slot"), p.get("id"), p.get("norma"), p.get("articulo"), etiqueta))
         print("     frase: %s" % (p.get("frase") or "")[:100])
@@ -191,6 +254,7 @@ def main():
     ap = argparse.ArgumentParser(description="Verifica una afirmacion legal contra LeyChile.")
     ap.add_argument("norma", nargs="?", help="idNorma de LeyChile (ej. 230132)")
     ap.add_argument("frase", nargs="?", help="frase textual que debe aparecer en la norma")
+    ap.add_argument("--articulo", help="exige ademas que la frase caiga DENTRO de ese articulo")
     ap.add_argument("--cola", help="verifica todas las piezas de una cola")
     ap.add_argument("--timeout", type=int, default=60)
     args = ap.parse_args()
@@ -200,12 +264,17 @@ def main():
     if not args.norma or not args.frase:
         ap.error("da norma y frase, o --cola")
 
-    codigo, detalle = verificar(args.norma, args.frase, args.timeout)
+    codigo, detalle = verificar(args.norma, args.frase, args.timeout, articulo=args.articulo)
     if codigo == OK:
-        print("OK - la norma %s contiene la frase." % args.norma)
+        print("OK - la norma %s contiene la frase%s."
+              % (args.norma, (" en el articulo %s" % args.articulo) if args.articulo else ""))
         print("contexto: ...%s..." % detalle)
     elif codigo == NO_ESTA:
         print("FALSA - %s" % detalle)
+    elif codigo == OTRO_ARTICULO:
+        print("OTRO ARTICULO - %s" % detalle)
+    elif codigo == ART_NO_UBICADO:
+        print("ARTICULO SIN UBICAR - %s" % detalle)
     else:
         print("NO VERIFICABLE - %s" % detalle)
         print("(no es lo mismo que falsa: aqui no se pudo leer la norma)")
