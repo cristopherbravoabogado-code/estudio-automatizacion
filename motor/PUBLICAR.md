@@ -71,6 +71,33 @@ Ese es el reparto que importa: lo lento, temprano y reanudable; lo de la hora, c
 - Ajustes fijos del estudio: `privacy_level PUBLIC_TO_EVERYONE`, `is_aigc true`, comentarios/dúo/stitch habilitados,
   sin divulgación de contenido comercial, sin música añadida.
 
+## ⛔ La causa de verdad por la que el día no salía (19/09/2026)
+
+Durante semanas la explicación fue "las tareas largas de esta cuenta arrancan y nunca cierran".
+Es verdad que no cierran. **La razón no era el largo.** El 19/09, mirando las dos sesiones de T2
+por dentro, quedó a la vista:
+
+| Corrida | Dónde quedó | Resultado |
+|---|---|---|
+| 10:08 | `mcp__Github_1__search_repositories` (paso 1, a los 19 s) | no publicó nada |
+| 12:08 | `mcp__Github_1__create_or_update_file` (el commit, al final) | **publicó bien** y quedó sin anotar |
+
+Las dos con `status_bucket: SESSION_STATUS_BUCKET_BLOCKED` y `session_status:
+SESSION_STATUS_REQUIRES_ACTION`. **Estaban esperando que alguien aprobara un permiso.** Las
+herramientas MCP de GitHub no vienen aprobadas en una tarea programada: la lista de herramientas
+de esas sesiones es `Bash, Write, Edit, Read, Glob, Grep, …` y nada de `mcp__Github_1__*`. A las
+04:00 de la mañana no hay nadie para contestar el permiso, así que la tarea se queda ahí. Para
+siempre. No falla: espera.
+
+**La regla, entonces:** en una tarea programada, el repositorio se toca con `git` por Bash y con
+nada más. `git` no pide permiso. Si `git push` falla, se dice en el reporte y se termina; buscar
+otra herramienta es garantizar que la tarea quede colgada.
+
+Y hay una consecuencia que no es obvia: **una publicación sin commitear es peor que no publicar.**
+El antidoble de `cadena.py` lee el libro de cuentas; si el libro sigue diciendo `alojado`, la
+corrida siguiente ve la ranura vencida y **la publica de nuevo**. El 19/09 la corrida de las 13:07
+habría repetido el post de las 12:08. Se evitó anotando a mano antes de esa hora.
+
 ## El hueco que tapa este documento: la vía B no sabe programar
 
 Higgsfield publica **al momento**. Mientras Metricool esté topado, una cola con horas se arma así:
