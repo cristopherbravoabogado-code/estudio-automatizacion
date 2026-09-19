@@ -72,10 +72,12 @@ OK = 0
 OTRO_ARTICULO = 3        # la frase esta en la norma, pero en un articulo distinto del citado
 ART_NO_UBICADO = 4       # la frase esta, pero no se pudo ubicar el articulo citado para cotejar
 
-# Como LeyChile encabeza cada articulo. El Codigo Civil escribe "Art. 2314." y la Ley de
-# Transito "Articulo 196 C.-": el sufijo (bis, ter, o una letra) es parte del numero y sin el
-# "196" y "196 C" se confunden, que es justo la clase de error que este control existe para cazar.
-RE_ART = re.compile(r"art(?:iculo|\.)\s*(\d+)\s*(?:o|°|º)?\s*(bis|ter|quater|[a-z])?(?=[\s.,\-])")
+# Como LeyChile encabeza cada articulo. El Codigo del Trabajo escribe "Art. 160.", el Codigo
+# Civil "Art. 2314." y la Ley de Transito "Articulo 196 C.-". Se busca sobre el texto YA
+# plegado, donde la puntuacion es espacio, asi que la forma comun es "art" o "articulo" y el
+# numero. El sufijo (bis, ter, o una letra suelta) es parte del numero: sin el, 196 y 196 C
+# serian el mismo articulo, que es justo el error que este control existe para cazar.
+RE_ART = re.compile(r"\bart(?:iculo)?\s+(\d{1,4})(?:\s+(bis|ter|quater|[a-z](?![a-z])))?\b")
 
 
 def _plano(s):
@@ -125,11 +127,24 @@ def clave_art(numero, sufijo=None):
 def articulos(plano_norma):
     """[(clave, inicio, fin)] con el tramo que ocupa cada articulo en el texto plegado.
 
-    El tramo de un articulo va desde su encabezado hasta el del siguiente. No es exacto al
-    caracter -el XML intercala notas al margen- pero basta para lo unico que se le pide:
-    decidir si la frase citada cae dentro del articulo que la pieza dice citar.
+    El filtro que hace que esto sirva es el de ORDEN. El XML intercala, DENTRO del cuerpo de un
+    articulo, las notas que dicen que ley lo modifico, y esas notas se leen igual que un
+    encabezado: en mitad del articulo 160 del Codigo del Trabajo aparece "Art. 2o invocando una
+    o mas de las siguientes causales", y despues del 2313 del Codigo Civil, "2313 (DEL ART. 2)".
+    Sin filtrar, la frase del 160 quedaba atribuida al articulo 2.
+
+    Los articulos de una norma van en orden creciente y las notas no: se conserva un encabezado
+    solo si su numero no retrocede respecto del ultimo aceptado. Es una heuristica, no una
+    garantia, y por eso no poder ubicar un articulo se informa (ART_NO_UBICADO) en vez de
+    callarse: un control que se apaga por omision no es un control.
     """
-    marcas = [(clave_art(m.group(1), m.group(2)), m.start()) for m in RE_ART.finditer(plano_norma)]
+    marcas, ultimo = [], -1
+    for m in RE_ART.finditer(plano_norma):
+        numero = int(m.group(1))
+        if numero < ultimo:
+            continue
+        ultimo = numero
+        marcas.append((clave_art(m.group(1), m.group(2)), m.start()))
     tramos = []
     for i, (c, ini) in enumerate(marcas):
         fin = marcas[i + 1][1] if i + 1 < len(marcas) else len(plano_norma)
@@ -191,8 +206,8 @@ def verificar(id_norma, frase, timeout=60, articulo=None):
     if not plano_frase:
         return NO_VERIFICABLE, "la frase a buscar esta vacia"
 
-    i = plano_norma.find(plano_frase)
-    if i < 0:
+    posiciones = [m.start() for m in re.finditer(re.escape(plano_frase), plano_norma)]
+    if not posiciones:
         # El XML intercala las notas al margen DENTRO del texto. Medido el 19/09 en el articulo
         # 8 del Codigo del Trabajo, que se lee literalmente:
         #     "hace presumir la ART. PRIMERO existencia de un contrato de trabajo"
@@ -207,27 +222,34 @@ def verificar(id_norma, frase, timeout=60, articulo=None):
                          "O la cita esta mal, o el articulo es otro, o la partio una nota.%s"
                          % (id_norma, len(texto), aviso))
 
-    # Contexto en el texto ORIGINAL, con sus tildes, anclado en la posicion real de la frase.
-    ini = mapa[i]
-    fin = mapa[min(i + len(plano_frase), len(mapa)) - 1] + 1
-    contexto = texto[max(0, ini - 170):fin + 170].strip()
+    def contexto_de(i):
+        """Contexto en el texto ORIGINAL, con sus tildes, anclado en la posicion real."""
+        ini = mapa[i]
+        fin = mapa[min(i + len(plano_frase), len(mapa)) - 1] + 1
+        return texto[max(0, ini - 170):fin + 170].strip()
 
     if not articulo:
-        return OK, contexto
+        return OK, contexto_de(posiciones[0])
 
     quiere = clave_art(articulo)
     tramos = articulos(plano_norma)
     if not any(c == quiere for c, _, _ in tramos):
         return ART_NO_UBICADO, ("la frase SI esta en la norma %s, pero no se pudo ubicar el "
                                 "articulo %s para cotejar. Revisalo a mano antes de publicar. "
-                                "contexto: ...%s..." % (id_norma, articulo, contexto))
+                                "contexto: ...%s..." % (id_norma, articulo, contexto_de(posiciones[0])))
 
-    donde = art_en(tramos, i)
-    if donde != quiere:
-        return OTRO_ARTICULO, ("la frase esta en la norma %s pero en el articulo %s, NO en el %s "
-                               "que cita la pieza. Corrige la cita o cambia el articulo. "
-                               "contexto: ...%s..." % (id_norma, donde or "?", articulo, contexto))
-    return OK, contexto
+    # Una frase puede repetirse en varios articulos -la prohibicion en uno y la pena en otro-.
+    # Basta con que UNA aparicion caiga en el articulo citado para que la cita sea correcta.
+    donde = []
+    for i in posiciones:
+        a = art_en(tramos, i)
+        if a == quiere:
+            return OK, contexto_de(i)
+        if a and a not in donde:
+            donde.append(a)
+    return OTRO_ARTICULO, ("la frase esta en la norma %s pero en el articulo %s, NO en el %s que "
+                           "cita la pieza. Corrige la cita o cambia el articulo. contexto: ...%s..."
+                           % (id_norma, ", ".join(donde) or "?", articulo, contexto_de(posiciones[0])))
 
 
 def cmd_cola(ruta, timeout=60):
