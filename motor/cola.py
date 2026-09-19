@@ -120,7 +120,16 @@ def control_6(p):
 
 
 def control_0(p):
-    """El gancho de una pieza de lamina sale del banco. Las de prensa estan exentas."""
+    """El gancho de una pieza de lamina sale del banco Y NO ESTA GASTADO.
+
+    Las de prensa estan exentas: su gancho es el titular del dia.
+
+    El segundo requisito entro el 19/09, al traer `motor/ganchos/cargar.py`: el banco lleva
+    seguimiento de `usado` y su dedupe existe, en palabras de ese archivo, porque dos entradas
+    indistinguibles "rompen el seguimiento de 'usado'". Un banco que registra lo gastado y un
+    control que no lo mira dejan pasar la repeticion que el registro existe para evitar - que
+    es el mismo defecto que `control.py` v3 arreglo en la puerta: medir sin poder bloquear.
+    """
     if p.get("prensa"):
         return []
     g = _norm(p.get("gancho", ""))
@@ -128,13 +137,19 @@ def control_0(p):
         return ["CONTROL 0: la pieza no trae gancho."]
     with open(BANCO, encoding="utf-8") as f:
         banco = json.load(f)
+    libres = sum(1 for e in banco["cola"] if not e.get("usado"))
     for e in banco["cola"]:
         t = _norm(e["texto"])
         if t == g or t.startswith(g[:40]) or g.startswith(t[:40]):
+            if e.get("usado"):
+                return ["CONTROL 0: el gancho %s ya se gasto el %s (pieza %s). Elige uno de los "
+                        "%d libres del banco: repetirlo es publicar dos veces la misma apertura."
+                        % (e["id"], e["usado"], e.get("pieza", "?"), libres)]
             return []
-    return ["CONTROL 0: el gancho no esta en motor/ganchos/cola.json. Una pieza de lamina con "
-            "gancho improvisado no se produce (doctrina del 13/09). Usa uno del banco o marca "
-            "la pieza como prensa:true si su gancho es el titular del dia."]
+    return ["CONTROL 0: el gancho no esta en motor/ganchos/cola.json (%d libres disponibles). "
+            "Una pieza de lamina con gancho improvisado no se produce (doctrina del 13/09). Usa "
+            "uno del banco o marca la pieza como prensa:true si su gancho es el titular del dia."
+            % libres]
 
 
 def estructura(p):
