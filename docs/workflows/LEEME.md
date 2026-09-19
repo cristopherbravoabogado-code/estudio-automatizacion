@@ -1,19 +1,34 @@
-# Workflow de Actions pendiente de activar
+# Workflows de GitHub Actions
 
-Este archivo debe vivir en `.github/workflows/render-lote.yml`, pero el
-conector de Claude **no tiene permiso para escribir workflows** (GitHub
-exige el permiso "Workflows" aparte, y la app solo trae "Contents").
+## Estado al 19/09/2026
 
-## Como activarlo (una sola vez, desde github.com)
+| Archivo | Situación |
+|---|---|
+| `.github/workflows/render-diario.yml` | **Instalado y activo.** Renderiza la tanda del día y anota el resultado en `estado/<fecha>.json`. Ver `motor/CADENA.md`. |
+| `render-lote.yml` (esta carpeta) | **Obsoleto.** Llama a `motor/render5.py`, que no existe: era del motor viejo. Se conserva como referencia del arranque manual por lotes. |
 
-1. Abrir el repo en el navegador
-2. **Add file > Create new file**
-3. En el nombre escribir exactamente: `.github/workflows/render-lote.yml`
-4. Pegar el contenido de `render-lote.yml` (esta misma carpeta)
-5. **Commit changes**
+## Corrección al aviso anterior
 
-Despues cargar los Secrets en **Settings > Secrets and variables > Actions**:
-`ELEVENLABS_API_KEY` y, si se usa, `HIGGSFIELD_API_KEY`.
+Este archivo decía que el conector de Claude **no puede escribir workflows**, porque GitHub
+exige el permiso "Workflows" aparte y la app solo trae "Contents". Eso es cierto para el
+conector de GitHub de los chats, pero **no** para Claude Code: desde una sesión de Claude Code
+el push va por git normal y GitHub lo aceptó sin problema (medido el 19/09/2026, empujando un
+workflow de prueba y borrándolo después).
 
-El workflow fallara con un mensaje claro mientras `motor/render5.py` no
-exista en el repo. Eso es esperado.
+O sea: los archivos de workflow se pueden crear y modificar desde una sesión. Lo que sigue
+necesitando manos es cargar los **Secrets**, que no viajan por git a propósito.
+
+## Secrets que hay que cargar (una sola vez)
+
+En **Settings > Secrets and variables > Actions > New repository secret**:
+
+| Secret | Para qué | ¿Hace falta hoy? |
+|---|---|---|
+| `ELEVENLABS_API_KEY` | voz de ElevenLabs | Solo si se vuelve a esa voz. El motor usa **Kokoro**, que corre local y no necesita clave. |
+| `HIGGSFIELD_API_KEY` | clips de gancho | Opcional. Los ganchos salen hoy de mixkit, que es abierto. |
+
+`GITHUB_TOKEN` no se carga: Actions lo inyecta solo, y el workflow ya declara
+`permissions: contents: write` para poder commitear el estado de vuelta.
+
+**Si no cargas ninguno, el render diario igual corre**: la voz Kokoro y los clips de mixkit no
+piden credenciales. Los Secrets son para las vías alternativas.

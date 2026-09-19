@@ -102,7 +102,12 @@ def banco(p):
     if p.get("prensa"):
         return True, "exenta: pieza de reaccion"
     if _BANCO is None:
-        _BANCO = json.loads(urllib.request.urlopen(BANCO_URL, timeout=90).read().decode("utf-8"))
+        local = os.environ.get("PRODUCE_LOCAL")
+        if local:
+            with open(os.path.join(local, "motor/ganchos/cola.json"), encoding="utf-8") as f:
+                _BANCO = json.load(f)
+        else:
+            _BANCO = json.loads(urllib.request.urlopen(BANCO_URL, timeout=90).read().decode("utf-8"))
     g = _norm(p.get("gancho", ""))
     if not g:
         return False, "SIN GANCHO"
@@ -114,9 +119,21 @@ def banco(p):
 
 
 def preparar():
+    # PRODUCE_LOCAL=<raiz del repo>: usa el codigo YA CLONADO en vez de bajarlo de main.
+    # Lo necesita GitHub Actions: alli el repo viene en el checkout y bajar de `main` haria
+    # que un cambio en rama se renderizara con el motor viejo sin que nadie lo notara.
+    local = os.environ.get("PRODUCE_LOCAL")
     for d in DEPS:
-        urllib.request.urlretrieve(RAW + d, os.path.basename(d))
-    print("DEPS_OK", flush=True)
+        destino = os.path.basename(d)
+        if local:
+            origen = os.path.join(local, d)
+            if not os.path.exists(origen):
+                raise RuntimeError(f"PRODUCE_LOCAL={local} pero falta {origen}")
+            with open(origen, "rb") as a, open(destino, "wb") as b:
+                b.write(a.read())
+        else:
+            urllib.request.urlretrieve(RAW + d, destino)
+    print("DEPS_OK" + (" (local)" if local else ""), flush=True)
     sh(f"pip install -q {PIP}", check=False, t=900)
     print("PIP_OK", flush=True)
 
