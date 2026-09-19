@@ -131,22 +131,53 @@ def texto_tiktok(p):
     return texto
 
 
-def listas(dia, solo_vencidas=True):
+# UNA SOLA OPORTUNIDAD POR RANURA, Y ES UNA DEFENSA, NO UNA COMODIDAD (19/09/2026)
+#
+# Medido hoy: la tarea programada NO puede escribir en el repositorio. Se le pidio que empujara
+# un archivo de prueba y no aparecio nunca. Eso explica por que ninguna de las tres publicaciones
+# del dia quedo anotada sola.
+#
+# Y tiene una consecuencia que no es obvia: si la publicacion ocurre pero el libro de cuentas no
+# se entera, la ranura sigue figurando como 'alojado' y VENCIDA. Con la regla vieja -"vencida es
+# cualquier cosa cuya hora ya paso"- la corrida siguiente la ve pendiente y la publica OTRA VEZ.
+# Y la siguiente. Una pieza publicada y no anotada se convertia en un post repetido cada hora.
+#
+# Mientras la tarea no pueda anotar, la unica defensa que no depende de anotar es el RELOJ: cada
+# ranura se ofrece solo dentro de su propia ventana. Si a las 14:07 le tocaba a la ranura de las
+# 14:00, a las 15:07 ya no le toca a nadie. Una oportunidad por ranura.
+#
+# El precio, dicho claro: una pieza que falle de verdad se pierde por hoy en vez de reintentarse.
+# Se acepta a proposito. Un hueco se recupera; un post duplicado en la cuenta de un abogado, no.
+VENTANA_MIN = 55
+
+
+def listas(dia, solo_vencidas=True, ventana=VENTANA_MIN):
     out = []
     for p in dia["piezas"]:
         if p["estado"] not in ("alojado", "programado"):
             continue
-        if solo_vencidas and not C.vencida(p, dia["fecha"], 0):
-            continue
+        if solo_vencidas:
+            if not C.vencida(p, dia["fecha"], 0):
+                continue
+            if ventana is not None and C.vencida(p, dia["fecha"], ventana):
+                continue      # se le paso su turno: no se reintenta a ciegas
         out.append(p)
     return out
+
+
+def pasadas(dia, ventana=VENTANA_MIN):
+    """Ranuras alojadas cuya ventana ya se cerro. Puede que salieran y nadie lo anotara."""
+    return [p for p in dia["piezas"]
+            if p["estado"] in ("alojado", "programado") and C.vencida(p, dia["fecha"], ventana)]
 
 
 def cmd_listo(args):
     fecha = args.fecha or C.hoy()
     dia = C.cargar(fecha)
     ahora = listas(dia)
-    luego = [p for p in listas(dia, solo_vencidas=False) if p not in ahora]
+    viejas_ids = {q["slot"] for q in pasadas(dia)}
+    luego = [p for p in listas(dia, solo_vencidas=False)
+             if p not in ahora and p["slot"] not in viejas_ids]
     if ahora:
         print("PARA PUBLICAR AHORA (%d):" % len(ahora))
         for p in ahora:
@@ -156,6 +187,13 @@ def cmd_listo(args):
     if luego:
         print("listas y esperando su hora (%d): %s"
               % (len(luego), ", ".join("#%d a las %s" % (p["slot"], p["hora_chile"]) for p in luego)))
+    viejas = pasadas(dia)
+    if viejas:
+        print()
+        print("SE LES PASO LA VENTANA (%d): %s"
+              % (len(viejas), ", ".join("#%d (%s)" % (p["slot"], p["hora_chile"]) for p in viejas)))
+        print("NO las publiques: puede que hayan salido y que nadie alcanzara a anotarlo, y")
+        print("republicar cuesta un cupo y deja un post repetido. Son para que un humano mire.")
     return 0 if ahora else 1
 
 

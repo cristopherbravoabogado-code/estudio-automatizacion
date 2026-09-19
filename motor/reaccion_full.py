@@ -30,14 +30,25 @@ clip, voz, ass, out, tag, cred = sys.argv[1:7]
 # retencion: los tres primeros segundos.
 titular = sys.argv[7] if len(sys.argv) > 7 else ""
 
-# EL PIE NEGRO SOLO SI HAY CINTILLO QUE TAPAR (19/09/2026)
-# Las dos franjas oscuras del final existen, en palabras del docstring original, para "tapar el
-# cintillo del canal". Con un clip de noticiero eso es imprescindible. Con metraje de archivo no
-# hay cintillo que tapar y esas franjas se comen un QUINTO de la pantalla: medido en el fotograma
-# del segundo 12 de la pieza 1201, la imagen muere en y=1545 de 1920 y debajo queda un bloque
-# negro que hace parecer la pieza un repost recortado. Se controla con REACCION_PIE (1 por
-# defecto, 0 cuando el clip no trae cintillo).
-PIE = os.environ.get("REACCION_PIE", "1") != "0"
+# EL PIE NEGRO YA NO TAPA EL CINTILLO (19/09/2026, segunda revision)
+# Este bloque nacio, en palabras del docstring original, para "tapar el cintillo del canal".
+# Hoy se apaga por defecto, y por dos razones que apuntan al mismo lado:
+#
+# 1. LEGAL. Un clip de noticiero se usa al amparo del derecho de cita (Ley 17.336 art. 71 B,
+#    verificado contra LeyChile el 19/09): licito citar "fragmentos breves... siempre que SE
+#    MENCIONE SU FUENTE, TITULO Y AUTOR". Tapar el cintillo es borrar justo la mencion que la
+#    ley exige. Es lo contrario de citar.
+# 2. PRACTICA, y ya estaba escrita en el repo. RECETA-MOTOR-NUBE.md: el cintillo y los rotulos
+#    del medio "son justo lo que da credibilidad". Y ZONA-SEGURA-v5.md llevaba la cuenta de esos
+#    graficos como cajas ajenas, no como error del motor.
+#
+# Ademas, medido en el fotograma del segundo 12 de la pieza 1201: con el pie encendido la imagen
+# muere en y=1545 de 1920 y debajo queda un bloque negro que hace parecer la pieza un repost
+# recortado. O sea que tapar el cintillo salia caro por los tres lados.
+#
+# Queda REACCION_PIE=1 para encenderlo a mano si algun dia hay algo que de verdad convenga tapar
+# (una marca de agua de un tercero, un dato personal en pantalla). No para esconder la fuente.
+PIE = os.environ.get("REACCION_PIE", "0") != "0"
 
 # LA FUENTE, RESUELTA Y NO SUPUESTA (19/09/2026)
 # Hasta hoy FONT era una ruta fija del sandbox de Higgsfield. Al conectar este formato a la
