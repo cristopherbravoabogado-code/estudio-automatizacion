@@ -80,7 +80,7 @@ CADENA_PY = os.path.join(RAIZ, "motor", "cadena.py")
 # publicaba solo laminas de relleno.
 CAMPOS = ("id", "materia", "voz", "tema", "fuente", "norma", "articulo", "frase")
 CAMPOS_LAMINA = ("rotulo", "hook", "gancho", "puntos", "cierre")
-CAMPOS_F15 = ("clips", "tag")
+CAMPOS_F15 = ("clips", "tag", "titular")
 
 
 def ruta_cola(fecha):
@@ -195,6 +195,15 @@ def estructura(p):
         if len(p.get("tag", "")) > 20:
             fallas.append("el tag mide %d caracteres y reaccion_full.py pide ~20: lo largo va "
                           "al credito" % len(p["tag"]))
+        # El titular es OBLIGATORIO en una pieza de noticia: es lo que la hace noticia en
+        # pantalla. Se corta en 3 lineas de 26 caracteres, asi que mas de ~78 se pierde.
+        tit = p.get("titular", "")
+        if tit and len(tit) > 78:
+            fallas.append("el titular mide %d caracteres y en pantalla caben ~78 (3 lineas de "
+                          "26). Acortalo o se corta solo." % len(tit))
+        if p.get("credito") and len(p["credito"]) > 46:
+            fallas.append("el credito mide %d caracteres; con mas de 46 se sale de la caja"
+                          % len(p["credito"]))
     else:
         puntos = p.get("puntos") or []
         if len(puntos) != 3:

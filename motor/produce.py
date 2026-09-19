@@ -252,7 +252,10 @@ def una(p):
     if es_f15:
         tag = p.get("tag", "NOTICIA DE HOY")
         cred = p.get("credito", "Estudio Juridico San Bernardo")
-        m = sh(f'python3 reaccion_full.py hook{i}.mp4 {i}.mp3 {i}.ass {i}.mp4 "{tag}" "{cred}"')
+        # El titular REAL, citado con su medio, abre la pieza los primeros 4,2 s. Es lo que
+        # convierte una pieza de archivo en una pieza de noticia a los ojos de quien pasa.
+        tit = (p.get("titular") or "").replace('"', "'")
+        m = sh(f'python3 reaccion_full.py hook{i}.mp4 {i}.mp3 {i}.ass {i}.mp4 "{tag}" "{cred}" "{tit}"')
         r["motor"] = m.stdout.strip().splitlines()[-1]
         r["pasos"].append("reaccion_full")
         return _cerrar(p, r, i, tramos, prensa, guion, control)

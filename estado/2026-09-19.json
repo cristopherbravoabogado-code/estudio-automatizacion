@@ -8,8 +8,8 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-19T10:00:00Z",
-      "estado": "alojado",
-      "intentos": 2,
+      "estado": "guion",
+      "intentos": 3,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -44,12 +44,8 @@
           "que": "rehacer: alojado -> guion (el TTS decia un termino juridico inexistente; guion reescrito)"
         },
         {
-          "cuando": "2026-09-19T04:30:22-03:00",
-          "que": "guion -> renderizado"
-        },
-        {
-          "cuando": "2026-09-19T04:30:22-03:00",
-          "que": "renderizado -> alojado"
+          "cuando": "2026-09-19T04:34:33-03:00",
+          "que": "rehacer: guion -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "Balance de Fiestas Patrias: 3 fallecidos y 52 detenidos",
@@ -65,69 +61,14 @@
         "No hace falta que choques: manejar así ya es delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1201",
-      "control": {
-        "pieza": "1201.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 24.1,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.4,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1201.mp4\", \"cuadros\": 8, \"palabras_medidas\": 42, \"recall_pantalla_chica\": 0.62, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 42, \"alto_texto_mediana_px\": 34.0, \"cajas_bajo_80px\": 42, \"seg\": 13.7, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "termino_critico_no_oido": [],
-            "fuera_del_guion": [
-              "atropeyes"
-            ],
-            "dicho": "Tres fallecidos y cincuenta y dos detenidos en el primer balance del dieciocho.  Treinta y cinco de ellos iban con alcohol al volante.  La ley de tránsito sanciona manejar con alcohol en la sangre.  No hace falta que choques ni que atropeyes, manejar así ya es delito.  Si necesitas asesoría, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1201.mp4"
+      "pieza_id": "1201"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-19T12:00:00Z",
-      "estado": "alojado",
-      "intentos": 0,
+      "estado": "guion",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -156,6 +97,10 @@
         {
           "cuando": "2026-09-19T06:00:00-03:00",
           "que": "REPARACION: se deshace un 'publicado' de PRUEBA con publish_id falso (pub_prueba) que se escribio al probar el porton de 'rehacer' sobre el dia real. La pieza NO se publico en TikTok. Leccion: los portones se prueban sobre una fecha de juguete, no sobre el dia en produccion."
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "17 detenidos dieron positivo por drogas en el control de carretera",
@@ -171,66 +116,14 @@
         "Negarse a la prueba también tiene consecuencias.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1202",
-      "control": {
-        "pieza": "1202.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 23.28,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -20.5,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1202.mp4\", \"cuadros\": 8, \"palabras_medidas\": 36, \"recall_pantalla_chica\": 0.46, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 36, \"alto_texto_mediana_px\": 32.0, \"cajas_bajo_80px\": 36, \"seg\": 14.1, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [],
-            "dicho": "17 conductores dieron positivo por drogas este 18.  Carabineros fiscalizó 16.400 vehículos.  La ley de tránsito castiga conducir bajo la influencia de sustancias.  Negarse a la prueba también tiene consecuencias.  Si necesitas asesoría, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1202.mp4"
+      "pieza_id": "1202"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-19T14:00:00Z",
-      "estado": "alojado",
-      "intentos": 1,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -259,6 +152,10 @@
         {
           "cuando": "2026-09-19T02:29:38-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "245 infracciones: velocidad, cinturón y sillas de niños",
@@ -274,68 +171,14 @@
         "Y el parte lo paga quien conduce, no el pasajero.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1203",
-      "control": {
-        "pieza": "1203.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 26.11,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.1,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1203.mp4\", \"cuadros\": 9, \"palabras_medidas\": 44, \"recall_pantalla_chica\": 0.55, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 44, \"alto_texto_mediana_px\": 38.0, \"cajas_bajo_80px\": 44, \"seg\": 16.4, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [
-              "pelocidad"
-            ],
-            "dicho": "245 partes en un solo día de carretera este 18.  Pelocidad, cinturón sin poner y sillas de niños mal instaladas.  La ley de tránsito obliga al cinturón de seguridad en todos los asientos.  El parte lo paga quien conduce, aunque el que iba suelto fuera el pasajero.  Si te cursaron uno y crees que está mal, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1203.mp4"
+      "pieza_id": "1203"
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-19T16:00:00Z",
-      "estado": "alojado",
-      "intentos": 0,
+      "estado": "guion",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -356,6 +199,10 @@
         {
           "cuando": "2026-09-19T02:01:53-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "Feriado irrenunciable: la DT fiscaliza y multa por trabajador afectado",
@@ -371,66 +218,14 @@
         "Quedan fuera clubes, restaurantes y cines.",
         "Si te obligaron a trabajar, escríbenos."
       ],
-      "pieza_id": "1204",
-      "control": {
-        "pieza": "1204.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 23.57,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -20.9,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1204.mp4\", \"cuadros\": 8, \"palabras_medidas\": 56, \"recall_pantalla_chica\": 0.44, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 56, \"alto_texto_mediana_px\": 31.0, \"cajas_bajo_80px\": 56, \"seg\": 14.8, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [],
-            "dicho": "La dirección del trabajo salió a fiscalizar el feriado del 18 y 19.  La ley los declara feriados obligatorios e irrenunciables para el comercio.  La multa se cuenta por cada trabajador afectado, no por local.  Quedan fuera clubes, restaurantes y cines.  Si te obligaron a trabajar, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1204.mp4"
+      "pieza_id": "1204"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-19T18:00:00Z",
-      "estado": "alojado",
-      "intentos": 2,
+      "estado": "guion",
+      "intentos": 3,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -465,12 +260,8 @@
           "que": "rehacer: alojado -> guion (el TTS decia un termino juridico inexistente; guion reescrito)"
         },
         {
-          "cuando": "2026-09-19T04:30:23-03:00",
-          "que": "guion -> renderizado"
-        },
-        {
-          "cuando": "2026-09-19T04:30:23-03:00",
-          "que": "renderizado -> alojado"
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: guion -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
@@ -486,67 +277,14 @@
         "La licencia es para recuperarse, no para viajar.",
         "Si te acusan de esto, escríbenos."
       ],
-      "pieza_id": "1205",
-      "control": {
-        "pieza": "1205.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 24.41,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.6,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1205.mp4\", \"cuadros\": 8, \"palabras_medidas\": 55, \"recall_pantalla_chica\": 0.21, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 55, \"alto_texto_mediana_px\": 31.0, \"cajas_bajo_80px\": 55, \"seg\": 15.0, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "termino_critico_no_oido": [],
-            "fuera_del_guion": [],
-            "dicho": "La Corte Suprema removió a 11 jueces que viajaron con licencia médica.  En el mundo, privado, eso tiene nombre en el Código del Trabajo.  Es una falta grave a la honestidad y permite despedir sin indemnización.  La licencia médica es para recuperarse, no para tomarse un viaje.  Si te acusan de algo así, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1205.mp4"
+      "pieza_id": "1205"
     },
     {
       "slot": 6,
       "hora_chile": "17:00",
       "hora_utc": "2026-09-19T20:00:00Z",
-      "estado": "alojado",
-      "intentos": 1,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -575,6 +313,10 @@
         {
           "cuando": "2026-09-19T02:29:38-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
@@ -590,68 +332,14 @@
         "Y guardarla en la casa de otro no te saca del problema.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1206",
-      "control": {
-        "pieza": "1206.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 24.5,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.7,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1206.mp4\", \"cuadros\": 8, \"palabras_medidas\": 45, \"recall_pantalla_chica\": 0.55, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 45, \"alto_texto_mediana_px\": 33.0, \"cajas_bajo_80px\": 45, \"seg\": 13.8, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [
-              "comportar"
-            ],
-            "dicho": "La Corte Suprema confirmó condenas por porte ilegal de armas de fuego.  La ley de control de armas no exige que dispares ni que hieras a nadie.  Basta comportar el arma sin la autorización correspondiente.  Y dejarla guardada en la casa de un tercero tampoco te saca del problema.  Si tienes una causa así, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1206.mp4"
+      "pieza_id": "1206"
     },
     {
       "slot": 7,
       "hora_chile": "19:00",
       "hora_utc": "2026-09-19T22:00:00Z",
-      "estado": "alojado",
-      "intentos": 1,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:32:59-03:00",
@@ -680,6 +368,10 @@
         {
           "cuando": "2026-09-19T02:29:38-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
@@ -695,66 +387,14 @@
         "Y no la decide el detenido: la decide el tribunal con la prueba.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1207",
-      "control": {
-        "pieza": "1207.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 23.67,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.6,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1207.mp4\", \"cuadros\": 8, \"palabras_medidas\": 42, \"recall_pantalla_chica\": 0.42, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 43, \"alto_texto_mediana_px\": 37.0, \"cajas_bajo_80px\": 43, \"seg\": 14.8, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [],
-            "dicho": "La Suprema volvió a pronunciarse esta semana sobre microtráfico.  La ley distingue el tráfico de las pequeñas cantidades y esa línea es fina.  ¿De qué lado caigas cambia la pena por completo?  No lo decide el detenido ni el que lo detuvo, lo decide el tribunal con la prueba.  Si te imputan esto, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1207.mp4"
+      "pieza_id": "1207"
     },
     {
       "slot": 8,
       "hora_chile": "20:00",
       "hora_utc": "2026-09-19T23:00:00Z",
-      "estado": "alojado",
-      "intentos": 1,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:33:00-03:00",
@@ -783,6 +423,10 @@
         {
           "cuando": "2026-09-19T02:29:38-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
@@ -798,68 +442,14 @@
         "A veces basta con probar la chance que te quitaron.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1208",
-      "control": {
-        "pieza": "1208.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 23.83,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.5,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1208.mp4\", \"cuadros\": 8, \"palabras_medidas\": 45, \"recall_pantalla_chica\": 0.28, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 45, \"alto_texto_mediana_px\": 42.0, \"cajas_bajo_80px\": 45, \"seg\": 13.3, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [
-              "comprobar"
-            ],
-            "dicho": "La Suprema confirmó una indemnización por pérdida de oportunidad.  El Código Civil dice que todo daño imputable a negligencia debe ser reparado.  A veces no hay que probar que el resultado habría sido otro.  Basta comprobar la posibilidad real que te quitaron por el error.  Si crees que te pasó, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1208.mp4"
+      "pieza_id": "1208"
     },
     {
       "slot": 9,
       "hora_chile": "21:00",
       "hora_utc": "2026-09-20T00:00:00Z",
-      "estado": "alojado",
-      "intentos": 1,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:33:00-03:00",
@@ -888,6 +478,10 @@
         {
           "cuando": "2026-09-19T02:29:38-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "Detenido en la fonda: cuándo la detención es legal",
@@ -903,66 +497,14 @@
         "Tienes derecho a abogado desde el primer minuto.",
         "Si te pasó, escríbenos."
       ],
-      "pieza_id": "1209",
-      "control": {
-        "pieza": "1209.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 25.87,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.3,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1209.mp4\", \"cuadros\": 9, \"palabras_medidas\": 57, \"recall_pantalla_chica\": 0.42, \"cajas_fuera_zona_segura\": 2, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 2}, \"cajas_dentro\": 55, \"alto_texto_mediana_px\": 33.0, \"cajas_bajo_80px\": 54, \"seg\": 14.6, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [],
-            "dicho": "Cada 18, llegan detenciones por riñas y desórdenes en las fondas.  Nadie puede ser detenido, sino por orden de funcionario facultado por la ley.  La única excepción es el delito flagrante, y eso hay que probarlo.  Tienes derecho a un abogado desde el primer minuto, no cuando te tomen declaración.  Si detuvieron a alguien tuyo, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1209.mp4"
+      "pieza_id": "1209"
     },
     {
       "slot": 10,
       "hora_chile": "22:00",
       "hora_utc": "2026-09-20T01:00:00Z",
-      "estado": "alojado",
-      "intentos": 1,
+      "estado": "guion",
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T01:33:00-03:00",
@@ -991,6 +533,10 @@
         {
           "cuando": "2026-09-19T02:29:39-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T04:34:34-03:00",
+          "que": "rehacer: alojado -> guion (titular real en pantalla + audio a -11 LUFS)"
         }
       ],
       "tema": "Accidente trabajando el 18: sigue siendo accidente del trabajo",
@@ -1006,60 +552,8 @@
         "Que haya sido feriado no cambia nada.",
         "Si te pasó, escríbenos."
       ],
-      "pieza_id": "1210",
-      "control": {
-        "pieza": "1210.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 25.07,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -18.5,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": [
-            -91.0,
-            -91.0,
-            -91.0
-          ],
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1210.mp4\", \"cuadros\": 8, \"palabras_medidas\": 71, \"recall_pantalla_chica\": 0.48, \"cajas_fuera_zona_segura\": 25, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 4, \"izq\": 9, \"der\": 12}, \"cajas_dentro\": 53, \"alto_texto_mediana_px\": 51.0, \"cajas_bajo_80px\": 49, \"seg\": 14.3, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "fuera_del_guion": [],
-            "dicho": "Mucha gente trabajó este 18 y algunos se accidentaron en el turno.  La ley cubre toda lesión ocurrida a causa o con ocasión del trabajo.  También cubre el trayecto entre tu casa y la pega en los dos sentidos.  Que haya sido feriado no cambia absolutamente nada de la cobertura.  Si te accidentaste trabajando, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
+      "pieza_id": "1210"
     }
   ],
-  "actualizado": "2026-09-19T04:30:23-03:00"
+  "actualizado": "2026-09-19T04:34:34-03:00"
 }

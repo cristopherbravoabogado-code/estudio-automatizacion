@@ -16,6 +16,19 @@ prensa utilizable: ver motor/lotes/1000_guion.txt (pieza 1000, clips 48973 + 128
 """
 import json, os, subprocess, sys
 clip, voz, ass, out, tag, cred = sys.argv[1:7]
+# 7o argumento opcional: el TITULAR REAL de la noticia, que se muestra los primeros segundos.
+#
+# POR QUE (19/09/2026, pedido de Cristopher): "no tiene clip de noticias reales, que es lo que
+# llama la atencion". Tiene razon en el diagnostico. Lo que NO se hace aqui es bajar el metraje
+# del noticiero: el CDN de los medios devuelve 403 a toda descarga y solo cede si un navegador
+# reproduce el video, o sea hay que saltarse un control de acceso puesto a proposito para
+# republicar material ajeno bajo la marca del estudio. Para un abogado eso es exposicion, no
+# una optimizacion.
+#
+# Lo que SI se puede: abrir con el TITULAR y el MEDIO, citados y atribuidos. Un titular es un
+# hecho y citarlo con su fuente es practica periodistica corriente. Y va donde decide la
+# retencion: los tres primeros segundos.
+titular = sys.argv[7] if len(sys.argv) > 7 else ""
 
 # LA FUENTE, RESUELTA Y NO SUPUESTA (19/09/2026)
 # Hasta hoy FONT era una ruta fija del sandbox de Higgsfield. Al conectar este formato a la
@@ -86,6 +99,24 @@ else:
     fc += [f"[v1][v2]xfade=transition=fade:duration={XF}:offset={d1-XF:.3f}[vv]",
            f"[a1][a2]acrossfade=d={XF}[aa]"]
 esc = lambda s: s.replace("\\","\\\\").replace(":", "\\:").replace("'", "\\\\\\'").replace("%","\\%")
+
+# El titular se parte a mano: drawtext no hace saltos de linea y un titular largo se sale de la
+# zona segura. 30 caracteres por linea con fuente de 52 px cabe en los 900 px de la caja.
+def _partir(s, ancho=26, maxlin=3):
+    palabras, lineas, actual = s.split(), [], ""
+    for w in palabras:
+        if len(actual) + len(w) + 1 > ancho and actual:
+            lineas.append(actual); actual = w
+            if len(lineas) == maxlin: break
+        else:
+            actual = (actual + " " + w).strip()
+    if actual and len(lineas) < maxlin: lineas.append(actual)
+    return lineas or [""]
+
+TIT_LINEAS = _partir(titular) if titular else []
+TIT_T = 4.2                                    # segundos con la tarjeta en pantalla
+TIT_Y = 610                                    # arriba del karaoke, dentro de la zona segura
+TIT_H = len(TIT_LINEAS) * 60 + 84
 cta_in = LEAD + V - 6.0
 tx = (f"[vv]trim=0:{T},setpts=PTS-STARTPTS,"
       # rotulo propio arriba, dentro de la zona segura (x 130-925, y >= 245)
@@ -100,21 +131,43 @@ tx = (f"[vv]trim=0:{T},setpts=PTS-STARTPTS,"
       f"drawtext=fontfile={FONT}:text='WhatsApp +56 9 9690 5994 · Estudio Jurídico San Bernardo':fontsize=24:"
       f"fontcolor=white:x=(1080-tw)/2:y=1168:enable='gte(t,{cta_in:.2f})',"
       # pie oscuro: tapa el cintillo y el ticker del canal (bajo la zona segura, y >= 1545)
-      f"drawbox=x=0:y=1545:w=1080:h=45:color=black@0.55:t=fill,"
+      # TARJETA DE TITULAR los primeros segundos: filete rojo de prensa + el titular + el
+      # medio y la fecha. Medidas pegadas a la zona segura de ZONA-SEGURA-v5 (x 95-930):
+      # caja 110..922, texto desde x=130 con fuente de 46 px y 26 caracteres por linea, que
+      # da ~650 px de ancho y termina cerca de 780. Asi pantalla_chica.py no cuenta cajas fuera.
+      + ((f"drawbox=x=110:y=markY:w=812:h=markH:color=0x0B0B0B@0.90:t=fill:"
+          f"enable='lt(t,{TIT_T})',"
+          f"drawbox=x=110:y=markY:w=9:h=markH:color=0xE5261F:t=fill:enable='lt(t,{TIT_T})',"
+          + "".join(
+            f"drawtext=fontfile={FONT}:text='{esc(l)}':fontsize=46:fontcolor=white:"
+            f"x=130:y={TIT_Y + 30 + k * 60}:enable='lt(t,{TIT_T})',"
+            for k, l in enumerate(TIT_LINEAS))
+          + f"drawtext=fontfile={FONT}:text='{esc(cred)}':fontsize=28:fontcolor=0xFFE500:"
+            f"x=130:y={TIT_Y + 30 + len(TIT_LINEAS) * 60 + 14}:enable='lt(t,{TIT_T})',"
+         ).replace("markY", str(TIT_Y)).replace("markH", str(TIT_H)) if titular else "")
+      + (f"drawbox=x=0:y=1545:w=1080:h=45:color=black@0.55:t=fill,"
       f"drawbox=x=0:y=1590:w=1080:h=330:color=black@0.94:t=fill,"
-      f"ass={ass}[vout]")
+      f"ass={ass}[vout]"))
 fc.append(tx)
 # audio: noticia audible 1,2 s, luego cama a -30 dB (0.032, bajo el tope de uniones de control.py);
 # voz encima con 0,5 s de entrada; loudnorm al final
 fc.append(f"[aa]atrim=0:{T},asetpts=PTS-STARTPTS,"
           f"volume='if(lt(t,1.2),0.55,max(0.032,0.55-0.518*(t-1.2)/1.0))':eval=frame[news]")
 fc.append(f"[1:a]adelay={int(LEAD*1000)}|{int(LEAD*1000)},aresample=48000[vz]")
-# loudnorm I=-14 desde el 19/09, no -16. Medido en la primera tanda real: las cuatro piezas que
-# pasaron dieron volumen medio -20,4 · -20,5 · -20,6 · -20,9 dB contra el piso de -21,0 de
-# control.py, y una quinta cayo por eso. Estaban todas a menos de un decibelio del borde, o sea
-# pasaban por suerte. Subir 2 dB no toca el control de uniones, que en esas mismas piezas midio
-# -91 dBFS contra un tope de -35: ahi sobra margen de sesenta decibelios.
-fc.append(f"[news][vz]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,"
+# LOUDNESS: I=-11, y la tercera medicion del dia es la que manda (19/09/2026).
+#
+# -16 era el original. Se subio a -14 al ver que el volumen medio quedaba a 0,1 dB del piso de
+# control.py. Con -14 la pieza mide exactamente -14,23 LUFS, que es el objetivo "correcto" de
+# plataforma... y Cristopher igual tuvo que poner el telefono al 100% para oirla normal.
+#
+# Tenia razon el, no el estandar. TikTok NORMALIZA HACIA ABAJO lo que llega mas fuerte que su
+# objetivo, pero no sube lo que llega mas bajo: masterizar justo en -14 deja la pieza en el
+# piso, y fuera de la app -al revisarla en el telefono, al mandarla por WhatsApp- se oye casi
+# nada. Por eso -11, como la mayoria del contenido corto: dentro de TikTok suena igual porque
+# la app lo baja, y fuera de TikTok se oye. El control de uniones no se resiente (midio -91
+# dBFS contra un tope de -35) y el volumen medio sube de -20,4 a unos -17,4, comodo dentro de
+# la franja [-21,-13] de control.py.
+fc.append(f"[news][vz]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-11:TP=-1.0:LRA=11,"
           f"aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo[aout]")
 cmd = ["ffmpeg","-y","-hide_banner","-loglevel","error","-i",clip,"-i",voz,
        "-filter_complex",";".join(fc),"-map","[vout]","-map","[aout]","-t",str(T),

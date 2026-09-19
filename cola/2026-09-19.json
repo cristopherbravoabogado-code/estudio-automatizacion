@@ -10,7 +10,7 @@
     "https://assets.mixkit.co/videos/14044/14044-720.mp4"
    ],
    "tag": "BALANCE DEL 18",
-   "credito": "Carabineros · balance nacional 18/09/2026",
+   "credito": "Carabineros · 18/09/2026",
    "voz": [
     "Tres fallecidos y cincuenta y dos detenidos en el primer balance del dieciocho.",
     "Treinta y cinco de ellos iban con alcohol al volante.",
@@ -24,7 +24,8 @@
    "articulo": "110",
    "frase": "estado de ebriedad",
    "prensa": false,
-   "slot": 1
+   "slot": 1,
+   "titular": "Tres fallecidos y 52 detenidos en el primer balance del 18"
   },
   {
    "id": "1202",
@@ -35,7 +36,7 @@
     "https://assets.mixkit.co/videos/17396/17396-720.mp4"
    ],
    "tag": "ALCOHOL Y DROGAS",
-   "credito": "Carabineros · 16.400 vehículos fiscalizados",
+   "credito": "Carabineros · 18/09/2026",
    "voz": [
     "Diecisiete conductores dieron positivo por drogas este 18.",
     "Carabineros fiscalizó dieciséis mil cuatrocientos vehículos.",
@@ -49,7 +50,8 @@
    "articulo": "110",
    "frase": "bajo la influencia",
    "slot": 2,
-   "prensa": false
+   "prensa": false,
+   "titular": "17 conductores dieron positivo por drogas en el control"
   },
   {
    "id": "1203",
@@ -60,7 +62,7 @@
     "https://assets.mixkit.co/videos/39912/39912-720.mp4"
    ],
    "tag": "245 PARTES",
-   "credito": "Carabineros · infracciones del 18/09/2026",
+   "credito": "Carabineros · 18/09/2026",
    "voz": [
     "Doscientos cuarenta y cinco partes en un solo día de carretera este dieciocho.",
     "Velocidad, cinturón sin poner y sillas de niños mal instaladas.",
@@ -74,7 +76,8 @@
    "articulo": "75",
    "frase": "cinturón de seguridad",
    "prensa": false,
-   "slot": 3
+   "slot": 3,
+   "titular": "245 infracciones cursadas en un solo día de carretera"
   },
   {
    "id": "1204",
@@ -85,7 +88,7 @@
     "https://assets.mixkit.co/videos/22827/22827-720.mp4"
    ],
    "tag": "FERIADO 18 Y 19",
-   "credito": "Dirección del Trabajo · fiscalización preventiva",
+   "credito": "Dirección del Trabajo · 18/09/2026",
    "voz": [
     "La Dirección del Trabajo salió a fiscalizar el feriado del 18 y 19.",
     "La ley los declara feriados obligatorios e irrenunciables para el comercio.",
@@ -99,7 +102,8 @@
    "articulo": "2",
    "frase": "feriados obligatorios e irrenunciables",
    "slot": 4,
-   "prensa": false
+   "prensa": false,
+   "titular": "La Dirección del Trabajo fiscaliza el feriado irrenunciable"
   },
   {
    "id": "1205",
@@ -110,7 +114,7 @@
     "https://assets.mixkit.co/videos/45926/45926-720.mp4"
    ],
    "tag": "11 JUECES FUERA",
-   "credito": "Corte Suprema · remoción por licencias médicas",
+   "credito": "Poder Judicial · 09/2026",
    "voz": [
     "La Corte Suprema removió a once jueces que viajaron con licencia médica.",
     "En el mundo privado eso tiene nombre en el Código del Trabajo.",
@@ -124,7 +128,8 @@
    "articulo": "160",
    "frase": "falta de probidad",
    "prensa": false,
-   "slot": 5
+   "slot": 5,
+   "titular": "La Corte Suprema removió a 11 jueces por licencias médicas"
   },
   {
    "id": "1206",
@@ -135,7 +140,7 @@
     "https://assets.mixkit.co/videos/23429/23429-720.mp4"
    ],
    "tag": "ARMAS Y LA PENA",
-   "credito": "Corte Suprema · Segunda Sala",
+   "credito": "Poder Judicial · 09/2026",
    "voz": [
     "La Corte Suprema confirmó condenas por porte ilegal de armas de fuego.",
     "La Ley de Control de Armas no exige que dispares ni que hieras a nadie.",
@@ -149,7 +154,8 @@
    "articulo": "9",
    "frase": "armas de fuego",
    "prensa": false,
-   "slot": 6
+   "slot": 6,
+   "titular": "La Suprema confirma condenas por porte ilegal de armas"
   },
   {
    "id": "1207",
@@ -160,7 +166,7 @@
     "https://assets.mixkit.co/videos/23740/23740-720.mp4"
    ],
    "tag": "MICROTRÁFICO",
-   "credito": "Corte Suprema · fallo de nulidad 09/2026",
+   "credito": "Poder Judicial · 09/2026",
    "voz": [
     "La Suprema volvió a pronunciarse esta semana sobre microtráfico.",
     "La ley distingue el tráfico de las pequeñas cantidades, y esa línea es fina.",
@@ -174,7 +180,8 @@
    "articulo": "4",
    "frase": "pequeñas cantidades",
    "prensa": false,
-   "slot": 7
+   "slot": 7,
+   "titular": "La Suprema vuelve a pronunciarse sobre microtráfico"
   },
   {
    "id": "1208",
@@ -185,7 +192,7 @@
     "https://assets.mixkit.co/videos/26094/26094-720.mp4"
    ],
    "tag": "PÉRDIDA DE CHANCE",
-   "credito": "Corte Suprema · responsabilidad civil",
+   "credito": "Poder Judicial · 09/2026",
    "voz": [
     "La Suprema confirmó una indemnización por pérdida de oportunidad.",
     "El Código Civil dice que todo daño imputable a negligencia debe ser reparado.",
@@ -199,7 +206,8 @@
    "articulo": "2329",
    "frase": "todo daño que pueda imputarse a malicia o negligencia",
    "prensa": false,
-   "slot": 8
+   "slot": 8,
+   "titular": "La Suprema confirma indemnización por pérdida de oportunidad"
   },
   {
    "id": "1209",
@@ -210,7 +218,7 @@
     "https://assets.mixkit.co/videos/32770/32770-720.mp4"
    ],
    "tag": "DETENIDO EN LA FONDA",
-   "credito": "Código Procesal Penal · artículo 125",
+   "credito": "Fiestas Patrias · 18/09/2026",
    "voz": [
     "Cada dieciocho llegan detenciones por riñas y desórdenes en las fondas.",
     "Nadie puede ser detenido sino por orden de funcionario facultado por la ley.",
@@ -224,7 +232,8 @@
    "articulo": "125",
    "frase": "sino por orden de funcionario público expresamente facultado por la ley",
    "prensa": false,
-   "slot": 9
+   "slot": 9,
+   "titular": "Detenciones por riñas y desórdenes en las fondas del 18"
   },
   {
    "id": "1210",
@@ -235,7 +244,7 @@
     "https://assets.mixkit.co/videos/4526/4526-720.mp4"
    ],
    "tag": "ACCIDENTE EL 18",
-   "credito": "Ley 16.744 · accidentes del trabajo",
+   "credito": "Ley 16.744 · 18/09/2026",
    "voz": [
     "Mucha gente trabajó este dieciocho, y algunos se accidentaron en el turno.",
     "La ley cubre toda lesión ocurrida a causa o con ocasión del trabajo.",
@@ -249,7 +258,8 @@
    "articulo": "5",
    "frase": "a causa o con ocasión del trabajo",
    "prensa": false,
-   "slot": 10
+   "slot": 10,
+   "titular": "Accidentes laborales durante el feriado del 18"
   }
  ]
 }
