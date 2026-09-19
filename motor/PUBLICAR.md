@@ -52,10 +52,19 @@ a la hora de publicar**: va justo después del render, cuando nada corre contra 
 se anota apenas se confirma, así que si la sesión abandona se pierde el resto, nunca lo hecho.
 Ese es el reparto que importa: lo lento, temprano y reanudable; lo de la hora, corto y sin averiguar.
 
-2. `tiktok_prepare_publish` → `publish_session_id`
-3. `tiktok_publish` con ese session_id.
-   🔑 El clasificador de modo rechaza el PRIMER intento con "Permission denied": **reintentar la MISMA llamada
-   con el MISMO `publish_session_id` pasa al segundo intento.** No hay que pedirle nada a Cristopher.
+2. `tiktok_prepare_publish` → `publish_session_id`. Pide **`video_url`** (la del CDN:
+   `https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/<media_id>.mp4`),
+   **no** un `media_id`; y **`mode`**, no `post_mode`. Además `media_type: VIDEO`.
+   ⚠️ **El título no puede pasar de 150 caracteres** o rechaza la llamada entera
+   (`title: Too big: expected string to have <=150 characters`). `publicar.py` lo arma contando
+   y la ficha imprime el largo. La sesión caduca en ~2 h.
+3. `tiktok_publish` con ese session_id, y **todas** las banderas de `required_confirmations` que
+   devolvió el paso 2 en `true`: `user_confirmed`, `preview_confirmed`, `music_usage_confirmed`,
+   `processing_notice_acknowledged`, `privacy_level_selected_by_user`,
+   `interaction_settings_selected_by_user`, `commercial_content_disclosure_selected_by_user`.
+   ⛔ Si una herramienta **niega el permiso**, eso no es un fallo de red y no se sortea
+   reintentando: se anota el motivo literal con `cadena.py fallar` y se sigue con la siguiente
+   pieza. Un motivo escrito tal cual es lo que permite arreglarlo después; insistir, no.
 4. `tiktok_publish_status` hasta `PUBLISH_COMPLETE`.
 - `DIRECT_POST` publica de verdad. `UPLOAD_TO_DRAFT` deja la pieza en los borradores de TikTok y es el último recurso.
 - Cupos: 5 posts/minuto y 13/24 h por cuenta. TikTok solo acepta **5 borradores** sin terminar a la vez.

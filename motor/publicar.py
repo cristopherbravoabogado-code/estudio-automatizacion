@@ -40,11 +40,58 @@ import cadena as C                                            # noqa: E402
 
 CONNECTOR = "f23f2205-1ae6-4259-8240-e6f4165bbe79"            # motor/PUBLICAR.md
 
-# El pie de todas las piezas. Fijo a proposito: la marca se reconoce por repeticion, y ademas
-# una sesion que improvisa el texto cada vez es una sesion que tarda y que un dia escribe algo
-# que no corresponde firmar.
-PIE = "Estudio Juridico San Bernardo - orientacion inicial sin costo."
-ETIQUETAS = "#chile #derecho #noticias #abogado #leychile"
+# EL TOPE DE 150 CARACTERES, medido el 19/09/2026. `tiktok_prepare_publish` responde
+#     title: Too big: expected string to have <=150 characters
+# y rechaza la llamada entera. La primera version de este texto salia en 220 y habria reventado
+# a la hora de publicar, con la tarea ya corriendo y el reloj encima. Por eso el texto se arma
+# CONTANDO, y por eso `ficha` imprime el largo: lo que no se mide se publica roto.
+MAX_TITULO = 150
+
+# De donde se sirve una pieza ya subida a Higgsfield. `tiktok_prepare_publish` NO acepta un
+# media_id: pide `video_url`, y la url es esta base + el media_id. Medido el 19/09 contra la
+# herramienta, que contesto primero "video_url is required" y despues genero el preview.
+CDN = "https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/%s.mp4"
+
+# Fijas a proposito: la marca se reconoce por repeticion, y una sesion que improvisa el texto
+# cada vez es una sesion que tarda y que un dia escribe algo que no corresponde firmar.
+ETIQUETAS = "#chile #derecho #noticias"
+
+
+VACIAS = {"del", "la", "el", "los", "las", "de", "en", "y", "por", "con", "que",
+          "un", "una", "al", "su", "sus", "para", "es", "no"}
+
+
+def _plano(t):
+    """Minusculas y sin tildes, solo para COMPARAR. Lo que se publica conserva sus tildes."""
+    import unicodedata
+    t = unicodedata.normalize("NFD", t.lower())
+    return "".join(c for c in t if unicodedata.category(c) != "Mn")
+
+
+def _aporta(gancho, tema):
+    """¿El gancho agrega algo, o solo repite el tema?
+
+    Medido sobre las diez piezas del 19/09: el gancho casi siempre repite la primera palabra del
+    tema, y el texto salia "MICROTRAFICO: Microtrafico: que separa..." o "245 PARTES: 245
+    infracciones...". Eso se lee como un error, que es lo ultimo que puede parecer el post de un
+    abogado. El gancho tiene su lugar -en pantalla, dentro del video-; aqui solo entra si suma.
+    """
+    if not gancho or not tema:
+        return bool(gancho)
+    palabras = [w for w in _plano(gancho).replace(":", " ").split()
+                if len(w) >= 3 and w not in VACIAS]
+    cuerpo = _plano(tema)
+    return not any(w in cuerpo for w in palabras)
+
+
+def _recortar(texto, tope):
+    """Recorta en el ultimo espacio que quepa. Cortar a media palabra se ve a la legua."""
+    if len(texto) <= tope:
+        return texto
+    corte = texto[:tope].rstrip()
+    if " " in corte:
+        corte = corte[:corte.rindex(" ")].rstrip()
+    return corte.rstrip(".,;:") + "..."
 
 
 def texto_tiktok(p):
@@ -54,28 +101,34 @@ def texto_tiktok(p):
     no el texto, asi que cada tarea horaria lo inventaba. Eso es un problema de tres caras: la
     tarea se alarga (y las largas no cierran), la voz del estudio cambia de pieza en pieza, y
     -la grave- un texto improvisado puede afirmar de derecho algo que la pieza no verifico.
-    Aqui no se inventa nada: el gancho, el tema, el articulo y la frase salen tal cual del dia,
-    y la frase entre comillas es la que `leychile.py` encontro literalmente en la norma.
+    Aqui no se inventa nada: el gancho, el tema y el articulo salen tal cual del dia.
+
+    El nombre del estudio NO va en el texto: no cabe en 150 caracteres junto al titular, y ya
+    esta en pantalla dentro del video. Entre repetir la firma y que se entienda la noticia,
+    gana la noticia: el primer renglon es lo unico que se lee antes de deslizar.
     """
     tema = (p.get("tema") or "").strip()
     gancho = (p.get("gancho") or "").strip()
     art = (p.get("articulo") or "").strip()
-    frase = (p.get("frase") or "").strip()
 
-    lineas = []
-    if gancho and tema:
-        lineas.append("%s: %s" % (gancho, tema))
+    # Sin nombre de ley a menos que el dia lo traiga: el 19/09 una ley "recordada" de memoria
+    # resulto ser otra norma. Se cita lo que esta verificado y nada mas.
+    ley = (p.get("ley") or "").strip()
+    cita = ("Art. %s%s." % (art, " %s" % ley if ley else "")) if art else ""
+
+    cola = "\n".join(x for x in (cita, ETIQUETAS) if x)
+    sitio = MAX_TITULO - len(cola) - (1 if cola else 0)
+
+    if tema and gancho and _aporta(gancho, tema):
+        titular = "%s: %s" % (gancho, tema)
     else:
-        lineas.append(tema or gancho or "Noticia del dia")
-    if art:
-        # Sin nombre de ley a menos que el dia lo traiga: el 19/09 una ley "recordada" de memoria
-        # resulto ser otra norma. Se cita lo que esta verificado y nada mas.
-        ley = (p.get("ley") or "").strip()
-        cita = "Art. %s%s" % (art, " de la %s" % ley if ley else "")
-        lineas.append('%s: "%s".' % (cita, frase) if frase else "%s." % cita)
-    lineas.append(PIE)
-    lineas.append(ETIQUETAS)
-    return "\n".join(lineas)
+        titular = tema or gancho or "Noticia del dia"
+    titular = _recortar(titular, sitio)
+
+    texto = "\n".join(x for x in (titular, cola) if x)
+    if len(texto) > MAX_TITULO:                       # cinturon: nunca sale algo que TikTok rechace
+        texto = texto[:MAX_TITULO].rstrip()
+    return texto
 
 
 def listas(dia, solo_vencidas=True):
@@ -131,9 +184,11 @@ def cmd_ficha(args):
     print("pre-subida: %s" % ("SI, media_id=%s" % p["media_id"] if p.get("media_id")
                               else "NO - esta tarea va a ser larga (ver paso 1)"))
     print()
-    print("EL TEXTO DEL POST (copiar TAL CUAL, no reescribir):")
+    txt = texto_tiktok(p)
+    print("EL TEXTO DEL POST (copiar TAL CUAL, no reescribir) - %d de %d caracteres:"
+          % (len(txt), MAX_TITULO))
     print("---8<---")
-    print(texto_tiktok(p))
+    print(txt)
     print("--->8---")
     print()
     print("LOS PASOS (motor/PUBLICAR.md, via B):")
@@ -148,15 +203,29 @@ def cmd_ficha(args):
         print("       anotalo:  python3 motor/cadena.py anotar %d --campo media_id=<id>" % p["slot"])
         print("     OJO: media_import_url con la url de la Release NO funciona. GitHub la sirve")
         print("     como application/octet-stream y Higgsfield la rechaza. Medido el 19/09.")
-    print("  2. tiktok_prepare_publish  connector_id=%s  -> publish_session_id" % CONNECTOR)
+    print("  2. tiktok_prepare_publish -> publish_session_id. Los parametros exactos, medidos:")
+    print("       connector_id = %s" % CONNECTOR)
+    if p.get("media_id"):
+        print("       video_url    = %s" % (CDN % p["media_id"]))
+    else:
+        print("       video_url    = %s   (la del CDN, con el media_id del paso 1)" % (CDN % "<media_id>"))
+    print("       media_type   = VIDEO          mode = DIRECT_POST")
+    print("       title        = el texto de arriba, tal cual")
+    print("       privacy_level=PUBLIC_TO_EVERYONE  is_aigc=true")
+    print("       disable_comment/duet/stitch = false")
+    print("     OJO: pide 'video_url', NO 'media_id', y 'mode', NO 'post_mode'. El titulo no")
+    print("     puede pasar de %d caracteres o rechaza la llamada entera." % MAX_TITULO)
     print("  3. tiktok_publish  con ESE publish_session_id.")
-    print("     El clasificador rechaza el PRIMER intento con 'Permission denied':")
-    print("     repetir la MISMA llamada con el MISMO publish_session_id pasa al segundo.")
-    print("     No hay que pedirle nada a Cristopher.")
+    print("     Van en true TODAS las de required_confirmations que devuelva el paso 2:")
+    print("     user_confirmed, preview_confirmed, music_usage_confirmed,")
+    print("     processing_notice_acknowledged, privacy_level_selected_by_user,")
+    print("     interaction_settings_selected_by_user,")
+    print("     commercial_content_disclosure_selected_by_user.")
+    print("     Sin musica anadida: no llames a tiktok_music_trending.")
+    print("     Si te NIEGAN el permiso, no insistas: eso no es un error de red. Anota el")
+    print("     motivo literal con 'fallar' y sigue con la siguiente ranura.")
     print("  4. tiktok_publish_status hasta PUBLISH_COMPLETE. Solo eso cuenta como publicado.")
-    print()
-    print("ajustes fijos: privacy_level PUBLIC_TO_EVERYONE, is_aigc true, comentarios/duo/stitch")
-    print("habilitados, sin divulgacion comercial, sin musica anadida.")
+    print("     La sesion del paso 2 caduca en ~2 h: si se vence, repite el paso 2.")
     print()
     print("AL TERMINAR, una sola linea:")
     print("  python3 motor/cadena.py marcar %d publicado --campo publish_id=<el id>" % p["slot"])
