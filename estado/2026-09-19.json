@@ -337,6 +337,10 @@
         {
           "cuando": "2026-09-19T05:29:58-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:37:06-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "245 infracciones: velocidad, cinturón y sillas de niños",
@@ -408,7 +412,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1203.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1203.mp4",
+      "media_id": "a7dd5104-4e66-4af3-ac93-9131c110b572"
     },
     {
       "slot": 4,
@@ -460,6 +465,10 @@
         {
           "cuando": "2026-09-19T05:29:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-19T07:37:06-03:00",
+          "que": "anotado: media_id"
         }
       ],
       "tema": "Feriado irrenunciable: la DT fiscaliza y multa por trabajador afectado",
@@ -528,7 +537,8 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1204.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1204.mp4",
+      "media_id": "21a50e66-f026-4954-a70b-0a3dceb60f9a"
     },
     {
       "slot": 5,
@@ -1310,5 +1320,5 @@
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1210.mp4"
     }
   ],
-  "actualizado": "2026-09-19T07:34:11-03:00"
+  "actualizado": "2026-09-19T07:37:06-03:00"
 }
