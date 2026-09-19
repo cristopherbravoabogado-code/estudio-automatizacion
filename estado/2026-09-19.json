@@ -760,13 +760,21 @@
         {
           "cuando": "2026-09-19T07:37:58-03:00",
           "que": "anotado: media_id"
+        },
+        {
+          "cuando": "2026-09-19T19:42:20-03:00",
+          "que": "anotado: articulo"
+        },
+        {
+          "cuando": "2026-09-19T19:42:20-03:00",
+          "que": "anotado: frase"
         }
       ],
       "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
       "fuente": "Corte Suprema, Segunda Sala, fallo unánime 09/2026",
       "norma": "29291",
-      "articulo": "9",
-      "frase": "armas de fuego",
+      "articulo": "11",
+      "frase": "portaren armas de fuego",
       "gancho": "ARMAS Y LA PENA",
       "tramos": [
         "La Suprema confirmó condenas por porte ilegal de armas de fuego.",
@@ -1371,5 +1379,5 @@
       "media_id": "afd4eea2-5de9-402f-80e3-d2a7f306f439"
     }
   ],
-  "actualizado": "2026-09-19T13:27:59-03:00"
+  "actualizado": "2026-09-19T19:42:20-03:00"
 }
