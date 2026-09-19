@@ -36,9 +36,16 @@ o `providers[0].status = PUBLISHED` en `getScheduledPosts`. Siempre se vuelve a 
    servido da lo mismo.
 
 ### La pre-subida (fuera de la hora de publicar)
+La hace **T1.5** (`trig_01JUV3SAyCc2ncatq5XfkFum`, 09:00 UTC / 06:00 Chile), después del render de
+las 08:00 UTC y una hora antes de la primera ranura. `python3 motor/publicar.py presubir` imprime
+qué falta y los cinco pasos exactos; no hay que averiguar nada.
+
 Por pieza, con los bytes bajados de la Release:
 `media_upload` (nombre, `video/mp4`) → PUT de los bytes a la `upload_url` firmada → `media_confirm`
 → `python3 motor/cadena.py anotar N --campo media_id=<id>`.
+
+⚠️ El PUT **necesita** la cabecera `Content-Type: video/mp4`: la firma incluye `content-type`
+(`X-Amz-SignedHeaders=content-type;host`), así que sin ella el PUT falla.
 
 Es la parte lenta —la `upload_url` mide ~1.800 caracteres y hay que escribirla— y por eso **no va
 a la hora de publicar**: va justo después del render, cuando nada corre contra el reloj. Cada pieza

@@ -42,7 +42,11 @@ Además se midió que **ninguna de las tareas caídas tenía `finished_at`**: no
 - Metricool: `brandId 6851786`, zona `America/Santiago`
 - TikTok en Higgsfield: `connector_id f23f2205-1ae6-4259-8240-e6f4165bbe79`
 - URL de publicación: `https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/<media_id>.mp4`
-- Vía de respaldo: `media_import_url` → `tiktok_prepare_publish` → `tiktok_publish`. Cupos 5/minuto y 13/24 h
+- Vía viva: `tiktok_prepare_publish` → `tiktok_publish` → `tiktok_publish_status`. Cupos 5/minuto y 13/24 h
+- ⚠️ `media_import_url` **no** sirve con la url de la Release de GitHub: GitHub sirve todos los
+  assets de una Release como `application/octet-stream` (aunque los guarde como `video/mp4`) y
+  Higgsfield los rechaza. Medido el 19/09 desde los dos lados. Por eso existe T1.5: los bytes
+  suben antes de la hora y lo que viaja después es el `media_id`
 - Solo `PUBLISHED` cuenta como publicado. Un 200 al crear un post no prueba nada
 - Reglas duras del motor: un nodo de voz por tramo sin etiquetas `<break>`; textos siempre con tildes y ñ; audio estéreo 48 kHz; concatenar con el filtro `concat`, nunca con `-c copy`; control de audio antes de publicar (0 palabras fuera del guion, RMS de uniones ≤ −35 dBFS)
 
@@ -59,6 +63,7 @@ Los prompts vigentes están en `tareas/PROMPTS-CADENA.md`.
 |---|---|---|---|---|
 | **T1-NOCHE** encolar mañana | `trig_01ByZCVLhuBMRvSAH1vjbP9v` | `0 22 * * *` | 19:00 | Encola las ranuras 1–5 de mañana |
 | **T1-MAÑANA** encolar la tarde | `trig_01R2vJVkPRhzSqfU7vt2Sehc` | `0 11 * * *` | 08:00 | Encola las ranuras 6–10 con noticia fresca |
+| **T1.5** Pre-subida | `trig_01JUV3SAyCc2ncatq5XfkFum` | `0 9 * * *` | 06:00 | Sube a Higgsfield las piezas ya renderizadas y guarda su `media_id` |
 | **T2** Publicador | `trig_01NUjhWgu3AAA6ah6njxgVQy` | `0 0,1,10-23 * * *` | 16 veces/día | Publica lo vencido; reintenta solo a la hora siguiente |
 | **T3** Vigilante | `trig_018BGjU648of7vJq2YiRUhe7` | `34 */3 * * *` | cada 3 h | Audita; solo publica si algo venció hace +2 h |
 | SB 15:00 Viral y noticia | `trig_0131ftuMmRUmhdgoC47eaQiP` | `0 18 * * *` | 15:00 | Sin cambios: pieza de reacción del día |
@@ -66,6 +71,12 @@ Los prompts vigentes están en `tareas/PROMPTS-CADENA.md`.
 
 El render ya no lo hace ninguna de ellas: lo hace `.github/workflows/render-diario.yml` a las
 05:00, 09:00, 13:00 y 17:00 de Chile, sin sesión de por medio.
+
+**El reparto por tiempo (19/09).** T1.5 existe porque el trabajo pesado no puede caer a la hora de
+publicar. El 19/09 la ranura de las 07:00 no salió: T2 disparó a las 10:08 UTC y seguía `PENDING`
+sin `finished_at` a las 10:20, porque le tocaba subir 10 MB y transcribir una url firmada de 1.800
+caracteres. Con la pieza ya subida, T2 hace tres llamadas y cierra. **Lo lento va temprano y es
+reanudable; lo de la hora es corto y no averigua nada.**
 
 **Los prompts traen una guarda**: si `motor/cadena.py` no existe en `main`, la tarea responde una
 línea y termina sin hacer nada. Así no hacen daño mientras el rediseño no esté mergeado.
