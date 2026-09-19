@@ -248,11 +248,16 @@ def verificar(id_norma, frase, timeout=60, articulo=None):
             if ini_t <= i and (fin_t is None or i < fin_t):
                 return OK, contexto_de(i)
 
+    # Para DECIR en cual esta, no sirve el encabezado inmediatamente anterior: puede ser una de
+    # las notas de adentro ("Art. 2o" dentro del 160). Se toma el de numero MAYOR entre los que
+    # preceden a la frase, que es el articulo de verdad, porque las notas llevan numeros chicos.
     donde = []
     for i in posiciones:
-        previo = [c for _, c, pos in marcas if pos <= i]
-        if previo and previo[-1] not in donde:
-            donde.append(previo[-1])
+        previos = [(orden, c) for orden, c, pos in marcas if pos <= i]
+        if previos:
+            c = max(previos)[1]
+            if c not in donde:
+                donde.append(c)
     return OTRO_ARTICULO, ("la frase esta en la norma %s pero en el articulo %s, NO en el %s que "
                            "cita la pieza. Corrige la cita o cambia el articulo. contexto: ...%s..."
                            % (id_norma, ", ".join(donde) or "?", articulo, contexto_de(posiciones[0])))
