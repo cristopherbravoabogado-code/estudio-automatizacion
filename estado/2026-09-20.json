@@ -8,8 +8,8 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-20T10:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:12-03:00",
@@ -22,6 +22,10 @@
         {
           "cuando": "2026-09-19T19:35:12-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> fallido: control.py reprobo: voz"
         }
       ],
       "tema": "Balance final de Fiestas Patrias: 13 fallecidos y 170 detenidos",
@@ -37,14 +41,16 @@
         "No hace falta chocar ni atropellar a nadie. Basta con manejar así.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1301"
+      "pieza_id": "1301",
+      "estado_previo": "guion",
+      "motivo": "control.py reprobo: voz"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-20T12:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -57,6 +63,10 @@
         {
           "cuando": "2026-09-19T19:35:19-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> fallido: control.py reprobo: voz"
         }
       ],
       "tema": "139 de los 170 detenidos del 18 fueron por alcohol al volante",
@@ -72,13 +82,15 @@
         "Pero de un gramo por mil hacia arriba ya es estado de ebriedad, y eso se castiga con cárcel.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1302"
+      "pieza_id": "1302",
+      "estado_previo": "guion",
+      "motivo": "control.py reprobo: voz"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-20T14:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -92,6 +104,14 @@
         {
           "cuando": "2026-09-19T19:35:29-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
@@ -107,14 +127,78 @@
         "Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1303"
+      "pieza_id": "1303",
+      "control": {
+        "pieza": "1303.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 29.43,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.1,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              12.625,
+              19.55,
+              25.0
+            ],
+            "dbfs": [
+              -78.3,
+              -80.8,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "medido_en": "1303.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1303.mp4\", \"cuadros\": 10, \"palabras_medidas\": 45, \"recall_pantalla_chica\": 0.72, \"cajas_fuera_zona_segura\": 4, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 4}, \"cajas_dentro\": 42, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 46, \"seg\": 14.3, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Los fallecidos en carretera este 18 subieron 80 y 7% respecto del año pasado.  Detrás de cada cifra queda una familia que además tiene un juicio por delante.  El artículo 2314 del Código Civil obliga a indemnizar a quien causó el daño.  Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4"
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-20T16:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -127,6 +211,10 @@
         {
           "cuando": "2026-09-19T19:35:19-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> fallido: produce.py: Command 'ffmpeg -y -hide_banner -loglevel error -loop 1 -t 4.0 -i foto_1.jpg -f lavfi -t 4.0 -i anullsrc=r=48000:cl=stereo -filter_complex \"[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,zoompan=z='min(zoom+0.0012,1.20)':d=120:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
         }
       ],
       "tema": "Accidente de trayecto: volver del trabajo también está cubierto",
@@ -142,13 +230,15 @@
         "Denúncialo el mismo día: el parte de Carabineros y un testigo son lo que después te sostiene el caso.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1304"
+      "pieza_id": "1304",
+      "estado_previo": "guion",
+      "motivo": "produce.py: Command 'ffmpeg -y -hide_banner -loglevel error -loop 1 -t 4.0 -i foto_1.jpg -f lavfi -t 4.0 -i anullsrc=r=48000:cl=stereo -filter_complex \"[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,zoompan=z='min(zoom+0.0012,1.20)':d=120:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -162,6 +252,14 @@
         {
           "cuando": "2026-09-19T19:35:19-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -177,7 +275,71 @@
         "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1305"
+      "pieza_id": "1305",
+      "control": {
+        "pieza": "1305.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 29.5,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.1,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              12.15,
+              18.225,
+              25.05
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1305.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1305.mp4\", \"cuadros\": 10, \"palabras_medidas\": 81, \"recall_pantalla_chica\": 0.68, \"cajas_fuera_zona_segura\": 1, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 1}, \"cajas_dentro\": 80, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 81, \"seg\": 17.1, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Faltar sin justificación después del 18 tiene un nombre en la ley.  El artículo 160 del Código del Trabajo permite despedir por no concurrir dos días seguidos.  También por faltar dos lunes en el mismo mes o tres días en total dentro de ese mes.  Ese despido va sin indemnización, la licencia médica o el permiso por escrito son lo que lo evita.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4"
     },
     {
       "slot": 6,
@@ -531,5 +693,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T00:15:00-03:00"
+  "actualizado": "2026-09-20T05:33:41-03:00"
 }
