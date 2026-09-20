@@ -72,3 +72,17 @@ error dentro del archivo y sale con codigo 0 -asi entraron las fuentes falsas de
 en el render del 19/09-. Por eso toda descarga se mide antes de darla por buena: cabecera
 `%PDF-`, cola `%%EOF`, tamano minimo y sha256 a la vista. Lo que no pasa queda en
 `.rechazado` en vez de hacerse pasar por bueno.
+
+Para saber desde el contenedor si el asset ya esta arriba hay que pedir **bytes de verdad**,
+`curl -sL -r 0-7 <url>`: la url firmada de GitHub no cubre el HEAD, asi que `curl -I` no
+devuelve 200 aunque el archivo exista.
+
+### Lo ya bajado
+
+| Documento | Release | Bytes | sha256 |
+|---|---|---|---|
+| Codice Rohonc (MTA K 114) | `pdf-rohonc/codice-rohonc.pdf` | 11.978.814 | `099f631050b960a66774663e6163a7d8e7190014a6f7a44b587ae0f87575e006` |
+
+Espejo que respondio: `archive.org/download/RohonciCodexK114cs/Rohonci_Codex_K_114cs.pdf`
+(escaneo sin marca de agua). Bajado y verificado byte a byte en el contenedor el 20/09/2026:
+no hace falta volver a correr el workflow para tenerlo.

@@ -9,9 +9,13 @@ name: Descargar PDF
 # El runner, en cambio, tiene internet sin proxy (docs/RED-Y-BLOQUEOS.md).
 #
 # POR QUE ADEMAS UNA RELEASE Y NO SOLO UN ARTIFACT: el artifact solo se baja con la API de
-# GitHub, y api.github.com responde 403 desde el contenedor. Una Release se sirve por
-# objects.githubusercontent.com, que si se alcanza: es la unica forma de que la sesion que
-# pidio el PDF pueda tocarlo. Ademas las Releases no gastan la cuota de 500 MB de artifacts.
+# GitHub, y api.github.com responde 403 desde el contenedor. Una Release redirige a
+# release-assets.githubusercontent.com, que si se alcanza (medido el 20/09/2026: GET con
+# rango -> 206 y `%PDF-1.6`): es la unica forma de que la sesion que pidio el PDF pueda
+# tocarlo. Ademas las Releases no gastan la cuota de 500 MB de artifacts.
+#
+# OJO: `curl -I` sobre esa url NO devuelve 200 -la firma de la url no cubre el HEAD-. Para
+# saber si el asset ya esta, pedir bytes de verdad: `curl -sL -r 0-7`.
 #
 # COMO SE DISPARA. `workflow_dispatch` solo existe cuando el archivo ya esta en la rama por
 # defecto, asi que hacen falta dos puertas:
