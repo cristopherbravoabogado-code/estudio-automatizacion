@@ -13,11 +13,16 @@ name: Descargar PDF
 # objects.githubusercontent.com, que si se alcanza: es la unica forma de que la sesion que
 # pidio el PDF pueda tocarlo. Ademas las Releases no gastan la cuota de 500 MB de artifacts.
 #
-# COMO SE DISPARA: `workflow_dispatch` solo aparece cuando el archivo esta en la rama por
-# defecto, asi que mientras esto viva en una rama se corre empujando una etiqueta `pdf-*`
-# (la Release queda colgada de esa misma etiqueta).
+# COMO SE DISPARA. `workflow_dispatch` solo existe cuando el archivo ya esta en la rama por
+# defecto, asi que hacen falta dos puertas:
 #
-#     git tag pdf-rohonc && git push origin pdf-rohonc
+#   - En `main`: a mano, eligiendo documento o url.
+#   - En una rama `claude/**`: corre SOLO cuando el empujon toca el descargador mismo. Es la
+#     unica puerta que le queda a una sesion de Claude, porque su credencial esta limitada a
+#     su rama: empujar una etiqueta `pdf-*` devuelve 403 (medido el 20/09/2026).
+#
+# La Release se llama `pdf-<documento>` y el asset se sube con --clobber, asi que volver a
+# correrlo no duplica nada: deja el mismo PDF, comprobado otra vez.
 
 on:
   workflow_dispatch:
@@ -31,8 +36,11 @@ on:
         required: false
         default: ''
   push:
-    tags:
-      - 'pdf-*'
+    branches:
+      - 'claude/**'
+    paths:
+      - '.github/workflows/descargar-pdf.yml'
+      - 'motor/descarga.py'
 
 permissions:
   contents: write          # crear la Release y subirle el PDF
@@ -51,16 +59,12 @@ jobs:
           set -euo pipefail
           DOC="${{ inputs.documento }}"
           URL="${{ inputs.url }}"
-          # Empujado como etiqueta: el nombre del documento va DESPUES de 'pdf-'.
-          if [ -z "$DOC" ] && [ -z "$URL" ]; then
-            DOC="${GITHUB_REF_NAME#pdf-}"
-          fi
-          [ -n "$DOC" ] || [ -n "$URL" ] || { echo "::error::ni documento ni url"; exit 1; }
-          TAG="${GITHUB_REF_TYPE}"
-          if [ "$TAG" = "tag" ]; then TAG="${GITHUB_REF_NAME}"; else TAG="pdf-${DOC:-directo}"; fi
-          echo "doc=$DOC"  >> "$GITHUB_OUTPUT"
-          echo "url=$URL"  >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG"  >> "$GITHUB_OUTPUT"
+          # Disparado por un empujon a la rama no hay inputs: se baja el catalogo por defecto.
+          if [ -z "$DOC" ] && [ -z "$URL" ]; then DOC="rohonc"; fi
+          TAG="pdf-${DOC:-directo}"
+          echo "doc=$DOC" >> "$GITHUB_OUTPUT"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "Documento '$DOC' url '$URL' -> release $TAG"
 
       - name: Bajar y comprobar
