@@ -9,7 +9,7 @@
       "hora_chile": "07:00",
       "hora_utc": "2026-09-20T10:00:00Z",
       "estado": "fallido",
-      "intentos": 1,
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:12-03:00",
@@ -26,6 +26,10 @@
         {
           "cuando": "2026-09-20T05:33:41-03:00",
           "que": "guion -> fallido: control.py reprobo: voz"
+        },
+        {
+          "cuando": "2026-09-20T06:08:11-03:00",
+          "que": "fallido -> fallido: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #1 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
         }
       ],
       "tema": "Balance final de Fiestas Patrias: 13 fallecidos y 170 detenidos",
@@ -42,15 +46,15 @@
         "Si necesitas asesoría, escríbenos."
       ],
       "pieza_id": "1301",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: voz"
+      "estado_previo": "fallido",
+      "motivo": "el render paso pero cadena.py rechazo el paso: ERROR: la ranura #1 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-20T12:00:00Z",
       "estado": "fallido",
-      "intentos": 1,
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -67,6 +71,10 @@
         {
           "cuando": "2026-09-20T05:33:41-03:00",
           "que": "guion -> fallido: control.py reprobo: voz"
+        },
+        {
+          "cuando": "2026-09-20T06:08:11-03:00",
+          "que": "fallido -> fallido: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #2 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
         }
       ],
       "tema": "139 de los 170 detenidos del 18 fueron por alcohol al volante",
@@ -83,15 +91,15 @@
         "Si necesitas asesoría, escríbenos."
       ],
       "pieza_id": "1302",
-      "estado_previo": "guion",
-      "motivo": "control.py reprobo: voz"
+      "estado_previo": "fallido",
+      "motivo": "el render paso pero cadena.py rechazo el paso: ERROR: la ranura #2 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-20T14:00:00Z",
       "estado": "fallido",
-      "intentos": 1,
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:29-03:00",
@@ -116,6 +124,10 @@
         {
           "cuando": "2026-09-20T05:52:49-03:00",
           "que": "alojado -> fallido: fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de carretera de 2026. La licencia estaba bien; la pertinencia no se filtra."
+        },
+        {
+          "cuando": "2026-09-20T06:08:11-03:00",
+          "que": "fallido -> fallido: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #3 esta fallida (fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de "
         }
       ],
       "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
@@ -196,15 +208,15 @@
         "falla": []
       },
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4",
-      "estado_previo": "alojado",
-      "motivo": "fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de carretera de 2026. La licencia estaba bien; la pertinencia no se filtra."
+      "estado_previo": "fallido",
+      "motivo": "el render paso pero cadena.py rechazo el paso: ERROR: la ranura #3 esta fallida (fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de "
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-20T16:00:00Z",
       "estado": "fallido",
-      "intentos": 1,
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -221,6 +233,10 @@
         {
           "cuando": "2026-09-20T05:33:41-03:00",
           "que": "guion -> fallido: produce.py: Command 'ffmpeg -y -hide_banner -loglevel error -loop 1 -t 4.0 -i foto_1.jpg -f lavfi -t 4.0 -i anullsrc=r=48000:cl=stereo -filter_complex \"[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,zoompan=z='min(zoom+0.0012,1.20)':d=120:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
+        },
+        {
+          "cuando": "2026-09-20T06:08:11-03:00",
+          "que": "fallido -> fallido: produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_2.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x561608e12080] No JPEG data found in image\n[mjpeg @ 0x561608e19940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x561608e197c0] Error submitting packet to decoder: Invalid data found when proces"
         }
       ],
       "tema": "Accidente de trayecto: volver del trabajo también está cubierto",
@@ -237,15 +253,15 @@
         "Si necesitas asesoría, escríbenos."
       ],
       "pieza_id": "1304",
-      "estado_previo": "guion",
-      "motivo": "produce.py: Command 'ffmpeg -y -hide_banner -loglevel error -loop 1 -t 4.0 -i foto_1.jpg -f lavfi -t 4.0 -i anullsrc=r=48000:cl=stereo -filter_complex \"[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,zoompan=z='min(zoom+0.0012,1.20)':d=120:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
+      "estado_previo": "fallido",
+      "motivo": "produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_2.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x561608e12080] No JPEG data found in image\n[mjpeg @ 0x561608e19940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x561608e197c0] Error submitting packet to decoder: Invalid data found when proces"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
       "estado": "fallido",
-      "intentos": 1,
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -270,6 +286,10 @@
         {
           "cuando": "2026-09-20T05:52:49-03:00",
           "que": "alojado -> fallido: PERSONAS IDENTIFICABLES: Commons devolvio fotos de una fiesta de trabajadores (credito NOIRLab/NSF/AURA) con caras reconocibles, sobre una pieza que habla de despido por faltar al trabajo. Da a entender que esas personas son el caso. No se publica."
+        },
+        {
+          "cuando": "2026-09-20T06:08:12-03:00",
+          "que": "fallido -> fallido: produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_0.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x557c38a95080] No JPEG data found in image\n[mjpeg @ 0x557c38a9c940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x557c38a9c7c0] Error submitting packet to decoder: Invalid data found when proces"
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -350,8 +370,8 @@
         "falla": []
       },
       "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4",
-      "estado_previo": "alojado",
-      "motivo": "PERSONAS IDENTIFICABLES: Commons devolvio fotos de una fiesta de trabajadores (credito NOIRLab/NSF/AURA) con caras reconocibles, sobre una pieza que habla de despido por faltar al trabajo. Da a entender que esas personas son el caso. No se publica."
+      "estado_previo": "fallido",
+      "motivo": "produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_0.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x557c38a95080] No JPEG data found in image\n[mjpeg @ 0x557c38a9c940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x557c38a9c7c0] Error submitting packet to decoder: Invalid data found when proces"
     },
     {
       "slot": 6,
@@ -705,5 +725,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T05:52:49-03:00"
+  "actualizado": "2026-09-20T06:08:12-03:00"
 }
