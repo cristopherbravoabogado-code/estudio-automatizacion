@@ -1,4 +1,4 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
@@ -44,6 +44,33 @@ transcriptor, es lo que la pieza dice. Dos causas sumadas, las dos ya corregidas
 - ✅ **Control 7 — `control.voz(media, guion)`, después del render. BLOQUEA solo por ñ.** Ver paso 3b.
 - ⛔ **Una pieza que reprueba el control 6 o el 7 se REHACE desde el guion.** El remux arregla el contenedor de
   audio, no lo que la voz dice. Y si ya salió al aire, no se republica (regla de Cristopher del 07/09).
+
+**2-ter. NINGÚN CONTROL SE APAGA POR OMISIÓN (norma del 20/09/2026).**
+Un control que se desactiva solo cuando el llamador no le pasa un dato no es un control: es una intención con
+nombre de función. Si le falta lo que necesita para medir, **falla CERRADA** — `pasa: False` y la pieza no sube.
+Ya pasó dos veces, con el mismo mecanismo y un control de distancia:
+- **19/09 — controles 6 y 7.** `controlar()` los omitía si no se le pasaba el guion y devolvía `pasa: True`
+  igual. Corregido en `control.py` v3: sin guion, `pasa: False`. Para mirar una pieza ya publicada sin guion
+  existe `auditar()`, que **no sube nada**.
+- **20/09 — control 4 (uniones).** `uniones()` empezaba con `if not cortes: return True, []`. Medido sobre la
+  **1003** (`0b199268-…`, alojada y sin publicar): `controlar()` sin cortes devolvía
+  `uniones {'ok': True, 'valor': []}` y `pasa: True` — es decir, la puerta aprobaba una pieza cuyos empalmes
+  nadie había medido. Y no era teórico: `produce.py` pasa `cortes = []` cuando le falta el
+  `<id>.mp3.tramos.json`, y `build_sv.py` pasa `t0[1:]`, que puede venir vacío. Es justamente el control que
+  corresponde al defecto de **la pieza con la segunda mitad muda**.
+  - ✅ Corregido en `control.py` **v4**: `cortes_auto(media)` **encuentra los empalmes sola** (silencedetect a
+    −25 dB, se queda con las pausas de ≥ 0,6 s y descarta la cola de silencio del final; el corte es el centro
+    de la pausa). `uniones()` sin cortes los busca; si no aparece ninguno, **`pasa: False`**.
+  - 🔑 **Se acabó el LEAD de 0,5 s** de la regla dura 6: existía solo porque la pausa se buscaba en el mp3 y se
+    medía en el mp4. Ahora se detecta y se mide **sobre el mismo archivo**, así que no hay desfase que corregir.
+  - ⚠️ En **REACCIÓN** se le pasa `media_voz` (el mp3 de la voz) y `saltar_primero=True`. Si se le pasa el mp4,
+    el audio del noticiero tapa las pausas, no encuentra empalmes y **bloquea diciéndolo** — que es la conducta
+    correcta, no un falso positivo.
+  - Verificado el 20/09 contra la 1003: encuentra los 4 empalmes (6,41 · 12,94 · 18,31 · 24,60 s), mide
+    −42,0 / −40,2 / −40,4 / −40,7 dBFS (tope −35) y deja fuera las 3 pausas de coma de 0,27-0,34 s.
+- 🔑 **La prueba que hay que correrle a todo control nuevo**: llamarlo SIN el dato que necesita. Si contesta que
+  sí, está roto. No basta con arreglar el caso concreto — el 19/09 se arregló el del guion mirando la voz en vez
+  de la forma del defecto, y por eso el control 4 quedó abierto un día más.
 
 ### 3. AUDIO 48 kHz ESTÉREO, UNIDO CON EL FILTRO `concat` (norma del 11/09/2026)
 Toda la cadena de audio corre a **48000 Hz, 2 canales**, y los tramos se empalman con el **filtro** `concat`
@@ -364,6 +391,8 @@ importándolo, no copiándolo.**
    es deliberada, no un defecto. Además se salta el primer corte interior (`tramos[2:-1]`): ver el bloque de clips de prensa.
    ⚠️ **Lo mismo con música**: con cama musical los huecos ya NO miden silencio por diseño (suben a ≈ −13 LUFS).
    Este control 4 se mide **siempre sobre el mp3 de voz**, nunca sobre la mezcla, o reprueba una pieza sana.
+   🔑 **Desde el 20/09 (control.py v4) no hay que calcularlos a mano**: `control.cortes_auto()` encuentra los
+   empalmes sola y `uniones()` los busca si no se los dan. Si no aparece ninguno, **bloquea**. Ver regla dura 2-ter.
 
 ## Grilla
 6 diarias (D-10 rev. 05/09): 09:00, 12:00, 13:00, 16:00, 18:00, 20:00. Recalcular con `getBestTimeToPostByNetwork` cada lunes.
@@ -389,6 +418,8 @@ v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días 
   "por anos de servicio" con el control marcando 0 palabras fuera. Ver regla dura 2-bis y el paso 3b.
 - **No dejar un control de contenido en manos de que alguien se acuerde de correrlo a mano.** Si no está en
   `control.py` y no puede bloquear la subida, no es un control: es una intención. Ver regla dura 3-ter.
+- **No dejar que un control se apague porque el llamador no le pasó un dato.** Si le falta lo que necesita para
+  medir, falla CERRADA. La prueba: llamarlo SIN ese dato; si contesta que sí, está roto. Ver regla dura 2-ter.
 - **No unir audio con el demuxer `concat` ni entregar mono/44,1 kHz.** Ver regla dura 3.
 - **No publicar de la RESERVA sin re-medir el audio con `ffprobe` justo antes.** El stock renderizado antes de una regla dura no la cumple, y la etiqueta "control de audio limpio" de la bitácora es del día en que se escribió. Ver regla dura 3-bis.
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
