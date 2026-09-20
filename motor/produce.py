@@ -64,7 +64,7 @@ motor/ganchos/cola.json. Si no coincide, la pieza no se produce y resultado.json
 
 Uso: python3 produce.py job.json   (dentro de UNA llamada sandbox_exec con background:true)
 """
-import json, os, re, subprocess, sys, unicodedata, urllib.request
+import json, os, re, subprocess, sys, unicodedata, urllib.parse, urllib.request
 
 RAW = "https://raw.githubusercontent.com/cristopherbravoabogado-code/estudio-automatizacion/main/"
 DEPS = ["videolab/voz.py", "videolab/karaoke.py", "videolab/pantalla_chica.py",
@@ -206,7 +206,16 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
 
     partes = []
     for n, f in enumerate(elegidas):
-        sh(f"curl -sL -A 'Mozilla/5.0' -o foto_{n}.jpg '{f['url']}'")
+        # LA EXTENSION IMPORTA, aunque parezca que no. ffmpeg elige el decodificador por el
+        # nombre del archivo: guardar un PNG como "foto_0.jpg" le hace buscar datos JPEG dentro
+        # y morir con "No JPEG data found in image". Paso el 20/09, y solo despues de arreglar
+        # el filtro de pertinencia: hasta entonces Commons devolvia JPEG por casualidad, y en
+        # cuanto las fotos buenas incluyeron un PNG -"Carretera Austral.png"- se cayeron dos
+        # piezas. Un acierto del filtro destapo un fallo que llevaba ahi desde el principio.
+        ext = os.path.splitext(urllib.parse.urlparse(f["url"]).path)[1].lower()
+        if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff"):
+            ext = ".jpg"
+        sh(f"curl -sL -A 'Mozilla/5.0' -o foto_{n}{ext} '{f['url']}'")
         # PRIMERO SE ACHICA LA FOTO, UNA VEZ. Commons sirve originales enormes -hasta 25 MB, y
         # eso son decenas de megapixeles-. Con "-loop 1" sobre ese archivo, ffmpeg arrastra la
         # imagen gigante por cada uno de los 120 cuadros: el 20/09 la pieza 1304 se colgo los
@@ -214,7 +223,7 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
         # a 1920x1080 deja el zoom trabajando siempre sobre el mismo tamano, sea cual sea el
         # original, y con force_original_aspect_ratio=increase no importa si la foto viene
         # apaisada, vertical o panoramica.
-        sh(f'ffmpeg -y -hide_banner -loglevel error -i foto_{n}.jpg -frames:v 1 '
+        sh(f'ffmpeg -y -hide_banner -loglevel error -i foto_{n}{ext} -frames:v 1 '
            f'-vf "scale=1920:1080:force_original_aspect_ratio=increase:flags=lanczos,'
            f'crop=1920:1080" base_{n}.png')
         # El zoom lento (Ken Burns) es lo que hace que una foto se lea como video. Sin el, la
