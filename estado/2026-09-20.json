@@ -560,8 +560,8 @@
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "alojado",
-      "intentos": 6,
+      "estado": "fallido",
+      "intentos": 7,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -622,6 +622,10 @@
         {
           "cuando": "2026-09-20T07:59:59-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-20T08:21:09-03:00",
+          "que": "alojado -> fallido: PERSONA IDENTIFICABLE otra vez: 'Linea 9 - inicio de obras' es un acto oficial con un hombre de casco en un atril, de frente, sobre una pieza que habla de despido por faltar al trabajo. El filtro no lo caza porque el titulo no nombra personas."
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -701,7 +705,9 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4",
+      "estado_previo": "alojado",
+      "motivo": "PERSONA IDENTIFICABLE otra vez: 'Linea 9 - inicio de obras' es un acto oficial con un hombre de casco en un atril, de frente, sobre una pieza que habla de despido por faltar al trabajo. El filtro no lo caza porque el titulo no nombra personas."
     },
     {
       "slot": 6,
@@ -1055,5 +1061,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T07:59:59-03:00"
+  "actualizado": "2026-09-20T08:21:09-03:00"
 }
