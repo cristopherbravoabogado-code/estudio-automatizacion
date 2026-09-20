@@ -1066,10 +1066,37 @@
       "slot": 10,
       "hora_chile": "22:00",
       "hora_utc": "2026-09-21T01:00:00Z",
-      "estado": "vacio",
+      "estado": "guion",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-20T08:46:32-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-20T08:46:32-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-20T08:46:32-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "36.200 fiscalizaciones de Carabineros en Fiestas Patrias 2026",
+      "fuente": "Carabineros de Chile, balance nacional, 19/09/2026",
+      "norma": "29708",
+      "articulo": "115 A",
+      "frase": "bajo la influencia del alcohol",
+      "gancho": "36 MIL CONTROLES",
+      "tramos": [
+        "Carabineros hizo treinta y seis mil doscientos controles en estas Fiestas Patrias.",
+        "Diez mil novecientos fueron con alcotest o narcotest.",
+        "Negarte a soplar no te libra: la ley presume que ibas con alcohol y te arriesgas a lo mismo.",
+        "Lo que sí puedes pedir es que el resultado quede por escrito y una copia del parte.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "pieza_id": "1306"
     }
   ],
-  "actualizado": "2026-09-20T08:26:47-03:00"
+  "actualizado": "2026-09-20T08:46:32-03:00"
 }

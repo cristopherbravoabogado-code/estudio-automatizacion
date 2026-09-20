@@ -110,6 +110,28 @@
     "Si necesitas asesoría, escríbenos."
    ],
    "slot": 5
+  },
+  {
+   "id": "1306",
+   "materia": "transito",
+   "formato": "F15",
+   "prensa": false,
+   "tag": "36 MIL CONTROLES",
+   "credito": "Carabineros · 19/09/2026",
+   "titular": "36.200 controles en cuatro días: qué te pueden pedir y qué no",
+   "tema": "36.200 fiscalizaciones de Carabineros en Fiestas Patrias 2026",
+   "fuente": "Carabineros de Chile, balance nacional, 19/09/2026",
+   "norma": "29708",
+   "articulo": "190",
+   "frase": "negativa injustificada a someterse a las pruebas",
+   "voz": [
+    "Carabineros hizo treinta y seis mil doscientos controles en estas Fiestas Patrias.",
+    "Diez mil novecientos fueron con alcotest o narcotest.",
+    "Negarte a soplar no te salva: el artículo ciento noventa dice que el juez puede tomar esa negativa como antecedente suficiente para tenerte por ebrio.",
+    "Lo que sí puedes pedir es una copia del parte y que el resultado quede por escrito.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "slot": 10
   }
  ]
 }
