@@ -186,7 +186,8 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
         if len(elegidas) >= cuantas:
             break
         try:
-            for f in _M.buscar(c, limite=cuantas, max_mb=25, tipo="imagen"):
+            for f in _M.buscar(c, limite=cuantas, max_mb=25, tipo="imagen",
+                               exigir=_M.terminos_de(c), sin_gente=True):
                 if f["url"] in vistas:
                     continue
                 vistas.add(f["url"])
@@ -206,16 +207,23 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
     partes = []
     for n, f in enumerate(elegidas):
         sh(f"curl -sL -A 'Mozilla/5.0' -o foto_{n}.jpg '{f['url']}'")
+        # PRIMERO SE ACHICA LA FOTO, UNA VEZ. Commons sirve originales enormes -hasta 25 MB, y
+        # eso son decenas de megapixeles-. Con "-loop 1" sobre ese archivo, ffmpeg arrastra la
+        # imagen gigante por cada uno de los 120 cuadros: el 20/09 la pieza 1304 se colgo los
+        # 900 segundos del tope en UNA sola foto y se perdio la ranura entera. Normalizar antes
+        # a 1920x1080 deja el zoom trabajando siempre sobre el mismo tamano, sea cual sea el
+        # original, y con force_original_aspect_ratio=increase no importa si la foto viene
+        # apaisada, vertical o panoramica.
+        sh(f'ffmpeg -y -hide_banner -loglevel error -i foto_{n}.jpg -frames:v 1 '
+           f'-vf "scale=1920:1080:force_original_aspect_ratio=increase:flags=lanczos,'
+           f'crop=1920:1080" base_{n}.png')
         # El zoom lento (Ken Burns) es lo que hace que una foto se lea como video. Sin el, la
-        # pieza parece una lamina y el espectador desliza. Se escala a 2400 antes de animar
-        # para que el zoom no muestre los pixeles de la foto original.
+        # pieza parece una lamina y el espectador desliza.
         cuadros = int(por_foto * 30)
-        vf = (
-            "[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,"
-            "zoompan=z='min(zoom+0.0012,1.20)':d=%d:"
-            "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]" % cuadros
-        )
-        sh('ffmpeg -y -hide_banner -loglevel error -loop 1 -t %s -i foto_%d.jpg '
+        vf = ("[0:v]zoompan=z='min(zoom+0.0012,1.20)':d=%d:"
+              "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
+              % cuadros)
+        sh('ffmpeg -y -hide_banner -loglevel error -loop 1 -t %s -i base_%d.png '
            '-f lavfi -t %s -i anullsrc=r=48000:cl=stereo -filter_complex "%s" '
            '-map "[v]" -map 1:a -t %s -c:v libx264 -preset veryfast -crf 20 '
            '-c:a aac -ar 48000 -ac 2 fotoc_%d.mp4'
@@ -317,9 +325,14 @@ def una(p):
         # tiene que conseguir nada. Las consultas salen de la pieza; si no trae 'fotos', se
         # usa su titular, que ya describe la noticia.
         if not met_.get("url") and not p.get("clips") and not p.get("hook"):
-            consultas_ = p.get("fotos") or [q for q in
-                                            [(p.get("titular") or "")[:60], p.get("tema", "")[:60],
-                                             "Chile " + p.get("materia", "")] if q.strip()]
+            # Las consultas NO salen del titular. Un titular es una frase, y Commons busca a
+            # texto completo: el 20/09, "Las muertes en carretera del 18 subieron 87%" devolvio
+            # grabados del siglo XIX porque lo unico que casaba era "Chile". Salen de la materia
+            # (metraje.CONSULTAS_MATERIA), que apunta a la institucion de la noticia.
+            import metraje as _MM
+            consultas_ = (p.get("fotos")
+                          or _MM.CONSULTAS_MATERIA.get(p.get("materia") or "")
+                          or _MM.CONSULTAS_POR_DEFECTO)
             ok_f, res_f = fotos_a_clip(consultas_, f"hook{i}.mp4")
             if not ok_f:
                 r["error"] = "no se pudo armar la pieza con fotografia: %s" % res_f
