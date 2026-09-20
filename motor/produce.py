@@ -227,7 +227,15 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
 
     buenas = []
     for n, f in enumerate(elegidas):
-        sh(f"curl -sfL -A 'Mozilla/5.0' -o cruda_{n} '{f['url']}' || true")
+        # EL USER-AGENT DE LA DESCARGA, NO SOLO EL DE LA BUSQUEDA. Wikimedia pide un agente que
+        # diga quien eres y bloquea a los que se hacen pasar por navegador; metraje.py ya manda
+        # el del estudio en la API -por eso las busquedas funcionaron todo el dia- pero la
+        # descarga iba con "Mozilla/5.0". El 20/09 la pieza 1305 bajo CERO de sus cuatro fotos
+        # en el runner, con las mismas urls que si bajan desde otra maquina: la diferencia no
+        # eran las fotos, era quien las pedia y desde donde. Se reintenta ademas, porque una
+        # tanda de diez piezas son cuarenta descargas seguidas contra el mismo servidor.
+        sh(f"curl -sfL --retry 3 --retry-delay 2 --retry-all-errors --max-time 120 "
+           f"-A '{_M.UA}' -o cruda_{n} '{f['url']}' || true")
         ext = _tipo_real(f"cruda_{n}")
         if not ext:
             print("  foto descartada (no es una imagen): %s" % f["titulo"][:60])
