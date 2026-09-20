@@ -1,0 +1,100 @@
+name: Descargar PDF
+
+# Baja un PDF de dominio publico donde SI hay red, y lo deja alojado en una url que el
+# contenedor de Claude alcanza.
+#
+# POR QUE: el contenedor de las sesiones no llega a los espejos. Medido el 20/09/2026, el
+# proxy de egress contesta 403 al CONNECT -antes de cualquier peticion HTTP- para
+# archive.org, www.holybooks.com y upload.wikimedia.org. Lo unico que alcanza es GitHub.
+# El runner, en cambio, tiene internet sin proxy (docs/RED-Y-BLOQUEOS.md).
+#
+# POR QUE ADEMAS UNA RELEASE Y NO SOLO UN ARTIFACT: el artifact solo se baja con la API de
+# GitHub, y api.github.com responde 403 desde el contenedor. Una Release se sirve por
+# objects.githubusercontent.com, que si se alcanza: es la unica forma de que la sesion que
+# pidio el PDF pueda tocarlo. Ademas las Releases no gastan la cuota de 500 MB de artifacts.
+#
+# COMO SE DISPARA: `workflow_dispatch` solo aparece cuando el archivo esta en la rama por
+# defecto, asi que mientras esto viva en una rama se corre empujando una etiqueta `pdf-*`
+# (la Release queda colgada de esa misma etiqueta).
+#
+#     git tag pdf-rohonc && git push origin pdf-rohonc
+
+on:
+  workflow_dispatch:
+    inputs:
+      documento:
+        description: 'Documento del catalogo de motor/descarga.py (ej: rohonc)'
+        required: false
+        default: 'rohonc'
+      url:
+        description: 'Url directa a un PDF, en vez de un documento del catalogo'
+        required: false
+        default: ''
+  push:
+    tags:
+      - 'pdf-*'
+
+permissions:
+  contents: write          # crear la Release y subirle el PDF
+
+jobs:
+  descargar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Que hay que bajar
+        id: que
+        run: |
+          set -euo pipefail
+          DOC="${{ inputs.documento }}"
+          URL="${{ inputs.url }}"
+          # Empujado como etiqueta: el nombre del documento va DESPUES de 'pdf-'.
+          if [ -z "$DOC" ] && [ -z "$URL" ]; then
+            DOC="${GITHUB_REF_NAME#pdf-}"
+          fi
+          [ -n "$DOC" ] || [ -n "$URL" ] || { echo "::error::ni documento ni url"; exit 1; }
+          TAG="${GITHUB_REF_TYPE}"
+          if [ "$TAG" = "tag" ]; then TAG="${GITHUB_REF_NAME}"; else TAG="pdf-${DOC:-directo}"; fi
+          echo "doc=$DOC"  >> "$GITHUB_OUTPUT"
+          echo "url=$URL"  >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG"  >> "$GITHUB_OUTPUT"
+          echo "Documento '$DOC' url '$URL' -> release $TAG"
+
+      - name: Bajar y comprobar
+        run: |
+          set -euo pipefail
+          mkdir -p _salida
+          if [ -n "${{ steps.que.outputs.url }}" ]; then
+            python3 motor/descarga.py --url "${{ steps.que.outputs.url }}" --destino _salida | tee _salida/informe.txt
+          else
+            python3 motor/descarga.py "${{ steps.que.outputs.doc }}" --destino _salida | tee _salida/informe.txt
+          fi
+          ls -l _salida/
+
+      - name: Alojar el PDF como Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.que.outputs.tag }}"
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --title "PDF: ${{ steps.que.outputs.doc }}" \
+              --notes "Bajado por .github/workflows/descargar-pdf.yml. Documento de dominio publico; el repositorio no lo versiona (ver README, regla 1)."
+          for f in _salida/*.pdf; do
+            [ -e "$f" ] || continue
+            gh release upload "$TAG" "$f" --clobber
+            echo "$(basename "$f") -> https://github.com/${{ github.repository }}/releases/download/$TAG/$(basename "$f")"
+          done
+
+      - name: Guardarlo tambien como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.que.outputs.tag }}
+          path: |
+            _salida/*.pdf
+            _salida/informe.txt
+          retention-days: 7
+          if-no-files-found: error

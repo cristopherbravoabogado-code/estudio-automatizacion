@@ -39,3 +39,34 @@ minutos y no hay que regenerar nada.
 GitHub Actions. Los runners tienen internet sin proxy: descargan de
 cualquier CDN, instalan con pip y llaman APIs directamente.
 Ver `.github/workflows/render-lote.yml`.
+
+## Bajar un PDF o un documento de una biblioteca (20/09/2026)
+
+Mismo muro, otra puerta. Medido hoy desde el contenedor:
+
+| Destino | CONNECT |
+|---|---|
+| archive.org, web.archive.org, ia*.us.archive.org | 403 |
+| www.holybooks.com | 403 |
+| upload.wikimedia.org, commons.wikimedia.org | 403 |
+| real.mtak.hu (Academia Hungara) | 403 |
+| github.com, raw.githubusercontent.com | OK |
+
+El rechazo es al **tunel**, no a la peticion: no hay user-agent, cabecera ni reintento que
+lo cambie, y rodearlo esta prohibido. Lo que si funciona:
+
+    git tag pdf-rohonc && git push origin pdf-rohonc
+
+Eso dispara `.github/workflows/descargar-pdf.yml`, que corre `motor/descarga.py` en el
+runner -internet sin proxy- y deja el PDF **como asset de una Release**. Esa url si se
+alcanza desde el contenedor, que es el punto: un artifact no serviria, porque bajarlo pide
+`api.github.com` y eso es 403.
+
+`motor/descarga.py` corre igual en el Mac (`python3 motor/descarga.py rohonc`), sin pip: es
+solo biblioteca estandar.
+
+**Lo unico que aporta de verdad es comprobar.** `curl -sL` ante un 403 guarda la pagina de
+error dentro del archivo y sale con codigo 0 -asi entraron las fuentes falsas de 378 bytes
+en el render del 19/09-. Por eso toda descarga se mide antes de darla por buena: cabecera
+`%PDF-`, cola `%%EOF`, tamano minimo y sha256 a la vista. Lo que no pasa queda en
+`.rechazado` en vez de hacerse pasar por bueno.
