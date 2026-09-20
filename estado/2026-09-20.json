@@ -560,7 +560,7 @@
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 6,
       "historia": [
         {
@@ -614,6 +614,14 @@
         {
           "cuando": "2026-09-20T07:55:19-03:00",
           "que": "reintento desde fallido -> guion (era: produce.py: no se pudo armar la pieza con fotografia: solo 0 foto utilizable de 4 encontradas para ['Ministerio del Trabajo Chile', 'Palacio de La Moneda Santiago', 'Santiago de Chile centro edificios']; hacen falta 2 o mas)"
+        },
+        {
+          "cuando": "2026-09-20T07:59:59-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T07:59:59-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -629,7 +637,71 @@
         "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1305"
+      "pieza_id": "1305",
+      "control": {
+        "pieza": "1305.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 29.5,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.1,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              12.15,
+              18.225,
+              25.05
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1305.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1305.mp4\", \"cuadros\": 10, \"palabras_medidas\": 76, \"recall_pantalla_chica\": 0.6, \"cajas_fuera_zona_segura\": 15, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 4, \"izq\": 0, \"der\": 11}, \"cajas_dentro\": 67, \"alto_texto_mediana_px\": 33.0, \"cajas_bajo_80px\": 78, \"seg\": 15.8, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Faltar sin justificación después del 18 tiene un nombre en la ley.  El artículo 160 del Código del Trabajo permite despedir por no concurrir dos días seguidos.  También por faltar dos lunes en el mismo mes o tres días en total dentro de ese mes.  Ese despido va sin indemnización, la licencia médica o el permiso por escrito son lo que lo evita.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4"
     },
     {
       "slot": 6,
@@ -983,5 +1055,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T07:55:19-03:00"
+  "actualizado": "2026-09-20T07:59:59-03:00"
 }
