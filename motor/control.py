@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""control.py v3 (19/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
+"""control.py v4 (20/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
 
 POR QUE EXISTE
 --------------
@@ -56,12 +56,36 @@ Un control que se apaga por omision no es un control: es una intencion con nombr
     dias despues, cuando el `urls/<n>.txt` murio con el sandbox que lo escribio. Busca la n-tilde
     perdida en lo que se OYE, sin nada con que comparar (ver su docstring).
 
+v4 (20/09/2026) - EL MISMO AGUJERO, UN CONTROL MAS ABAJO. Regla dura 2-ter de la receta.
+La v3 cerro los controles 6 y 7, que se apagaban si no se les pasaba el guion. El control 4
+seguia abierto por la misma razon exacta y nadie lo miro, porque el arreglo de la v3 se escribio
+mirando el caso de la voz en vez de la FORMA del defecto. Medido el 20/09 sobre la 1003
+(`0b199268-...`), alojada y sin publicar:
+
+    >>> control.controlar("1003.mp4", exigir_guion=False)["uniones"]
+    {'ok': True, 'valor': [], 'tope': -35.0}     # y 'pasa': True
+
+`uniones()` empezaba con `if not cortes: return True, []`. O sea: **el control de los empalmes se
+apagaba con no pasarle los cortes y la pieza pasaba la puerta igual**, igual que el guion apagaba
+los controles 6 y 7 antes de la v3. Y hay dos llamadores que entran por ahi: `produce.py` pasa
+`cortes = []` cuando le falta el `<id>.mp3.tramos.json`, y `build_sv.py` pasa `t0[1:]`, que puede
+venir vacio. Es ademas el control que corresponde al segundo de los tres defectos que salieron al
+aire: la pieza con la segunda mitad muda.
+
+  - `cortes_auto(media)` encuentra los empalmes sola (silencedetect a -25 dB, pausas >= 0,6 s,
+    descartando la cola de silencio del final). Ya nadie tiene que acordarse de calcularlos.
+  - `uniones()` sin cortes los BUSCA; si no encuentra ninguno devuelve False y la pieza NO SUBE.
+  - Detecta y mide sobre el MISMO archivo, asi que el LEAD de 0,5 s de la regla dura 6 deja de
+    hacer falta: existia solo porque la pausa se buscaba en el mp3 y se media en el mp4.
+  - En REACCION se le pasa `media_voz` (el mp3) y `saltar_primero=True`.
+
 LOS CONTROLES
 -------------
  1. AUDIO      ffprobe tiene que decir exactamente aac,48000,2          (regla dura 3)
  2. DURACION   22-34 s por defecto, franja configurable                 (regla dura 5)
  3. VOLUMEN    volumen medio dentro de [-21, -13] dB                    (franja medida del motor)
- 4. UNIONES    RMS de cada empalme <= -35 dBFS (solo si se dan los cortes)
+ 4. UNIONES    RMS de cada empalme <= -35 dBFS                            BLOQUEA
+               -> si no le dan los cortes los BUSCA; si no aparece ninguno, NO PASA (v4)
  5. PANTALLA   0 cajas de TEXTO PROPIO fuera de x[95,930] y[200,1586]   (regla dura 4)
                -> se delega en videolab/pantalla_chica.py; INFORMA, no bloquea (ver PRODUCIR.md)
  6. TEXTO      el guion, antes del TTS: n-tilde y tildes                (regla dura 2) BLOQUEA
@@ -100,12 +124,26 @@ DUR_MIN, DUR_MAX = 22.0, 34.0
 VOL_MIN, VOL_MAX = -21.0, -13.0
 UNION_MAX_DBFS = -35.0
 VENTANA_UNION = 0.12          # s a cada lado del corte que se mide
+UNION_NOISE_DB = -25.0        # umbral con que se DETECTA la pausa. 10 dB por encima del tope
+                              # del control: un chasquido de -30 dB cae DENTRO de la pausa
+                              # detectada y el control lo ve; uno mas fuerte parte la pausa en
+                              # dos, no llega a 0,6 s y el empalme NO se encuentra - que es
+                              # justamente por lo que "no encontre empalmes" tiene que
+                              # BLOQUEAR y no pasar.
+UNION_MIN_PAUSA = 0.60        # s - solo los empalmes ENTRE TRAMOS. Las pausas de coma (0,27 a
+                              # 0,34 s en la 1003) quedan fuera: pasarlas da falsos -33/-34 y
+                              # rechaza una pieza sana (medido el 18/09 con la 1002).
 ZONA = (95, 930, 200, 1586)   # x0, x1, y0, y1 - zona segura de TikTok
 
 # Regla dura 2-ter: lo que dice la puerta cuando le falta el guion. No es un aviso, es un NO.
 FALTA_GUION = ("SIN GUION: los controles 6 y 7 (contenido de la voz) NO se pueden correr, "
                "asi que la pieza NO SE SUBE. Regla dura 2-ter. Para mirar una pieza ya "
                "publicada sin guion, usar auditar(), que no sube nada.")
+FALTA_CORTES = ("SIN EMPALMES MEDIBLES: el control 4 no encontro ninguna pausa entre tramos, "
+                "asi que nadie puede afirmar que las uniones esten limpias y la pieza NO SE "
+                "SUBE. Regla dura 2-ter. En una pieza de REACCION esto es lo esperable si se "
+                "le pasa el mp4: el audio del noticiero tapa las pausas. Hay que darle el mp3 "
+                "de la voz en `media_voz`.")
 FALTA_WHISPER = ("faster-whisper NO esta instalado: el control 7 no se puede correr, asi que "
                  "la pieza NO SE SUBE. `pip install -q faster-whisper`. Regla dura 2-ter.")
 
@@ -171,20 +209,87 @@ def volumen(mp4):
     return VOL_MIN <= v <= VOL_MAX, v
 
 
-def uniones(mp4, cortes):
-    """RMS en cada empalme entre tramos. Un chasquido audible se oye como pico sobre -35 dBFS."""
+def cortes_auto(media, noise=UNION_NOISE_DB, min_pausa=UNION_MIN_PAUSA):
+    """Encuentra sola los empalmes entre tramos. Devuelve (cortes, pausas).
+
+    Existe porque hasta hoy `uniones()` se apagaba con no pasarle los cortes, y cada receta
+    tenia que calcularlos por su cuenta. Un control que depende de que el llamador se acuerde
+    de alimentarlo es un control opcional.
+
+    silencedetect a -25 dB sobre la MISMA media que se va a medir; se queda con las pausas de
+    >= 0,6 s y descarta la que toca el final del archivo (la cola de silencio no es un empalme).
+    El corte es el centro de la pausa. Al detectar y medir sobre el mismo archivo desaparece el
+    LEAD de 0,5 s de la regla dura 6: existia solo porque la pausa se buscaba en el mp3 y se
+    media en el mp4, y esa diferencia de origen era una fuente de error, no un ajuste.
+
+    Medido el 20/09 sobre la 1003 (`0b199268-...`), guion de 5 tramos: encuentra exactamente los
+    4 empalmes (6,41 · 12,94 · 18,31 · 24,60 s) y deja fuera las 3 pausas de coma de 0,27-0,34 s.
+    """
+    r = _sh(f'ffmpeg -hide_banner -nostats -i "{media}" '
+            f'-af silencedetect=noise={noise}dB:d=0.25 -f null - 2>&1')
+    txt = r.stderr + r.stdout
+    ds = _sh(f'ffprobe -v error -show_entries format=duration -of csv=p=0 "{media}"').stdout
+    total = float(ds.strip()) if ds.strip() else 0.0
+    pausas, ini = [], None
+    for m in re.finditer(r"silence_(start|end):\s*(-?[\d.]+)", txt):
+        if m.group(1) == "start":
+            ini = float(m.group(2))
+        elif ini is not None:
+            fin = float(m.group(2))
+            if fin - ini >= min_pausa and not (total and fin >= total - 0.05):
+                pausas.append((round(ini, 3), round(fin, 3)))
+            ini = None
+    return [round((a + b) / 2, 3) for a, b in pausas], pausas
+
+
+def uniones(mp4, cortes=None, media_voz=None, saltar_primero=False):
+    """Control 4. RMS de cada empalme entre tramos; un chasquido se oye como pico sobre -35 dBFS.
+
+    20/09/2026 - ESTE CONTROL SE APAGABA SOLO. Medido sobre esta misma funcion, con la 1003
+    (`0b199268-...`) alojada y sin publicar:
+
+        >>> control.uniones("1003.mp4", None)          # el llamador no paso los cortes
+        (True, [])
+        >>> control.controlar("1003.mp4", exigir_guion=False)["uniones"]
+        {'ok': True, 'valor': [], 'tope': -35.0}       # ... y 'pasa': True
+
+    `if not cortes: return True, []` es palabra por palabra el agujero que la v3 le cerro a los
+    controles 6 y 7 el 19/09, un control mas abajo y sin que nadie lo mirara: la puerta decia
+    `pasa: True` sobre una pieza cuyas uniones nadie habia medido. Y no era hipotetico:
+    `produce.py` pasa `cortes = []` cuando no encuentra el `<id>.mp3.tramos.json`, y
+    `build_sv.py` pasa `t0[1:]`, que puede venir vacio. Los dos caminos entraban por aqui y
+    salian con el control 4 apagado. Es ademas el control que corresponde al segundo de los tres
+    defectos que salieron al aire: la pieza con la segunda mitad muda.
+
+    Desde la v4: sin cortes (None o lista vacia) se los BUSCA con `cortes_auto`; si no encuentra
+    ninguno devuelve False y la pieza no sube. Pasarle los cortes a mano sigue funcionando igual.
+
+    media_voz:      en REACCION, el mp3 de la voz. Se detecta Y se mide sobre el, no sobre el
+                    mp4: el audio del noticiero tapa las pausas.
+    saltar_primero: en REACCION, el primer empalme interior lleva el noticiero encima y no es
+                    defecto (el `tramos[2:-1]` de la receta).
+    """
+    media = media_voz or mp4
+    auto = not cortes
+    if auto:
+        cortes, _p = cortes_auto(media)
+        if saltar_primero and cortes:
+            cortes = cortes[1:]
+    if not cortes:
+        return False, FALTA_CORTES
     peor, detalle = -999.0, []
-    for t in cortes or []:
+    for t in cortes:
         ini = max(0.0, float(t) - VENTANA_UNION)
         r = _sh(f'ffmpeg -hide_banner -nostats -ss {ini:.3f} -t {VENTANA_UNION * 2:.3f} '
-                f'-i "{mp4}" -af volumedetect -f null - 2>&1')
+                f'-i "{media}" -af volumedetect -f null - 2>&1')
         m = re.search(r"max_volume:\s*(-?[\d.]+) dB", r.stderr + r.stdout)
         v = float(m.group(1)) if m else -999.0
         detalle.append(round(v, 1))
         peor = max(peor, v)
-    if not cortes:
-        return True, []
-    return peor <= UNION_MAX_DBFS, detalle
+    return peor <= UNION_MAX_DBFS, {"empalmes": len(cortes), "cortes": cortes, "dbfs": detalle,
+                                    "peor": round(peor, 1),
+                                    "origen": "auto" if auto else "dados",
+                                    "medido_en": os.path.basename(media)}
 
 
 def pantalla(mp4):
@@ -353,7 +458,7 @@ def auditar(mp4, media_voz=None, modelo="small"):
 
 
 def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_voz=None,
-              exigir_guion=True):
+              exigir_guion=True, saltar_primero=False):
     """Corre los controles y devuelve el informe. 'pasa' es la conjuncion de los que BLOQUEAN.
 
     guion:         texto completo de la voz. OBLIGATORIO: sin el, 'pasa' es False (v3).
@@ -366,7 +471,7 @@ def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_vo
     a_ok, a = audio(mp4)
     d_ok, d = duracion(mp4, dmin, dmax)
     v_ok, v = volumen(mp4)
-    u_ok, u = uniones(mp4, cortes)
+    u_ok, u = uniones(mp4, cortes, media_voz=media_voz, saltar_primero=saltar_primero)
     _, p = pantalla(mp4)
     if guion:
         t_ok, t = texto(guion)
