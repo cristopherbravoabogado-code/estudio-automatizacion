@@ -8,8 +8,8 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-20T10:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:12-03:00",
@@ -22,6 +22,10 @@
         {
           "cuando": "2026-09-19T19:35:12-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> fallido: control.py reprobo: voz"
         }
       ],
       "tema": "Balance final de Fiestas Patrias: 13 fallecidos y 170 detenidos",
@@ -37,14 +41,16 @@
         "No hace falta chocar ni atropellar a nadie. Basta con manejar así.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1301"
+      "pieza_id": "1301",
+      "estado_previo": "guion",
+      "motivo": "control.py reprobo: voz"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-20T12:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -57,6 +63,10 @@
         {
           "cuando": "2026-09-19T19:35:19-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> fallido: control.py reprobo: voz"
         }
       ],
       "tema": "139 de los 170 detenidos del 18 fueron por alcohol al volante",
@@ -72,14 +82,16 @@
         "Pero de un gramo por mil hacia arriba ya es estado de ebriedad, y eso se castiga con cárcel.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1302"
+      "pieza_id": "1302",
+      "estado_previo": "guion",
+      "motivo": "control.py reprobo: voz"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-20T14:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:29-03:00",
@@ -92,6 +104,18 @@
         {
           "cuando": "2026-09-19T19:35:29-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-20T05:52:49-03:00",
+          "que": "alojado -> fallido: fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de carretera de 2026. La licencia estaba bien; la pertinencia no se filtra."
         }
       ],
       "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
@@ -107,14 +131,80 @@
         "Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1303"
+      "pieza_id": "1303",
+      "control": {
+        "pieza": "1303.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 29.43,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.1,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              12.625,
+              19.55,
+              25.0
+            ],
+            "dbfs": [
+              -78.3,
+              -80.8,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "medido_en": "1303.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1303.mp4\", \"cuadros\": 10, \"palabras_medidas\": 45, \"recall_pantalla_chica\": 0.72, \"cajas_fuera_zona_segura\": 4, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 4}, \"cajas_dentro\": 42, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 46, \"seg\": 14.3, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Los fallecidos en carretera este 18 subieron 80 y 7% respecto del año pasado.  Detrás de cada cifra queda una familia que además tiene un juicio por delante.  El artículo 2314 del Código Civil obliga a indemnizar a quien causó el daño.  Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4",
+      "estado_previo": "alojado",
+      "motivo": "fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de carretera de 2026. La licencia estaba bien; la pertinencia no se filtra."
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-20T16:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -127,6 +217,10 @@
         {
           "cuando": "2026-09-19T19:35:19-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> fallido: produce.py: Command 'ffmpeg -y -hide_banner -loglevel error -loop 1 -t 4.0 -i foto_1.jpg -f lavfi -t 4.0 -i anullsrc=r=48000:cl=stereo -filter_complex \"[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,zoompan=z='min(zoom+0.0012,1.20)':d=120:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
         }
       ],
       "tema": "Accidente de trayecto: volver del trabajo también está cubierto",
@@ -142,14 +236,16 @@
         "Denúncialo el mismo día: el parte de Carabineros y un testigo son lo que después te sostiene el caso.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1304"
+      "pieza_id": "1304",
+      "estado_previo": "guion",
+      "motivo": "produce.py: Command 'ffmpeg -y -hide_banner -loglevel error -loop 1 -t 4.0 -i foto_1.jpg -f lavfi -t 4.0 -i anullsrc=r=48000:cl=stereo -filter_complex \"[0:v]scale=2400:-2:flags=lanczos,crop=2400:1350,zoompan=z='min(zoom+0.0012,1.20)':d=120:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,setsar=1[v]"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -162,6 +258,18 @@
         {
           "cuando": "2026-09-19T19:35:19-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T05:33:41-03:00",
+          "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-20T05:52:49-03:00",
+          "que": "alojado -> fallido: PERSONAS IDENTIFICABLES: Commons devolvio fotos de una fiesta de trabajadores (credito NOIRLab/NSF/AURA) con caras reconocibles, sobre una pieza que habla de despido por faltar al trabajo. Da a entender que esas personas son el caso. No se publica."
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -177,39 +285,416 @@
         "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1305"
+      "pieza_id": "1305",
+      "control": {
+        "pieza": "1305.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 29.5,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.1,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              12.15,
+              18.225,
+              25.05
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1305.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1305.mp4\", \"cuadros\": 10, \"palabras_medidas\": 81, \"recall_pantalla_chica\": 0.68, \"cajas_fuera_zona_segura\": 1, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 1}, \"cajas_dentro\": 80, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 81, \"seg\": 17.1, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Faltar sin justificación después del 18 tiene un nombre en la ley.  El artículo 160 del Código del Trabajo permite despedir por no concurrir dos días seguidos.  También por faltar dos lunes en el mismo mes o tres días en total dentro de ese mes.  Ese despido va sin indemnización, la licencia médica o el permiso por escrito son lo que lo evita.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4",
+      "estado_previo": "alojado",
+      "motivo": "PERSONAS IDENTIFICABLES: Commons devolvio fotos de una fiesta de trabajadores (credito NOIRLab/NSF/AURA) con caras reconocibles, sobre una pieza que habla de despido por faltar al trabajo. Da a entender que esas personas son el caso. No se publica."
     },
     {
       "slot": 6,
       "hora_chile": "17:00",
       "hora_utc": "2026-09-20T20:00:00Z",
-      "estado": "vacio",
+      "estado": "alojado",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-20T00:15:00-03:00",
+          "que": "rescatada de 2026-09-19 ranura #5: estaba alojada con media_id y se le paso la ventana; el testigo de la cuenta prueba que no salio (5 post reales, 4 anotados)"
+        }
+      ],
+      "tema": "11 jueces removidos por viajar al extranjero con licencia médica",
+      "fuente": "Corte Suprema, cierre de 58 cuadernos de remoción, 09/2026",
+      "gancho": "11 JUECES FUERA",
+      "tramos": [
+        "La Corte Suprema removió a once jueces que viajaron con licencia médica.",
+        "En el mundo privado eso tiene un nombre en el Código del Trabajo.",
+        "Se llama falta de probidad, y es causal de despido sin indemnización.",
+        "La licencia es para recuperarse, no para viajar.",
+        "Si te acusan de esto, escríbenos."
+      ],
+      "norma": "207436",
+      "articulo": "160",
+      "frase": "falta de probidad",
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1205.mp4",
+      "media_id": "7b1f0bd7-11c8-4f67-bddc-b8154eeee065",
+      "control": {
+        "pieza": "1205.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 24.41,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.3,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": [
+            -91.0,
+            -91.0,
+            -91.0
+          ],
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1205.mp4\", \"cuadros\": 8, \"palabras_medidas\": 34, \"recall_pantalla_chica\": 0.71, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 34, \"alto_texto_mediana_px\": 48.0, \"cajas_bajo_80px\": 34, \"seg\": 13.8, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "La Corte Suprema removió a 11 jueces que viajaron con licencia médica.  En el mundo, privado, eso tiene nombre en el Código del Trabajo.  Es una falta grave a la honestidad y permite despedir sin indemnización.  La licencia médica es para recuperarse, no para tomarse un viaje.  Si te acusan de algo así, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "rescatada_de": {
+        "fecha": "2026-09-19",
+        "slot": 5
+      }
     },
     {
       "slot": 7,
       "hora_chile": "19:00",
       "hora_utc": "2026-09-20T22:00:00Z",
-      "estado": "vacio",
+      "estado": "alojado",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-20T00:15:00-03:00",
+          "que": "rescatada de 2026-09-19 ranura #6: estaba alojada con media_id y se le paso la ventana; el testigo de la cuenta prueba que no salio (5 post reales, 4 anotados)"
+        }
+      ],
+      "tema": "La Suprema confirma condenas por porte ilegal de armas de fuego",
+      "fuente": "Corte Suprema, Segunda Sala, fallo unánime 09/2026",
+      "gancho": "ARMAS Y LA PENA",
+      "tramos": [
+        "La Suprema confirmó condenas por porte ilegal de armas de fuego.",
+        "La Ley de Control de Armas no exige que dispares.",
+        "Basta con portarla sin autorización para arriesgar cárcel.",
+        "Y guardarla en la casa de otro no te saca del problema.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "norma": "29291",
+      "articulo": "11",
+      "frase": "portaren armas de fuego",
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1206.mp4",
+      "media_id": "abf6e019-8087-42ca-bbc4-2eb7ff19fc64",
+      "control": {
+        "pieza": "1206.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 24.5,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.5,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": [
+            -91.0,
+            -91.0,
+            -91.0
+          ],
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1206.mp4\", \"cuadros\": 8, \"palabras_medidas\": 37, \"recall_pantalla_chica\": 0.5, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 37, \"alto_texto_mediana_px\": 46.0, \"cajas_bajo_80px\": 37, \"seg\": 13.2, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [
+              "comportar"
+            ],
+            "dicho": "La Corte Suprema confirmó condenas por porte ilegal de armas de fuego.  La ley de control de armas no exige que dispares ni que hieras a nadie.  Basta comportar el arma sin la autorización correspondiente.  Y dejarla guardada en la casa de un tercero tampoco te saca del problema.  Si tienes una causa así, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "rescatada_de": {
+        "fecha": "2026-09-19",
+        "slot": 6
+      }
     },
     {
       "slot": 8,
       "hora_chile": "20:00",
       "hora_utc": "2026-09-20T23:00:00Z",
-      "estado": "vacio",
+      "estado": "alojado",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-20T00:15:00-03:00",
+          "que": "rescatada de 2026-09-19 ranura #7: estaba alojada con media_id y se le paso la ventana; el testigo de la cuenta prueba que no salio (5 post reales, 4 anotados)"
+        }
+      ],
+      "tema": "Microtráfico: qué separa la pequeña cantidad del tráfico",
+      "fuente": "Corte Suprema, rechazo de recursos de nulidad, 09/2026",
+      "gancho": "MICROTRÁFICO",
+      "tramos": [
+        "La Suprema volvió a pronunciarse sobre microtráfico esta semana.",
+        "La ley distingue el tráfico de las pequeñas cantidades.",
+        "Esa diferencia cambia la pena por completo.",
+        "Y no la decide el detenido: la decide el tribunal con la prueba.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "norma": "235507",
+      "articulo": "4",
+      "frase": "pequeñas cantidades",
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1207.mp4",
+      "media_id": "a428dce9-9081-40df-9f80-7bff3baa7167",
+      "control": {
+        "pieza": "1207.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 23.67,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.6,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": [
+            -91.0,
+            -91.0,
+            -91.0
+          ],
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1207.mp4\", \"cuadros\": 8, \"palabras_medidas\": 29, \"recall_pantalla_chica\": 0.77, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 32, \"alto_texto_mediana_px\": 43.0, \"cajas_bajo_80px\": 32, \"seg\": 13.8, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [
+              "escrivenos"
+            ],
+            "dicho": "La Suprema volvió a pronunciarse esta semana sobre microtráfico.  La ley distingue el tráfico de las pequeñas cantidades y esa línea es fina.  ¿De qué lado caigas cambia la pena por completo?  No lo decide el detenido ni el que lo detuvo, lo decide el tribunal con la prueba.  Si te imputan esto, escrívenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "rescatada_de": {
+        "fecha": "2026-09-19",
+        "slot": 7
+      }
     },
     {
       "slot": 9,
       "hora_chile": "21:00",
       "hora_utc": "2026-09-21T00:00:00Z",
-      "estado": "vacio",
+      "estado": "alojado",
       "intentos": 0,
-      "historia": []
+      "historia": [
+        {
+          "cuando": "2026-09-20T00:15:00-03:00",
+          "que": "rescatada de 2026-09-19 ranura #8: estaba alojada con media_id y se le paso la ventana; el testigo de la cuenta prueba que no salio (5 post reales, 4 anotados)"
+        }
+      ],
+      "tema": "La Suprema confirma indemnización por pérdida de oportunidad",
+      "fuente": "Corte Suprema, fallo sobre pérdida de oportunidad, 09/2026",
+      "gancho": "PÉRDIDA DE CHANCE",
+      "tramos": [
+        "La Suprema confirmó una indemnización por pérdida de oportunidad.",
+        "El Código Civil dice que todo daño imputable a negligencia debe ser reparado.",
+        "No siempre hay que probar el resultado final.",
+        "A veces basta con probar la chance que te quitaron.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "norma": "172986",
+      "articulo": "2329",
+      "frase": "todo daño que pueda imputarse a malicia o negligencia",
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-19/1208.mp4",
+      "media_id": "9b1c793e-4b0c-44ca-a010-cf5ab7d95687",
+      "control": {
+        "pieza": "1208.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 23.83,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.5,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": [
+            -91.0,
+            -91.0,
+            -91.0
+          ],
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1208.mp4\", \"cuadros\": 8, \"palabras_medidas\": 34, \"recall_pantalla_chica\": 0.51, \"cajas_fuera_zona_segura\": 0, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 0}, \"cajas_dentro\": 34, \"alto_texto_mediana_px\": 49.0, \"cajas_bajo_80px\": 34, \"seg\": 13.4, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [
+              "comprobar",
+              "escrivenos"
+            ],
+            "dicho": "La Suprema confirmó una indemnización por pérdida de oportunidad.  El Código Civil dice que todo daño imputable a negligencia debe ser reparado.  A veces no hay que probar que el resultado habría sido otro.  Basta comprobar la posibilidad real que te quitaron por el error.  Si crees que te pasó, escrívenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "rescatada_de": {
+        "fecha": "2026-09-19",
+        "slot": 8
+      }
     },
     {
       "slot": 10,
@@ -220,5 +705,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-19T19:35:29-03:00"
+  "actualizado": "2026-09-20T05:52:49-03:00"
 }
