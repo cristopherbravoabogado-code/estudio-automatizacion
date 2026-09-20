@@ -8,7 +8,7 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-20T10:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 2,
       "historia": [
         {
@@ -30,6 +30,14 @@
         {
           "cuando": "2026-09-20T06:08:11-03:00",
           "que": "fallido -> fallido: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #1 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
+        },
+        {
+          "cuando": "2026-09-20T07:00:00-03:00",
+          "que": "corregido a mano el estado_previo: el bucle de 'fallar' sobre lo ya fallido lo habia puesto en 'fallido'"
+        },
+        {
+          "cuando": "2026-09-20T06:54:17-03:00",
+          "que": "reintento desde fallido -> guion (era: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #1 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar.)"
         }
       ],
       "tema": "Balance final de Fiestas Patrias: 13 fallecidos y 170 detenidos",
@@ -45,15 +53,13 @@
         "No hace falta chocar ni atropellar a nadie. Basta con manejar así.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1301",
-      "estado_previo": "fallido",
-      "motivo": "el render paso pero cadena.py rechazo el paso: ERROR: la ranura #1 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
+      "pieza_id": "1301"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-20T12:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 2,
       "historia": [
         {
@@ -75,6 +81,14 @@
         {
           "cuando": "2026-09-20T06:08:11-03:00",
           "que": "fallido -> fallido: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #2 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
+        },
+        {
+          "cuando": "2026-09-20T07:00:00-03:00",
+          "que": "corregido a mano el estado_previo: el bucle de 'fallar' sobre lo ya fallido lo habia puesto en 'fallido'"
+        },
+        {
+          "cuando": "2026-09-20T06:54:17-03:00",
+          "que": "reintento desde fallido -> guion (era: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #2 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar.)"
         }
       ],
       "tema": "139 de los 170 detenidos del 18 fueron por alcohol al volante",
@@ -90,16 +104,14 @@
         "Pero de un gramo por mil hacia arriba ya es estado de ebriedad, y eso se castiga con cárcel.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1302",
-      "estado_previo": "fallido",
-      "motivo": "el render paso pero cadena.py rechazo el paso: ERROR: la ranura #2 esta fallida (control.py reprobo: voz). Usa 'reintentar' antes de marcar."
+      "pieza_id": "1302"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-20T14:00:00Z",
-      "estado": "fallido",
-      "intentos": 2,
+      "estado": "guion",
+      "intentos": 3,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:29-03:00",
@@ -128,6 +140,14 @@
         {
           "cuando": "2026-09-20T06:08:11-03:00",
           "que": "fallido -> fallido: el render paso pero cadena.py rechazo el paso: ERROR: la ranura #3 esta fallida (fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de "
+        },
+        {
+          "cuando": "2026-09-20T07:00:00-03:00",
+          "que": "corregido a mano el estado_previo: el bucle de 'fallar' sobre lo ya fallido lo habia puesto en 'fallido'"
+        },
+        {
+          "cuando": "2026-09-20T06:54:17-03:00",
+          "que": "rehacer: fallido -> guion (la foto no servia: sin relacion (#3) y con caras reconocibles (#5))"
         }
       ],
       "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
@@ -143,79 +163,13 @@
         "Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1303",
-      "control": {
-        "pieza": "1303.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 29.43,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -16.1,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": {
-            "empalmes": 3,
-            "cortes": [
-              12.625,
-              19.55,
-              25.0
-            ],
-            "dbfs": [
-              -78.3,
-              -80.8,
-              -84.3
-            ],
-            "peor": -78.3,
-            "origen": "dados",
-            "medido_en": "1303.mp3"
-          },
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1303.mp4\", \"cuadros\": 10, \"palabras_medidas\": 45, \"recall_pantalla_chica\": 0.72, \"cajas_fuera_zona_segura\": 4, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 4}, \"cajas_dentro\": 42, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 46, \"seg\": 14.3, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "termino_critico_no_oido": [],
-            "fuera_del_guion": [],
-            "dicho": "Los fallecidos en carretera este 18 subieron 80 y 7% respecto del año pasado.  Detrás de cada cifra queda una familia que además tiene un juicio por delante.  El artículo 2314 del Código Civil obliga a indemnizar a quien causó el daño.  Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.  Si necesitas asesoría, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4",
-      "estado_previo": "fallido",
-      "motivo": "el render paso pero cadena.py rechazo el paso: ERROR: la ranura #3 esta fallida (fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de "
+      "pieza_id": "1303"
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-20T16:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 2,
       "historia": [
         {
@@ -237,6 +191,14 @@
         {
           "cuando": "2026-09-20T06:08:11-03:00",
           "que": "fallido -> fallido: produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_2.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x561608e12080] No JPEG data found in image\n[mjpeg @ 0x561608e19940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x561608e197c0] Error submitting packet to decoder: Invalid data found when proces"
+        },
+        {
+          "cuando": "2026-09-20T07:00:00-03:00",
+          "que": "corregido a mano el estado_previo: el bucle de 'fallar' sobre lo ya fallido lo habia puesto en 'fallido'"
+        },
+        {
+          "cuando": "2026-09-20T06:54:17-03:00",
+          "que": "reintento desde fallido -> guion (era: produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_2.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x561608e12080] No JPEG data found in image\n[mjpeg @ 0x561608e19940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x561608e197c0] Error submitting packet to decoder: Invalid data found when proces)"
         }
       ],
       "tema": "Accidente de trayecto: volver del trabajo también está cubierto",
@@ -252,16 +214,14 @@
         "Denúncialo el mismo día: el parte de Carabineros y un testigo son lo que después te sostiene el caso.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1304",
-      "estado_previo": "fallido",
-      "motivo": "produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_2.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x561608e12080] No JPEG data found in image\n[mjpeg @ 0x561608e19940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x561608e197c0] Error submitting packet to decoder: Invalid data found when proces"
+      "pieza_id": "1304"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "fallido",
-      "intentos": 2,
+      "estado": "guion",
+      "intentos": 3,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -290,6 +250,14 @@
         {
           "cuando": "2026-09-20T06:08:12-03:00",
           "que": "fallido -> fallido: produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_0.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x557c38a95080] No JPEG data found in image\n[mjpeg @ 0x557c38a9c940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x557c38a9c7c0] Error submitting packet to decoder: Invalid data found when proces"
+        },
+        {
+          "cuando": "2026-09-20T07:00:00-03:00",
+          "que": "corregido a mano el estado_previo: el bucle de 'fallar' sobre lo ya fallido lo habia puesto en 'fallido'"
+        },
+        {
+          "cuando": "2026-09-20T06:54:17-03:00",
+          "que": "rehacer: fallido -> guion (la foto no servia: sin relacion (#3) y con caras reconocibles (#5))"
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -305,73 +273,7 @@
         "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1305",
-      "control": {
-        "pieza": "1305.mp4",
-        "audio": {
-          "ok": true,
-          "valor": "aac,48000,2",
-          "esperado": "aac,48000,2"
-        },
-        "duracion": {
-          "ok": true,
-          "valor": 29.5,
-          "franja": [
-            22.0,
-            34.0
-          ]
-        },
-        "volumen": {
-          "ok": true,
-          "valor": -16.1,
-          "franja": [
-            -21.0,
-            -13.0
-          ]
-        },
-        "uniones": {
-          "ok": true,
-          "valor": {
-            "empalmes": 3,
-            "cortes": [
-              12.15,
-              18.225,
-              25.05
-            ],
-            "dbfs": [
-              -80.8,
-              -80.8,
-              -84.3
-            ],
-            "peor": -80.8,
-            "origen": "dados",
-            "medido_en": "1305.mp3"
-          },
-          "tope": -35.0
-        },
-        "pantalla_chica": {
-          "ok": null,
-          "valor": "{\"archivo\": \"1305.mp4\", \"cuadros\": 10, \"palabras_medidas\": 81, \"recall_pantalla_chica\": 0.68, \"cajas_fuera_zona_segura\": 1, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 1}, \"cajas_dentro\": 80, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 81, \"seg\": 17.1, \"veredicto\": \"NO PASA\"}"
-        },
-        "texto": {
-          "ok": true,
-          "valor": []
-        },
-        "voz": {
-          "ok": true,
-          "valor": {
-            "enie_perdida": [],
-            "termino_critico_no_oido": [],
-            "fuera_del_guion": [],
-            "dicho": "Faltar sin justificación después del 18 tiene un nombre en la ley.  El artículo 160 del Código del Trabajo permite despedir por no concurrir dos días seguidos.  También por faltar dos lunes en el mismo mes o tres días en total dentro de ese mes.  Ese despido va sin indemnización, la licencia médica o el permiso por escrito son lo que lo evita.  Si necesitas asesoría, escríbenos."
-          }
-        },
-        "pasa": true,
-        "falla": []
-      },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4",
-      "estado_previo": "fallido",
-      "motivo": "produce.py: ffmpeg -y -hide_banner -loglevel error -i foto_0.jpg -frames:v 1 -vf \"scale=1920:1080:forc -> [mjpeg @ 0x557c38a95080] No JPEG data found in image\n[mjpeg @ 0x557c38a9c940] No JPEG data found in image\n[vist#0:0/mjpeg @ 0x557c38a9c7c0] Error submitting packet to decoder: Invalid data found when proces"
+      "pieza_id": "1305"
     },
     {
       "slot": 6,
@@ -725,5 +627,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T06:08:12-03:00"
+  "actualizado": "2026-09-20T06:54:17-03:00"
 }
