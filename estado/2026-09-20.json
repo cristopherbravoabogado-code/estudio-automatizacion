@@ -8,7 +8,7 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-20T10:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 3,
       "historia": [
         {
@@ -50,6 +50,14 @@
         {
           "cuando": "2026-09-20T07:25:39-03:00",
           "que": "rehacer: alojado -> guion (titular partido por el %, credito cortado, fotos poco pertinentes)"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Balance final de Fiestas Patrias: 13 fallecidos y 170 detenidos",
@@ -65,13 +73,79 @@
         "No hace falta chocar ni atropellar a nadie. Basta con manejar así.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1301"
+      "pieza_id": "1301",
+      "control": {
+        "pieza": "1301.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 25.97,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.4,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              11.475,
+              16.425,
+              21.525
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1301.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1301.mp4\", \"cuadros\": 9, \"palabras_medidas\": 41, \"recall_pantalla_chica\": 0.73, \"cajas_fuera_zona_segura\": 2, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 2, \"der\": 0}, \"cajas_dentro\": 39, \"alto_texto_mediana_px\": 46.0, \"cajas_bajo_80px\": 41, \"seg\": 15.8, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [
+              "panejar"
+            ],
+            "dicho": "13 personas murieron en accidentes de tránsito durante estas fiestas patrias.  Carabineros detuvo a 170 conductores y la mayoría fue por alcohol.  Panejar con alcohol en la sangre es delito, aunque no choques con nadie.  La ley de tránsito lo castiga con cárcel y con la licencia suspendida.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1301.mp4"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-20T12:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 3,
       "historia": [
         {
@@ -113,6 +187,14 @@
         {
           "cuando": "2026-09-20T07:25:39-03:00",
           "que": "rehacer: alojado -> guion (titular partido por el %, credito cortado, fotos poco pertinentes)"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "139 de los 170 detenidos del 18 fueron por alcohol al volante",
@@ -128,13 +210,77 @@
         "Pero de un gramo por mil hacia arriba ya es estado de ebriedad, y eso se castiga con cárcel.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1302"
+      "pieza_id": "1302",
+      "control": {
+        "pieza": "1302.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 25.34,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.4,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              11.0,
+              16.125,
+              20.9
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1302.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1302.mp4\", \"cuadros\": 8, \"palabras_medidas\": 39, \"recall_pantalla_chica\": 0.78, \"cajas_fuera_zona_segura\": 2, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 2, \"der\": 0}, \"cajas_dentro\": 38, \"alto_texto_mediana_px\": 45.0, \"cajas_bajo_80px\": 40, \"seg\": 13.9, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "De los 170 detenidos este 18, la mayoría fue por alcohol.  La ley distingue dos situaciones y la diferencia entre una y otra es enorme.  Con menos de un gramo por mil es multa y licencia suspendida por un mes.  Con un gramo o más, la ley lo trata como delito y ahí hay cárcel.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1302.mp4"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-20T14:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 4,
       "historia": [
         {
@@ -184,6 +330,14 @@
         {
           "cuando": "2026-09-20T07:25:39-03:00",
           "que": "rehacer: alojado -> guion (titular partido por el %, credito cortado, fotos poco pertinentes)"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
@@ -199,13 +353,79 @@
         "Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1303"
+      "pieza_id": "1303",
+      "control": {
+        "pieza": "1303.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 27.67,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.2,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              11.625,
+              18.55,
+              23.225
+            ],
+            "dbfs": [
+              -78.3,
+              -80.8,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "medido_en": "1303.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1303.mp4\", \"cuadros\": 9, \"palabras_medidas\": 57, \"recall_pantalla_chica\": 0.7, \"cajas_fuera_zona_segura\": 4, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 1, \"der\": 3}, \"cajas_dentro\": 54, \"alto_texto_mediana_px\": 40.0, \"cajas_bajo_80px\": 54, \"seg\": 15.5, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [
+              "parte"
+            ],
+            "dicho": "Los muertos en carretera este 18 casi se duplicaron respecto del año pasado.  Detrás de cada cifra queda una familia que además tiene un juicio por delante.  El artículo 2314 del Código Civil obliga a indemnizar a quien causó el daño.  Esa demanda civil corre a parte de la pena que reciba el conductor.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4"
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-20T16:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 3,
       "historia": [
         {
@@ -247,6 +467,14 @@
         {
           "cuando": "2026-09-20T07:25:39-03:00",
           "que": "rehacer: alojado -> guion (titular partido por el %, credito cortado, fotos poco pertinentes)"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Accidente de trayecto: volver del trabajo también está cubierto",
@@ -262,14 +490,78 @@
         "Denúncialo el mismo día: el parte de Carabineros y un testigo son lo que después te sostiene el caso.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1304"
+      "pieza_id": "1304",
+      "control": {
+        "pieza": "1304.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 32.64,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.2,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              15.4,
+              21.425,
+              28.2
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1304.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1304.mp4\", \"cuadros\": 11, \"palabras_medidas\": 56, \"recall_pantalla_chica\": 0.66, \"cajas_fuera_zona_segura\": 5, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 0, \"der\": 5}, \"cajas_dentro\": 51, \"alto_texto_mediana_px\": 36.0, \"cajas_bajo_80px\": 56, \"seg\": 19.1, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Si te accidentas yendo o volviendo del trabajo, eso también es accidente laboral.  El artículo quinto de la Ley 16.744 cubre el trayecto directo,  de ida o regreso, entre tu casa y tu trabajo.  Lo cubre tu mutual o el Instituto de Seguridad Laboral, no tu fonasa ni tu isapre.  Denúncialo el mismo día, el parte de carabineros y un testigo son lo que después te sostiene el caso.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1304.mp4"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "guion",
-      "intentos": 5,
+      "estado": "fallido",
+      "intentos": 6,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -314,6 +606,10 @@
         {
           "cuando": "2026-09-20T07:25:39-03:00",
           "que": "rehacer: fallido -> guion (titular partido por el %, credito cortado, fotos poco pertinentes)"
+        },
+        {
+          "cuando": "2026-09-20T07:35:30-03:00",
+          "que": "guion -> fallido: produce.py: no se pudo armar la pieza con fotografia: solo 0 foto utilizable de 4 encontradas para ['Ministerio del Trabajo Chile', 'Palacio de La Moneda Santiago', 'Santiago de Chile centro edificios']; hacen falta 2 o mas"
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -329,7 +625,9 @@
         "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1305"
+      "pieza_id": "1305",
+      "estado_previo": "guion",
+      "motivo": "produce.py: no se pudo armar la pieza con fotografia: solo 0 foto utilizable de 4 encontradas para ['Ministerio del Trabajo Chile', 'Palacio de La Moneda Santiago', 'Santiago de Chile centro edificios']; hacen falta 2 o mas"
     },
     {
       "slot": 6,
@@ -683,5 +981,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T07:25:39-03:00"
+  "actualizado": "2026-09-20T07:35:30-03:00"
 }
