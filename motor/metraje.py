@@ -125,8 +125,11 @@ def licencia_sirve(nombre):
 # que habla la noticia: el frontis de la Corte Suprema ES la noticia, y ademas no tiene dueno de
 # su cara.
 CONSULTAS_MATERIA = {
-    "transito": ["Carabineros de Chile control carretera", "Ruta 5 Chile carretera",
-                 "autopista Chile"],
+    # El orden IMPORTA: se toman las primeras que aparezcan. "autopista Chile" devuelve ocho
+    # fotos de autopistas urbanas reales; las otras dos devuelven caminos de tierra y una placa.
+    # La mejor va primero.
+    "transito": ["autopista Chile", "Carabineros de Chile control carretera",
+                 "Ruta 5 Chile carretera"],
     "penal":    ["Policia de Investigaciones de Chile edificio", "Carabineros de Chile cuartel",
                  "Palacio de Tribunales Santiago"],
     "laboral":  ["Ministerio del Trabajo Chile", "Palacio de La Moneda Santiago",
@@ -179,9 +182,15 @@ def terminos_de(consulta):
 # Lo que no es una fotografia de la noticia aunque case con la consulta. Medido el 20/09:
 # "Ministerio del Trabajo Chile" devolvia el edificio UNA vez y seis variantes del mismo avatar
 # de redes sociales. Seis logos seguidos con un zoom lento no son un video, son un error.
+# Se suman las que salieron mirando la pieza 1301: un primer plano de una PLACA de bronce del
+# Hito Cero de la Panamericana, con el texto grabado ocupando la pantalla entera, y un "detalle"
+# que era un primer plano de una moldura dorada sin nada reconocible. Una foto cuyo asunto es un
+# texto o un trozo de cornisa no ilustra una noticia: ocupa el sitio de la que si lo haria.
 DESCARTE = ("logo", "logos", "logotipo", "avatar", "icon", "icono", "escudo", "coat", "arms",
             "mapa", "map", "diagrama", "diagram", "grafico", "chart", "bandera", "flag",
-            "sello", "seal", "banner", "emblema", "emblem")
+            "sello", "seal", "banner", "emblema", "emblem",
+            "placa", "plaque", "hito", "monumento", "monument", "inscripcion", "inscription",
+            "detalle", "detail", "primer", "closeup")
 
 
 def es_ilustracion(cand):
@@ -376,7 +385,10 @@ def credito(clip):
                              clip.get("licencia", "?"))
 
 
-ANCHO_CREDITO = 62   # lo que cabe en el ancho de la pieza sin salirse por la derecha
+# 56, no 62. Con 62 el credito de la pieza 1303 seguia saliendose: se leia
+# "... / Wikimedia Commons (CC BY-SA 4." y ahi se acababa la pantalla. Medido en el fotograma,
+# que es el unico sitio donde esto se puede medir.
+ANCHO_CREDITO = 56
 
 
 def credito_varias(clips, max_nombres=3, ancho=ANCHO_CREDITO):
@@ -400,26 +412,30 @@ def credito_varias(clips, max_nombres=3, ancho=ANCHO_CREDITO):
         if l_ and l_ not in licencias:
             licencias.append(l_)
 
-    def linea(cuantos):
+    def linea(cuantos, sitio="Wikimedia Commons"):
         resto = len(nombres) - cuantos
         vis = ", ".join(nombres[:cuantos]) or "?"
         if resto > 0:
             vis += " y %d mas" % resto
-        return "Fotos: %s / Wikimedia Commons (%s)" % (vis, ", ".join(licencias[:2]) or "?")
+        return "Fotos: %s / %s (%s)" % (vis, sitio, ", ".join(licencias[:2]) or "?")
 
-    for cuantos in range(min(max_nombres, len(nombres)), 0, -1):
-        if len(linea(cuantos)) <= ancho:
-            return linea(cuantos)
-    # Ni con un solo autor cabe. Se acorta ESE nombre hasta que quepa, no la mencion: la
-    # licencia y el "y N mas" se quedan enteros porque son lo que hace verificable el credito.
+    # Primero con el nombre del sitio entero; si no cabe, "Commons" a secas. NOMBRAR A UN AUTOR
+    # ES LA CONDICION DE CC BY: vale mas acortar el sitio -que se entiende igual- que quedarse
+    # sin ningun nombre. "Fotos: Diego Grez y 2 mas / Wikimedia Commons (CC BY-SA 4.0)" son 60 y
+    # no cabe; con "Commons" son 50 y cabe, conservando al autor.
+    for sitio in ("Wikimedia Commons", "Commons"):
+        for cuantos in range(min(max_nombres, len(nombres)), 0, -1):
+            if len(linea(cuantos, sitio)) <= ancho:
+                return linea(cuantos, sitio)
+
+    # Ni asi cabe un solo nombre: son larguisimos. Antes se cortaba con puntos suspensivos y aun
+    # se pasaba de largo -"Fotos: M.Fe... y 3 mas" son 57 para un hueco de 56- y un nombre
+    # cortado a cuatro letras no identifica a nadie. Se dice cuantos son: la pagina de cada foto
+    # en Commons los lista con nombre y apellido, asi que la atribucion sigue siendo verificable.
     if nombres:
-        resto = len(nombres) - 1
-        cola = (" y %d mas" % resto if resto > 0 else "")
-        molde = "Fotos: %s" + cola + " / Wikimedia Commons (%s)"
-        lic = ", ".join(licencias[:1]) or "?"
-        hueco = ancho - len(molde % ("", lic))
-        corto = nombres[0][:max(4, hueco - 3)].rstrip(" ,-") + "..."
-        return molde % (corto, lic)
+        return "Fotos: %d %s / Commons (%s)" % (
+            len(nombres), "autor" if len(nombres) == 1 else "autores",
+            ", ".join(licencias[:1]) or "?")
     return "Fotos: Wikimedia Commons (%s)" % (", ".join(licencias[:2]) or "?")
 
 
