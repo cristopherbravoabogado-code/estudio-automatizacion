@@ -132,8 +132,14 @@ CONSULTAS_MATERIA = {
                  "Ruta 5 Chile carretera"],
     "penal":    ["Policia de Investigaciones de Chile edificio", "Carabineros de Chile cuartel",
                  "Palacio de Tribunales Santiago"],
-    "laboral":  ["Ministerio del Trabajo Chile", "Palacio de La Moneda Santiago",
-                 "Santiago de Chile centro edificios"],
+    # "Santiago de Chile centro edificios" era demasiado general: la pieza 1304 salio con un
+    # bloque de oficinas lleno de aires acondicionados y una casa de entramado de madera, que
+    # no dicen nada de un accidente de trayecto. Se cambia por sitios del trabajo.
+    # La Inspeccion del Trabajo primero: es la institucion de la que hablan estas piezas, y
+    # Commons tiene sus frontis de Santiago y Los Andes. "Palacio de La Moneda" devuelve cero
+    # con el filtro puesto y se queda solo como ultimo recurso.
+    "laboral":  ["Inspeccion del Trabajo Chile", "Ministerio del Trabajo Chile",
+                 "obra en construccion Santiago Chile", "Palacio de La Moneda Santiago"],
     "civil":    ["Corte Suprema de Chile edificio", "Palacio de Tribunales Santiago",
                  "Poder Judicial Chile edificio"],
     "familia":  ["Corte de Apelaciones Chile edificio", "Palacio de Tribunales Santiago"],
@@ -163,7 +169,12 @@ GENTE = ("people", "persons", "person", "portrait", "portraits", "retrato", "ret
          "faces", "face", "selfie", "staff", "employees", "students", "crowd", "attendees",
          "participants", "party", "fiesta", "fiestas", "band", "musicians", "concert",
          "wedding", "family", "familia", "team", "inauguracion", "ceremonia", "visita",
-         "reunion", "firma", "autoridades", "funcionarios", "manifestacion", "marcha")
+         "reunion", "firma", "autoridades", "funcionarios", "manifestacion", "marcha",
+         # Estas se suman el 20/09 y son las que mas importan justamente en laboral: buscando
+         # "obra en construccion Santiago Chile" aparecio "Trabajadores del desaparecido
+         # Matadero de Santiago", una foto de epoca cuyo asunto son personas. Una pieza que
+         # habla de despidos no puede ilustrarse con la cara de un trabajador cualquiera.
+         "trabajadores", "trabajador", "obreros", "obrero", "empleados", "workers", "worker")
 
 
 def _bolsa(cand):
