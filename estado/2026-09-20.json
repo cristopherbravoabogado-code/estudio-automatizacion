@@ -90,8 +90,8 @@
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-20T14:00:00Z",
-      "estado": "alojado",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:29-03:00",
@@ -112,6 +112,10 @@
         {
           "cuando": "2026-09-20T05:33:41-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-20T05:52:49-03:00",
+          "que": "alojado -> fallido: fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de carretera de 2026. La licencia estaba bien; la pertinencia no se filtra."
         }
       ],
       "tema": "Las muertes en carretera del 18 subieron 87% respecto de 2025",
@@ -191,7 +195,9 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1303.mp4",
+      "estado_previo": "alojado",
+      "motivo": "fotografia sin relacion: Commons devolvio grabados y fotos de archivo del siglo XIX (soldados de la Guerra del Pacifico, un vapor, una araucaria) para una noticia de carretera de 2026. La licencia estaba bien; la pertinencia no se filtra."
     },
     {
       "slot": 4,
@@ -238,8 +244,8 @@
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "alojado",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-19T19:35:19-03:00",
@@ -260,6 +266,10 @@
         {
           "cuando": "2026-09-20T05:33:41-03:00",
           "que": "renderizado -> alojado"
+        },
+        {
+          "cuando": "2026-09-20T05:52:49-03:00",
+          "que": "alojado -> fallido: PERSONAS IDENTIFICABLES: Commons devolvio fotos de una fiesta de trabajadores (credito NOIRLab/NSF/AURA) con caras reconocibles, sobre una pieza que habla de despido por faltar al trabajo. Da a entender que esas personas son el caso. No se publica."
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -339,7 +349,9 @@
         "pasa": true,
         "falla": []
       },
-      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4"
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1305.mp4",
+      "estado_previo": "alojado",
+      "motivo": "PERSONAS IDENTIFICABLES: Commons devolvio fotos de una fiesta de trabajadores (credito NOIRLab/NSF/AURA) con caras reconocibles, sobre una pieza que habla de despido por faltar al trabajo. Da a entender que esas personas son el caso. No se publica."
     },
     {
       "slot": 6,
@@ -693,5 +705,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T05:33:41-03:00"
+  "actualizado": "2026-09-20T05:52:49-03:00"
 }
