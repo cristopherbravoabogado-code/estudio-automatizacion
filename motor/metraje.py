@@ -137,20 +137,30 @@ CONSULTAS_MATERIA = {
 }
 CONSULTAS_POR_DEFECTO = ["Palacio de Tribunales Santiago", "Corte Suprema de Chile edificio"]
 
-# Palabras vacias: no sirven para decidir si una foto viene a cuento.
+# Palabras vacias: no sirven para decidir si una foto viene a cuento. "chile" NO esta aqui a
+# proposito: es el termino que mas discrimina de todos. Sin el, "Ruta 5 Chile carretera" trae la
+# Carrera Panamericana de Mexico y "Poder Judicial Chile" la inauguracion de un juzgado en
+# Misiones, Argentina. Va aparte, como requisito propio (es_de_chile).
 VACIAS = set("""a al ante bajo con contra de del desde durante en entre hacia hasta la las lo los
 mas mediante para por segun se sin sobre tras un una unos unas y o u e que el su sus este esta
-estos estas ese esa aquel como cuando donde chile chilena chileno""".split())
+estos estas ese esa aquel como cuando donde""".split())
 
 # Marcadores de que la foto tiene PERSONAS como asunto. Se rechaza por omision: una foto de un
 # edificio con gente de espaldas al fondo seria aceptable, un retrato no, y desde aqui no se
 # puede distinguir sin mirar. Ante la duda, fuera: quedarse sin fotos para una pieza para la
 # cadena, y eso se ve; publicar la cara de alguien ajeno al caso no se deshace.
+#
+# SE COMPARAN PALABRAS ENTERAS, NO PEDAZOS. La primera version buscaba subcadenas y fue peor que
+# no tener filtro: "men" cae dentro de "monumento" y "documento", "face" dentro de "superficie",
+# "person" dentro de "personal". Medido el 20/09: tiraba el edificio del Ministerio del Trabajo
+# y el logo de la Direccion del Trabajo -donde no hay nadie- y en cambio dejaba pasar la
+# inauguracion de un juzgado, que es una sala llena de gente. Justo al reves de lo que se pedia.
 GENTE = ("people", "persons", "person", "portrait", "portraits", "retrato", "retratos",
          "personas", "hombres", "mujeres", "men", "women", "children", "ninos", "kids",
          "faces", "face", "selfie", "staff", "employees", "students", "crowd", "attendees",
-         "participants", "party", "fiesta", "band", "musicians", "concert", "wedding",
-         "family", "familia", "team", "equipo de", "group of")
+         "participants", "party", "fiesta", "fiestas", "band", "musicians", "concert",
+         "wedding", "family", "familia", "team", "inauguracion", "ceremonia", "visita",
+         "reunion", "firma", "autoridades", "funcionarios", "manifestacion", "marcha")
 
 
 def _bolsa(cand):
@@ -166,18 +176,32 @@ def terminos_de(consulta):
             if len(w) > 3 and w not in VACIAS]
 
 
-def pertinente(cand, terminos):
-    """La foto tiene que mencionar algo de lo que se busco. Si no, no viene a cuento."""
+def _palabras(texto):
+    import re as _re
+    return set(_re.split(r"[^a-z0-9]+", texto)) - {""}
+
+
+def es_de_chile(cand):
+    """La noticia es chilena; la foto tambien tiene que serlo."""
+    return "chile" in _palabras(_bolsa(cand)) or "chilean" in _palabras(_bolsa(cand))
+
+
+def pertinente(cand, terminos, minimo=2):
+    """Cuantas palabras de la consulta menciona la foto.
+
+    Con UNA basta para que casi cualquier cosa entre: "Ruta 5 Chile carretera" casaba con
+    "Carrera Panamericana" solo por "carretera". Se piden dos, o todas si la consulta trae
+    menos de dos palabras con contenido.
+    """
     if not terminos:
         return True
-    b = _bolsa(cand)
-    return any(t in b for t in terminos)
+    p = _palabras(_bolsa(cand))
+    return sum(1 for t in terminos if t in p) >= min(minimo, len(terminos))
 
 
 def tiene_gente(cand):
-    """True si la foto parece tener personas como asunto."""
-    b = _bolsa(cand)
-    return any(g in b for g in GENTE)
+    """True si la foto parece tener personas como asunto. Palabras enteras, nunca pedazos."""
+    return bool(_palabras(_bolsa(cand)) & set(GENTE))
 
 
 def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video", exigir=None,
@@ -257,6 +281,8 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video", exigir=None
             "categorias": cats,
         }
         if exigir and not pertinente(cand, exigir):
+            continue
+        if exigir and not es_de_chile(cand):
             continue
         if sin_gente and tiene_gente(cand):
             continue
