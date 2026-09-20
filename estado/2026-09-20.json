@@ -1066,7 +1066,7 @@
       "slot": 10,
       "hora_chile": "22:00",
       "hora_utc": "2026-09-21T01:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -1080,6 +1080,14 @@
         {
           "cuando": "2026-09-20T08:46:32-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-20T08:51:36-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-20T08:51:36-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "36.200 fiscalizaciones de Carabineros en Fiestas Patrias 2026",
@@ -1095,8 +1103,72 @@
         "Lo que sí puedes pedir es que el resultado quede por escrito y una copia del parte.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1306"
+      "pieza_id": "1306",
+      "control": {
+        "pieza": "1306.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 30.0,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.2,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              10.1,
+              20.0,
+              25.575
+            ],
+            "dbfs": [
+              -80.8,
+              -80.8,
+              -84.3
+            ],
+            "peor": -80.8,
+            "origen": "dados",
+            "medido_en": "1306.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1306.mp4\", \"cuadros\": 10, \"palabras_medidas\": 57, \"recall_pantalla_chica\": 0.75, \"cajas_fuera_zona_segura\": 2, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 2, \"der\": 0}, \"cajas_dentro\": 56, \"alto_texto_mediana_px\": 43.0, \"cajas_bajo_80px\": 58, \"seg\": 15.6, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Carabineros hizo treinta y seis mil doscientos controles en estas fiestas patrias.  Diez mil novecientos fueron con alcotest o narcotest.  Negarte a soplar no te salva.  El artículo ciento noventa dice que el juez puede tomar esa negativa como antecedente suficiente para tenerte por ebrio.  Lo que sí puedes pedir es una copia del parte y que el resultado quede por escrito.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-20/1306.mp4"
     }
   ],
-  "actualizado": "2026-09-20T08:46:32-03:00"
+  "actualizado": "2026-09-20T08:51:36-03:00"
 }
