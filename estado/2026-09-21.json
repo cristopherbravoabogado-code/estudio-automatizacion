@@ -1,0 +1,224 @@
+{
+  "fecha": "2026-09-21",
+  "meta": 10,
+  "formato": "noticia-vertical-relatada-sin-rostro",
+  "creado": "2026-09-20T19:33:00-03:00",
+  "piezas": [
+    {
+      "slot": 1,
+      "hora_chile": "07:00",
+      "hora_utc": "2026-09-21T10:00:00Z",
+      "estado": "guion",
+      "intentos": 0,
+      "historia": [
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Balance final de Fiestas Patrias 2026: 18 fallecidos y 282 detenidos",
+      "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+      "norma": "29708",
+      "articulo": "196 E",
+      "frase": "estado de ebriedad",
+      "gancho": "BALANCE FINAL",
+      "tramos": [
+        "El balance final de Carabineros cerró con dieciocho fallecidos en siniestros viales.",
+        "Y doscientos ochenta y dos detenidos en todo el país.",
+        "Manejar en estado de ebriedad no es una multa: es un delito con pena de cárcel.",
+        "Lo dice el artículo ciento noventa y seis E de la Ley de Tránsito.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "pieza_id": "1401"
+    },
+    {
+      "slot": 2,
+      "hora_chile": "09:00",
+      "hora_utc": "2026-09-21T12:00:00Z",
+      "estado": "guion",
+      "intentos": 0,
+      "historia": [
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "144 detenidos por ebriedad y 85 bajo la influencia del alcohol",
+      "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+      "norma": "29708",
+      "articulo": "196 C",
+      "frase": "bajo la influencia del alcohol",
+      "gancho": "144 Y 85",
+      "tramos": [
+        "Ciento cuarenta y cuatro conductores cayeron por manejar borrachos.",
+        "Otros ochenta y cinco, por manejar bajo la influencia del alcohol.",
+        "No es lo mismo, y la diferencia la marca un examen.",
+        "Los primeros arriesgan cárcel. Los segundos, multa y la licencia suspendida un mes.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "pieza_id": "1402"
+    },
+    {
+      "slot": 3,
+      "hora_chile": "11:00",
+      "hora_utc": "2026-09-21T14:00:00Z",
+      "estado": "guion",
+      "intentos": 0,
+      "historia": [
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "37 detenidos por conducir bajo la influencia de drogas",
+      "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+      "norma": "29708",
+      "articulo": "115 A",
+      "frase": "sustancias estupefacientes o sicotrópicas",
+      "gancho": "37 POR DROGAS",
+      "tramos": [
+        "Treinta y siete conductores dieron positivo por drogas este fin de semana largo.",
+        "La Ley de Tránsito prohíbe manejar bajo la influencia de sustancias estupefacientes.",
+        "Y no distingue si la droga era legal o no: lo que importa es cómo llegaste al volante.",
+        "El narcotest en la calle basta para detenerte y llevarte al tribunal.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "pieza_id": "1403"
+    },
+    {
+      "slot": 4,
+      "hora_chile": "13:00",
+      "hora_utc": "2026-09-21T16:00:00Z",
+      "estado": "guion",
+      "intentos": 0,
+      "historia": [
+        {
+          "cuando": "2026-09-20T19:33:16-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-20T19:33:16-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-20T19:33:16-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "Chile supera los mil fallecidos en siniestros viales en 2026",
+      "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+      "norma": "172986",
+      "articulo": "2314",
+      "frase": "ha inferido daño a otro",
+      "gancho": "MIL EN EL AÑO",
+      "tramos": [
+        "Chile ya pasó los mil muertos en siniestros viales en lo que va del año.",
+        "Detrás de cada uno queda una familia, y casi siempre un juicio.",
+        "El artículo dos mil trescientos catorce del Código Civil obliga a indemnizar a quien causó el daño.",
+        "Esa demanda es distinta del juicio penal y se puede seguir en paralelo.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "pieza_id": "1404"
+    },
+    {
+      "slot": 5,
+      "hora_chile": "15:00",
+      "hora_utc": "2026-09-21T18:00:00Z",
+      "estado": "guion",
+      "intentos": 0,
+      "historia": [
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "vacio -> tema"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "tema -> derecho"
+        },
+        {
+          "cuando": "2026-09-20T19:33:07-03:00",
+          "que": "derecho -> guion"
+        }
+      ],
+      "tema": "267 siniestros viales en el balance de Fiestas Patrias 2026",
+      "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+      "norma": "29708",
+      "articulo": "79",
+      "frase": "cinturón de seguridad",
+      "gancho": "267 SINIESTROS",
+      "tramos": [
+        "Doscientos sesenta y siete siniestros viales en cuatro días.",
+        "El artículo setenta y nueve obliga al cinturón también en los asientos de atrás.",
+        "No es un detalle: el parte lo paga quien conduce, aunque el que va suelto sea otro.",
+        "Y en un choque, ese cinturón decide quién sale caminando.",
+        "Si necesitas asesoría, escríbenos."
+      ],
+      "pieza_id": "1405"
+    },
+    {
+      "slot": 6,
+      "hora_chile": "17:00",
+      "hora_utc": "2026-09-21T20:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 7,
+      "hora_chile": "19:00",
+      "hora_utc": "2026-09-21T22:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 8,
+      "hora_chile": "20:00",
+      "hora_utc": "2026-09-21T23:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 9,
+      "hora_chile": "21:00",
+      "hora_utc": "2026-09-22T00:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    },
+    {
+      "slot": 10,
+      "hora_chile": "22:00",
+      "hora_utc": "2026-09-22T01:00:00Z",
+      "estado": "vacio",
+      "intentos": 0,
+      "historia": []
+    }
+  ],
+  "actualizado": "2026-09-20T19:33:16-03:00"
+}

@@ -1,0 +1,115 @@
+{
+ "fecha": "2026-09-21",
+ "piezas": [
+  {
+   "id": "1401",
+   "materia": "transito",
+   "tag": "BALANCE FINAL",
+   "credito": "Carabineros · 20/09/2026",
+   "titular": "18 fallecidos y 282 detenidos: el balance final del 18",
+   "tema": "Balance final de Fiestas Patrias 2026: 18 fallecidos y 282 detenidos",
+   "norma": "29708",
+   "articulo": "196 E",
+   "frase": "estado de ebriedad",
+   "voz": [
+    "El balance final de Carabineros cerró con dieciocho fallecidos en siniestros viales.",
+    "Y doscientos ochenta y dos detenidos en todo el país.",
+    "Manejar en estado de ebriedad no es una multa: es un delito con pena de cárcel.",
+    "Lo dice el artículo ciento noventa y seis E de la Ley de Tránsito.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "formato": "F15",
+   "prensa": false,
+   "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+   "slot": 1
+  },
+  {
+   "id": "1402",
+   "materia": "transito",
+   "tag": "144 Y 85",
+   "credito": "Carabineros · 20/09/2026",
+   "titular": "144 detenidos por ebriedad y 85 por conducir con alcohol",
+   "tema": "144 detenidos por ebriedad y 85 bajo la influencia del alcohol",
+   "norma": "29708",
+   "articulo": "196 C",
+   "frase": "bajo la influencia del alcohol",
+   "voz": [
+    "Ciento cuarenta y cuatro conductores cayeron por manejar borrachos.",
+    "Otros ochenta y cinco, por manejar bajo la influencia del alcohol.",
+    "No es lo mismo, y la diferencia la marca un examen.",
+    "Los primeros arriesgan cárcel. Los segundos, multa y la licencia suspendida un mes.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "formato": "F15",
+   "prensa": false,
+   "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+   "slot": 2
+  },
+  {
+   "id": "1403",
+   "materia": "transito",
+   "tag": "37 POR DROGAS",
+   "credito": "Carabineros · 20/09/2026",
+   "titular": "37 conductores detenidos por drogas en Fiestas Patrias",
+   "tema": "37 detenidos por conducir bajo la influencia de drogas",
+   "norma": "29708",
+   "articulo": "115 A",
+   "frase": "sustancias estupefacientes o sicotrópicas",
+   "voz": [
+    "Treinta y siete conductores dieron positivo por drogas este fin de semana largo.",
+    "La Ley de Tránsito prohíbe manejar bajo la influencia de sustancias estupefacientes.",
+    "Y no distingue si la droga era legal o no: lo que importa es cómo llegaste al volante.",
+    "El narcotest en la calle basta para detenerte y llevarte al tribunal.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "formato": "F15",
+   "prensa": false,
+   "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+   "slot": 3
+  },
+  {
+   "id": "1404",
+   "materia": "civil",
+   "tag": "MIL EN EL AÑO",
+   "credito": "Carabineros · 20/09/2026",
+   "titular": "Más de mil muertos en carretera en lo que va de 2026",
+   "tema": "Chile supera los mil fallecidos en siniestros viales en 2026",
+   "norma": "172986",
+   "articulo": "2314",
+   "frase": "ha inferido daño a otro",
+   "voz": [
+    "Chile ya pasó los mil muertos en siniestros viales en lo que va del año.",
+    "Detrás de cada uno queda una familia, y casi siempre un juicio.",
+    "El artículo dos mil trescientos catorce del Código Civil obliga a indemnizar a quien causó el daño.",
+    "Esa demanda es distinta del juicio penal y se puede seguir en paralelo.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "formato": "F15",
+   "prensa": false,
+   "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+   "slot": 4
+  },
+  {
+   "id": "1405",
+   "materia": "transito",
+   "tag": "267 SINIESTROS",
+   "credito": "Carabineros · 20/09/2026",
+   "titular": "267 siniestros viales en cuatro días: el cinturón atrás",
+   "tema": "267 siniestros viales en el balance de Fiestas Patrias 2026",
+   "norma": "29708",
+   "articulo": "79",
+   "frase": "cinturón de seguridad",
+   "voz": [
+    "Doscientos sesenta y siete siniestros viales en cuatro días.",
+    "El artículo setenta y nueve obliga al cinturón también en los asientos de atrás.",
+    "No es un detalle: el parte lo paga quien conduce, aunque el que va suelto sea otro.",
+    "Y en un choque, ese cinturón decide quién sale caminando.",
+    "Si necesitas asesoría, escríbenos."
+   ],
+   "formato": "F15",
+   "prensa": false,
+   "fuente": "Carabineros de Chile, balance final de Fiestas Patrias, 20/09/2026",
+   "slot": 5
+  }
+ ]
+}
