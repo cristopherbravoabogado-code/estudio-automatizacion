@@ -560,7 +560,7 @@
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-20T18:00:00Z",
-      "estado": "fallido",
+      "estado": "guion",
       "intentos": 6,
       "historia": [
         {
@@ -610,6 +610,10 @@
         {
           "cuando": "2026-09-20T07:35:30-03:00",
           "que": "guion -> fallido: produce.py: no se pudo armar la pieza con fotografia: solo 0 foto utilizable de 4 encontradas para ['Ministerio del Trabajo Chile', 'Palacio de La Moneda Santiago', 'Santiago de Chile centro edificios']; hacen falta 2 o mas"
+        },
+        {
+          "cuando": "2026-09-20T07:55:19-03:00",
+          "que": "reintento desde fallido -> guion (era: produce.py: no se pudo armar la pieza con fotografia: solo 0 foto utilizable de 4 encontradas para ['Ministerio del Trabajo Chile', 'Palacio de La Moneda Santiago', 'Santiago de Chile centro edificios']; hacen falta 2 o mas)"
         }
       ],
       "tema": "Faltar sin aviso después del 18 es causal de despido del artículo 160",
@@ -625,9 +629,7 @@
         "Ese despido va sin indemnización. La licencia médica o el permiso por escrito son lo que lo evita.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1305",
-      "estado_previo": "guion",
-      "motivo": "produce.py: no se pudo armar la pieza con fotografia: solo 0 foto utilizable de 4 encontradas para ['Ministerio del Trabajo Chile', 'Palacio de La Moneda Santiago', 'Santiago de Chile centro edificios']; hacen falta 2 o mas"
+      "pieza_id": "1305"
     },
     {
       "slot": 6,
@@ -981,5 +983,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T07:35:30-03:00"
+  "actualizado": "2026-09-20T07:55:19-03:00"
 }
