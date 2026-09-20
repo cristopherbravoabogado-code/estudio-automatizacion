@@ -102,6 +102,34 @@ def leer_testigo(ruta):
     return posts
 
 
+def media_ya_encolados(excepto):
+    """Los media_id que ya ocupan una ranura en CUALQUIER otro dia del libro.
+
+    ANTIDOBLE ENTRE DIAS. Una pieza rescatada existe dos veces: en su dia de origen (marcada
+    fallida) y en el dia al que paso. Si el dia de origen no llega a commitearse -y en una tarea
+    programada el commit es justo lo que falla-, la noche siguiente la ve otra vez 'alojada' y la
+    rescata DE NUEVO, a otro dia. La misma pieza en dos ranuras es un post repetido, que es
+    exactamente lo que todo esto trata de evitar.
+    Contra eso no sirve confiar en el commit: sirve mirar el media_id, que es el que identifica
+    al mp4 de verdad. Si ya esta encolado en otro dia, esta pieza no se vuelve a mover.
+    """
+    vistos = {}
+    if not os.path.isdir(C.DIR_ESTADO):
+        return vistos
+    for nombre in sorted(os.listdir(C.DIR_ESTADO)):
+        if not nombre.endswith(".json") or nombre[:-5] == excepto:
+            continue
+        try:
+            with open(os.path.join(C.DIR_ESTADO, nombre), encoding="utf-8") as f:
+                dia = json.load(f)
+        except (OSError, ValueError):
+            continue
+        for p in dia.get("piezas", []):
+            if p.get("media_id") and p.get("estado") != C.FALLIDO:
+                vistos.setdefault(p["media_id"], "%s #%s" % (nombre[:-5], p.get("slot")))
+    return vistos
+
+
 def posts_del_dia(posts, fecha):
     """Los posts del testigo que caen dentro del dia `fecha` en hora de Chile."""
     ini = datetime.datetime.strptime(fecha, "%Y-%m-%d").replace(tzinfo=C.TZ_CHILE)
@@ -121,11 +149,16 @@ def cmd_rescatar(args):
     reales = posts_del_dia(posts, args.de)
 
     anotadas = [p for p in origen["piezas"] if p["estado"] == "publicado"]
-    candidatas = [p for p in origen["piezas"]
-                  if p["estado"] in RESCATABLES
-                  and not p.get("publish_id")
-                  and p.get("media_id")
-                  and C.vencida(p, args.de, 0)]
+    encolados = media_ya_encolados(excepto=args.de)
+    candidatas, ya_movidas = [], []
+    for p in origen["piezas"]:
+        if (p["estado"] not in RESCATABLES or p.get("publish_id")
+                or not p.get("media_id") or not C.vencida(p, args.de, 0)):
+            continue
+        if p["media_id"] in encolados:
+            ya_movidas.append((p, encolados[p["media_id"]]))
+        else:
+            candidatas.append(p)
 
     nuestros, ajenos = [], []
     for t, p in reales:
@@ -142,6 +175,9 @@ def cmd_rescatar(args):
     print("LIBRO:   %d ranura(s) anotadas como publicadas ese dia" % len(anotadas))
     print("CANDIDATAS a rescate (alojadas, sin publish_id, vencidas): %d -> %s"
           % (len(candidatas), ", ".join("#%d" % p["slot"] for p in candidatas) or "ninguna"))
+    if ya_movidas:
+        print("YA ENCOLADAS en otro dia (antidoble por media_id), no se tocan: %s"
+              % ", ".join("#%d -> %s" % (p["slot"], donde) for p, donde in ya_movidas))
     print()
 
     # LA PUERTA. Falla CERRADA en los tres casos en que no se puede afirmar que no salieron.
