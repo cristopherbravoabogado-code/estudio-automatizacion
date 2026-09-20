@@ -376,26 +376,51 @@ def credito(clip):
                              clip.get("licencia", "?"))
 
 
-def credito_varias(clips, max_nombres=3):
+ANCHO_CREDITO = 62   # lo que cabe en el ancho de la pieza sin salirse por la derecha
+
+
+def credito_varias(clips, max_nombres=3, ancho=ANCHO_CREDITO):
     """Una sola linea de credito para una pieza armada con VARIAS fotos.
 
     CC BY exige nombrar al autor de cada una. Con cuatro fotos, cuatro lineas no caben en
     pantalla ni se leen. Se nombran hasta tres y se dice cuantas mas hay: la mencion existe,
     es verificable y no convierte la pieza en una ficha bibliografica.
+
+    Y SE MIDE EL LARGO. Mirando las piezas del 20/09 el credito se salia por el borde derecho:
+    "Fotos: Desconocido - Revista Vea, Desconocido - En Revista Zig-..." cortado a media
+    palabra. Un credito que no se lee entero no cumple la atribucion que dice cumplir, asi que
+    se recorta por autores -nombrando menos y diciendo cuantos faltan- y no por caracteres.
     """
     nombres, licencias = [], []
     for c in clips:
-        a_ = (c.get("atribucion") or "").strip()
+        a_ = " ".join((c.get("atribucion") or "").split())
         if a_ and a_ not in nombres:
             nombres.append(a_)
         l_ = (c.get("licencia") or "").strip()
         if l_ and l_ not in licencias:
             licencias.append(l_)
-    resto = len(nombres) - max_nombres
-    visibles = ", ".join(nombres[:max_nombres])
-    if resto > 0:
-        visibles += " y %d mas" % resto
-    return "Fotos: %s / Wikimedia Commons (%s)" % (visibles or "?", ", ".join(licencias) or "?")
+
+    def linea(cuantos):
+        resto = len(nombres) - cuantos
+        vis = ", ".join(nombres[:cuantos]) or "?"
+        if resto > 0:
+            vis += " y %d mas" % resto
+        return "Fotos: %s / Wikimedia Commons (%s)" % (vis, ", ".join(licencias[:2]) or "?")
+
+    for cuantos in range(min(max_nombres, len(nombres)), 0, -1):
+        if len(linea(cuantos)) <= ancho:
+            return linea(cuantos)
+    # Ni con un solo autor cabe. Se acorta ESE nombre hasta que quepa, no la mencion: la
+    # licencia y el "y N mas" se quedan enteros porque son lo que hace verificable el credito.
+    if nombres:
+        resto = len(nombres) - 1
+        cola = (" y %d mas" % resto if resto > 0 else "")
+        molde = "Fotos: %s" + cola + " / Wikimedia Commons (%s)"
+        lic = ", ".join(licencias[:1]) or "?"
+        hueco = ancho - len(molde % ("", lic))
+        corto = nombres[0][:max(4, hueco - 3)].rstrip(" ,-") + "..."
+        return molde % (corto, lic)
+    return "Fotos: Wikimedia Commons (%s)" % (", ".join(licencias[:2]) or "?")
 
 
 def cmd_buscar(a):
