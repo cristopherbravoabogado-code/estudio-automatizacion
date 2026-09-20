@@ -390,7 +390,13 @@ def cmd_fallar(args):
     p = buscar(dia, args.slot)
     if p["estado"] == "publicado":
         salir("la ranura #%d ya esta publicada; no se marca fallida." % p["slot"])
-    p["estado_previo"] = p["estado"]
+    # FALLAR DOS VECES NO BORRA DE DONDE VENIA. Si la ranura ya estaba fallida, guardar
+    # 'fallido' como estado previo la deja encerrada: 'reintentar' la devuelve a 'fallido' y
+    # vuelve a pedir 'reintentar', para siempre. Paso el 20/09 con las cinco ranuras del dia,
+    # cuando una corrida de rescate volvio a fallar sobre lo ya fallido. Se conserva el primer
+    # estado real, que es el unico al que tiene sentido volver.
+    if p["estado"] != FALLIDO:
+        p["estado_previo"] = p["estado"]
     p["estado"] = FALLIDO
     p["motivo"] = args.motivo
     p["intentos"] = p.get("intentos", 0) + 1
@@ -438,7 +444,14 @@ def cmd_rehacer(args):
     if p["estado"] == "publicado":
         salir("la ranura #%d ya se publico (%s). Rehacerla aqui no la baja de TikTok: el "
               "registro diria una cosa y la realidad otra." % (p["slot"], p.get("publicado_en")))
-    if indice(p["estado"]) < indice("guion"):
+    # UNA RANURA FALLIDA SI SE PUEDE REHACER, y es el caso mas frecuente: la pieza salio mal,
+    # se marco fallida, y lo que toca es volver a producirla. Antes esto reventaba con
+    # "ValueError: 'fallido' is not in list" -porque 'fallido' no esta en la cadena de estados-
+    # y un traceback en una tarea desatendida es peor que un error: se pone a improvisar.
+    if p["estado"] == FALLIDO and indice(p.get("estado_previo", "vacio")) < indice("guion"):
+        salir("la ranura #%d fallo en '%s': todavia no hay nada hecho que rehacer. Usa "
+              "'reintentar'." % (p["slot"], p.get("estado_previo", "vacio")))
+    if p["estado"] != FALLIDO and indice(p["estado"]) < indice("guion"):
         salir("la ranura #%d esta en '%s': todavia no hay nada hecho que rehacer."
               % (p["slot"], p["estado"]))
     antes = p["estado"]
