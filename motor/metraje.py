@@ -138,8 +138,11 @@ CONSULTAS_MATERIA = {
     # La Inspeccion del Trabajo primero: es la institucion de la que hablan estas piezas, y
     # Commons tiene sus frontis de Santiago y Los Andes. "Palacio de La Moneda" devuelve cero
     # con el filtro puesto y se queda solo como ultimo recurso.
+    # SIN OBRAS. "obra en construccion Santiago Chile" devolvio dos veces lo mismo: fotos de
+    # faenas, que estan llenas de gente y de ceremonias de primera piedra. Los frontis de la
+    # Inspeccion y del Ministerio bastan -son tres fotos- y son de lo que habla la pieza.
     "laboral":  ["Inspeccion del Trabajo Chile", "Ministerio del Trabajo Chile",
-                 "obra en construccion Santiago Chile", "Palacio de La Moneda Santiago"],
+                 "Palacio de La Moneda Santiago"],
     "civil":    ["Corte Suprema de Chile edificio", "Palacio de Tribunales Santiago",
                  "Poder Judicial Chile edificio"],
     "familia":  ["Corte de Apelaciones Chile edificio", "Palacio de Tribunales Santiago"],
@@ -174,7 +177,14 @@ GENTE = ("people", "persons", "person", "portrait", "portraits", "retrato", "ret
          # "obra en construccion Santiago Chile" aparecio "Trabajadores del desaparecido
          # Matadero de Santiago", una foto de epoca cuyo asunto son personas. Una pieza que
          # habla de despidos no puede ilustrarse con la cara de un trabajador cualquiera.
-         "trabajadores", "trabajador", "obreros", "obrero", "empleados", "workers", "worker")
+         "trabajadores", "trabajador", "obreros", "obrero", "empleados", "workers", "worker",
+         # Y estas, del tercer intento del 20/09. "Linea 9 - inicio de obras" es un acto oficial
+         # con un hombre de casco en un atril, mirando a camara, y paso los dos filtros porque
+         # su titulo no nombra a nadie. Lo que delata a estas fotos no es la palabra "persona":
+         # es que son ACTOS. Un acto siempre tiene a alguien hablando.
+         "inicio", "obras", "primera", "piedra", "acto", "discurso", "anuncio", "lanzamiento",
+         "presidente", "presidenta", "ministro", "ministra", "alcalde", "alcaldesa",
+         "gobernador", "gobernadora", "delegado", "seremi", "subsecretario")
 
 
 def _bolsa(cand):
