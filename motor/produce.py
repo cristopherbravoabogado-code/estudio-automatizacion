@@ -204,26 +204,50 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
         return False, ("solo %d foto con licencia usable para %s; hacen falta 2 o mas"
                        % (len(elegidas), consultas))
 
-    partes = []
+    # LO QUE SE BAJA NO SIEMPRE ES UNA IMAGEN, y el nombre no lo dice. Commons sirve JPEG, PNG,
+    # a veces redirige y a veces responde con una pagina de error: guardar eso como foto_0.jpg y
+    # darselo a ffmpeg da "No JPEG data found in image" y mata la PIEZA ENTERA por una sola foto
+    # mala. Paso dos veces el 20/09. Se mira el comienzo del archivo -que es lo unico que no
+    # miente- y la foto que no sea imagen se SALTA; solo si quedan menos de dos se para.
+    MAGIA = ((b"\xff\xd8\xff", ".jpg"), (b"\x89PNG\r\n\x1a\n", ".png"),
+             (b"GIF8", ".gif"), (b"II*\x00", ".tif"), (b"MM\x00*", ".tif"))
+
+    def _tipo_real(ruta):
+        try:
+            with open(ruta, "rb") as fh:
+                cab = fh.read(16)
+        except OSError:
+            return None
+        if cab[:4] == b"RIFF" and cab[8:12] == b"WEBP":
+            return ".webp"
+        for firma, ext in MAGIA:
+            if cab.startswith(firma):
+                return ext
+        return None
+
+    buenas = []
     for n, f in enumerate(elegidas):
-        # LA EXTENSION IMPORTA, aunque parezca que no. ffmpeg elige el decodificador por el
-        # nombre del archivo: guardar un PNG como "foto_0.jpg" le hace buscar datos JPEG dentro
-        # y morir con "No JPEG data found in image". Paso el 20/09, y solo despues de arreglar
-        # el filtro de pertinencia: hasta entonces Commons devolvia JPEG por casualidad, y en
-        # cuanto las fotos buenas incluyeron un PNG -"Carretera Austral.png"- se cayeron dos
-        # piezas. Un acierto del filtro destapo un fallo que llevaba ahi desde el principio.
-        ext = os.path.splitext(urllib.parse.urlparse(f["url"]).path)[1].lower()
-        if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff"):
-            ext = ".jpg"
-        sh(f"curl -sL -A 'Mozilla/5.0' -o foto_{n}{ext} '{f['url']}'")
+        sh(f"curl -sfL -A 'Mozilla/5.0' -o cruda_{n} '{f['url']}' || true")
+        ext = _tipo_real(f"cruda_{n}")
+        if not ext:
+            print("  foto descartada (no es una imagen): %s" % f["titulo"][:60])
+            continue
+        os.replace(f"cruda_{n}", f"foto_{n}{ext}")
+        buenas.append((f, f"foto_{n}{ext}"))
+
+    if len(buenas) < 2:
+        return False, ("solo %d foto utilizable de %d encontradas para %s; hacen falta 2 o mas"
+                       % (len(buenas), len(elegidas), consultas))
+
+    partes = []
+    for n, (f, ruta) in enumerate(buenas):
         # PRIMERO SE ACHICA LA FOTO, UNA VEZ. Commons sirve originales enormes -hasta 25 MB, y
         # eso son decenas de megapixeles-. Con "-loop 1" sobre ese archivo, ffmpeg arrastra la
         # imagen gigante por cada uno de los 120 cuadros: el 20/09 la pieza 1304 se colgo los
         # 900 segundos del tope en UNA sola foto y se perdio la ranura entera. Normalizar antes
-        # a 1920x1080 deja el zoom trabajando siempre sobre el mismo tamano, sea cual sea el
-        # original, y con force_original_aspect_ratio=increase no importa si la foto viene
-        # apaisada, vertical o panoramica.
-        sh(f'ffmpeg -y -hide_banner -loglevel error -i foto_{n}{ext} -frames:v 1 '
+        # a 1920x1080 deja el zoom trabajando siempre sobre el mismo tamano, y con
+        # force_original_aspect_ratio=increase da igual que venga apaisada, vertical o panoramica.
+        sh(f'ffmpeg -y -hide_banner -loglevel error -i {ruta} -frames:v 1 '
            f'-vf "scale=1920:1080:force_original_aspect_ratio=increase:flags=lanczos,'
            f'crop=1920:1080" base_{n}.png')
         # El zoom lento (Ken Burns) es lo que hace que una foto se lea como video. Sin el, la
@@ -245,7 +269,7 @@ def fotos_a_clip(consultas, dst, por_foto=4.0, cuantas=4):
     sh(f'ffmpeg -y -hide_banner -loglevel error {ins} -filter_complex '
        f'"{cad}concat=n={len(partes)}:v=1:a=1[v][a]" -map "[v]" -map "[a]" '
        f'-c:v libx264 -preset veryfast -crf 20 -c:a aac -ar 48000 -ac 2 {dst}')
-    return True, _M.credito_varias(elegidas)
+    return True, _M.credito_varias([f for f, _ in buenas])
 
 
 def clip_f15(urls, dst, segundos=10):

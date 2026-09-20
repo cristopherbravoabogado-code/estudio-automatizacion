@@ -118,7 +118,12 @@ if s3:
 else:
     fc += [f"[v1][v2]xfade=transition=fade:duration={XF}:offset={d1-XF:.3f}[vv]",
            f"[a1][a2]acrossfade=d={XF}[aa]"]
-esc = lambda s: s.replace("\\","\\\\").replace(":", "\\:").replace("'", "\\\\\\'").replace("%","\\%")
+# EL % NECESITA DOS BARRAS, NO UNA. Con una, libavfilter se come la barra al leer el grafo y a
+# drawtext le llega un % suelto: avisa "Stray % near ' respecto del'", TIRA LA LINEA ENTERA y
+# termina con exito. El 20/09 la pieza 1303 salio al mundo con el titular partido -"Las muertes
+# en carretera" ... "ano pasado"- y sin la linea del medio, que era justamente la del 87%.
+# ffmpeg devolvio 0 y los siete controles la dieron por buena: un fallo que solo se ve mirando.
+esc = lambda s: s.replace("\\","\\\\").replace(":", "\\:").replace("'", "\\\\\\'").replace("%","\\\\%")
 
 # El titular se parte a mano: drawtext no hace saltos de linea y un titular largo se sale de la
 # zona segura. 30 caracteres por linea con fuente de 52 px cabe en los 900 px de la caja.
