@@ -16,9 +16,9 @@
    "frase": "estado de ebriedad",
    "voz": [
     "Trece personas murieron en accidentes de tránsito durante estas Fiestas Patrias.",
-    "Carabineros informó ciento setenta detenidos, y ciento treinta y nueve de ellos fueron por alcohol.",
-    "Manejar en estado de ebriedad es delito: el artículo ciento noventa y seis E de la Ley de Tránsito lo castiga con presidio menor en su grado mínimo.",
-    "No hace falta chocar ni atropellar a nadie. Basta con manejar así.",
+    "Carabineros detuvo a ciento setenta conductores, y la mayoría fue por alcohol.",
+    "Manejar con alcohol en la sangre es delito, aunque no choques con nadie.",
+    "La Ley de Tránsito lo castiga con cárcel y con la licencia suspendida.",
     "Si necesitas asesoría, escríbenos."
    ],
    "slot": 1
@@ -37,10 +37,10 @@
    "articulo": "196 C",
    "frase": "bajo la influencia del alcohol",
    "voz": [
-    "De los ciento setenta detenidos este dieciocho, ciento treinta y nueve fueron por alcohol.",
+    "De los ciento setenta detenidos este dieciocho, la mayoría fue por alcohol.",
     "La ley distingue dos situaciones, y la diferencia entre una y otra es enorme.",
-    "Manejar bajo la influencia del alcohol es multa y suspensión de la licencia por un mes.",
-    "Pero de un gramo por mil hacia arriba ya es estado de ebriedad, y eso se castiga con cárcel.",
+    "Con menos de un gramo por mil es multa y licencia suspendida por un mes.",
+    "Con un gramo o más, la ley lo trata como delito y ahí hay cárcel.",
     "Si necesitas asesoría, escríbenos."
    ],
    "slot": 2
@@ -59,10 +59,10 @@
    "articulo": "2314",
    "frase": "ha inferido daño a otro",
    "voz": [
-    "Los fallecidos en carretera este dieciocho subieron ochenta y siete por ciento respecto del año pasado.",
+    "Los muertos en carretera este dieciocho casi se duplicaron respecto del año pasado.",
     "Detrás de cada cifra queda una familia que además tiene un juicio por delante.",
     "El artículo dos mil trescientos catorce del Código Civil obliga a indemnizar a quien causó el daño.",
-    "Esa demanda civil corre aparte de la pena que reciba el conductor por el delito.",
+    "Esa demanda civil corre aparte de la pena que reciba el conductor.",
     "Si necesitas asesoría, escríbenos."
    ],
    "slot": 3
