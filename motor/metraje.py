@@ -129,8 +129,8 @@ CONSULTAS_MATERIA = {
                  "autopista Chile"],
     "penal":    ["Policia de Investigaciones de Chile edificio", "Carabineros de Chile cuartel",
                  "Palacio de Tribunales Santiago"],
-    "laboral":  ["Direccion del Trabajo Chile edificio", "Ministerio del Trabajo Chile",
-                 "construccion Chile grua obra"],
+    "laboral":  ["Ministerio del Trabajo Chile", "Palacio de La Moneda Santiago",
+                 "Santiago de Chile centro edificios"],
     "civil":    ["Corte Suprema de Chile edificio", "Palacio de Tribunales Santiago",
                  "Poder Judicial Chile edificio"],
     "familia":  ["Corte de Apelaciones Chile edificio", "Palacio de Tribunales Santiago"],
@@ -174,6 +174,26 @@ def terminos_de(consulta):
     import re as _re
     return [w for w in _re.split(r"[^a-z0-9]+", _plano(consulta))
             if len(w) > 3 and w not in VACIAS]
+
+
+# Lo que no es una fotografia de la noticia aunque case con la consulta. Medido el 20/09:
+# "Ministerio del Trabajo Chile" devolvia el edificio UNA vez y seis variantes del mismo avatar
+# de redes sociales. Seis logos seguidos con un zoom lento no son un video, son un error.
+DESCARTE = ("logo", "logos", "logotipo", "avatar", "icon", "icono", "escudo", "coat", "arms",
+            "mapa", "map", "diagrama", "diagram", "grafico", "chart", "bandera", "flag",
+            "sello", "seal", "banner", "emblema", "emblem")
+
+
+def es_ilustracion(cand):
+    """True si es un logo, un mapa o un escudo: no es una foto de la noticia."""
+    return bool(_palabras(_bolsa(cand)) & set(DESCARTE))
+
+
+def _raiz(titulo):
+    """Las primeras palabras del titulo, para no elegir seis variantes del mismo archivo."""
+    import re as _re
+    ws = [w for w in _re.split(r"[^a-z0-9]+", _plano(titulo)) if w]
+    return " ".join(ws[:4])
 
 
 def _palabras(texto):
@@ -248,7 +268,7 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video", exigir=None
             "de Higgsfield. Desde el contenedor de Claude el proxy lo deniega, y no es algo que "
             "se arregle reintentando." % (type(e).__name__, e))
 
-    salida = []
+    salida, raices = [], set()
     for pag in ((datos.get("query") or {}).get("pages") or {}).values():
         ii = (pag.get("imageinfo") or [{}])[0]
         em = ii.get("extmetadata") or {}
@@ -286,6 +306,11 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video", exigir=None
             continue
         if sin_gente and tiene_gente(cand):
             continue
+        if exigir and es_ilustracion(cand):
+            continue
+        if _raiz(cand["titulo"]) in raices:
+            continue
+        raices.add(_raiz(cand["titulo"]))
         salida.append(cand)
         if len(salida) >= limite:
             break
