@@ -109,7 +109,79 @@ def licencia_sirve(nombre):
                for a in ACEPTADAS)
 
 
-def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
+# Consultas curadas por materia. NO salen del titular.
+#
+# El 20/09/2026 se miraron por fin por dentro las primeras piezas armadas con fotografia
+# automatica, y las dos habia que tirarlas:
+#   - "Las muertes en carretera del 18 subieron 87%" trajo grabados del siglo XIX -soldados de
+#     la Guerra del Pacifico, un vapor, una araucaria-, porque Commons busca a texto completo
+#     sobre la frase entera y lo unico que casaba era "Chile".
+#   - "Faltar dos dias seguidos tras el 18" trajo fotos de una fiesta de trabajadores con CARAS
+#     RECONOCIBLES (credito NOIRLab/NSF/AURA). La licencia permitia usarlas; ponerlas al lado de
+#     "te pueden despedir" da a entender que esas personas son el caso. Eso no lo arregla una
+#     atribucion.
+#
+# Un titular es una frase, no una consulta. Lo que si funciona es apuntar a la INSTITUCION de la
+# que habla la noticia: el frontis de la Corte Suprema ES la noticia, y ademas no tiene dueno de
+# su cara.
+CONSULTAS_MATERIA = {
+    "transito": ["Carabineros de Chile control carretera", "Ruta 5 Chile carretera",
+                 "autopista Chile"],
+    "penal":    ["Policia de Investigaciones de Chile edificio", "Carabineros de Chile cuartel",
+                 "Palacio de Tribunales Santiago"],
+    "laboral":  ["Direccion del Trabajo Chile edificio", "Ministerio del Trabajo Chile",
+                 "construccion Chile grua obra"],
+    "civil":    ["Corte Suprema de Chile edificio", "Palacio de Tribunales Santiago",
+                 "Poder Judicial Chile edificio"],
+    "familia":  ["Corte de Apelaciones Chile edificio", "Palacio de Tribunales Santiago"],
+}
+CONSULTAS_POR_DEFECTO = ["Palacio de Tribunales Santiago", "Corte Suprema de Chile edificio"]
+
+# Palabras vacias: no sirven para decidir si una foto viene a cuento.
+VACIAS = set("""a al ante bajo con contra de del desde durante en entre hacia hasta la las lo los
+mas mediante para por segun se sin sobre tras un una unos unas y o u e que el su sus este esta
+estos estas ese esa aquel como cuando donde chile chilena chileno""".split())
+
+# Marcadores de que la foto tiene PERSONAS como asunto. Se rechaza por omision: una foto de un
+# edificio con gente de espaldas al fondo seria aceptable, un retrato no, y desde aqui no se
+# puede distinguir sin mirar. Ante la duda, fuera: quedarse sin fotos para una pieza para la
+# cadena, y eso se ve; publicar la cara de alguien ajeno al caso no se deshace.
+GENTE = ("people", "persons", "person", "portrait", "portraits", "retrato", "retratos",
+         "personas", "hombres", "mujeres", "men", "women", "children", "ninos", "kids",
+         "faces", "face", "selfie", "staff", "employees", "students", "crowd", "attendees",
+         "participants", "party", "fiesta", "band", "musicians", "concert", "wedding",
+         "family", "familia", "team", "equipo de", "group of")
+
+
+def _bolsa(cand):
+    """Todo el texto con el que se puede juzgar una foto, plegado y en minusculas."""
+    return _plano(" ".join([cand.get("titulo") or "", cand.get("descripcion") or "",
+                            cand.get("categorias") or "", cand.get("atribucion") or ""]))
+
+
+def terminos_de(consulta):
+    """Las palabras de la consulta que de verdad discriminan."""
+    import re as _re
+    return [w for w in _re.split(r"[^a-z0-9]+", _plano(consulta))
+            if len(w) > 3 and w not in VACIAS]
+
+
+def pertinente(cand, terminos):
+    """La foto tiene que mencionar algo de lo que se busco. Si no, no viene a cuento."""
+    if not terminos:
+        return True
+    b = _bolsa(cand)
+    return any(t in b for t in terminos)
+
+
+def tiene_gente(cand):
+    """True si la foto parece tener personas como asunto."""
+    b = _bolsa(cand)
+    return any(g in b for g in GENTE)
+
+
+def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video", exigir=None,
+           sin_gente=False):
     """Devuelve candidatos de Commons, ya filtrados por licencia y tamano.
 
     tipo="imagen" es lo que hace autosuficiente a la cadena. Medido el 19/09 sobre los temas
@@ -121,9 +193,11 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
     Por eso las piezas se arman con FOTOGRAFIA real animada y no con video de banco: una foto
     del frontis de la Corte Suprema es la noticia; un clip generico de un martillo de juez, no.
 
-    OJO, y es el limite honesto de esto: la licencia se filtra sola, la PERTINENCIA no. En la
-    prueba, "Direccion del Trabajo Chile" devolvio un logo que no tenia nada que ver. El filtro
-    garantiza que se puede usar, no que sirva. Quien arma la cola tiene que mirar lo que eligio.
+    LA PERTINENCIA YA NO SE DA POR SUPUESTA. Hasta el 20/09 este docstring decia que el filtro
+    garantiza que se puede usar, no que sirva, y que "quien arma la cola tiene que mirar lo que
+    eligio". Despues la cadena se hizo autosuficiente y ese alguien dejo de existir, sin que
+    esta frase cambiara: el aviso quedo escrito y el control no. Por eso ahora 'exigir' y
+    'sin_gente' filtran aqui, y CONSULTAS_MATERIA reemplaza al titular como consulta.
     """
     filtro = "filetype:bitmap" if tipo == "imagen" else "filetype:video"
     params = {
@@ -131,6 +205,7 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
         "gsrsearch": "%s %s" % (filtro, consulta), "gsrlimit": str(limite * 3),
         "gsrnamespace": "6", "prop": "imageinfo",
         "iiprop": "url|size|mime|extmetadata|user",
+        "iiextmetadatafilter": "LicenseShortName|Artist|ImageDescription|Categories|ObjectName",
     }
     url = API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": UA})
@@ -159,6 +234,9 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
         import re as _re
         autor = _re.sub(r"<[^>]+>", "", autor).strip()
         mb = round((ii.get("size") or 0) / 1e6, 1)
+        desc = _re.sub(r"<[^>]+>", " ",
+                       ((em.get("ImageDescription") or {}).get("value") or "")).strip()
+        cats = ((em.get("Categories") or {}).get("value") or "").replace("|", " ").strip()
 
         if not licencia_sirve(lic):
             continue
@@ -166,7 +244,7 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
             continue
         if tipo == "imagen" and not (ii.get("mime") or "").startswith("image/"):
             continue
-        salida.append({
+        cand = {
             "titulo": pag["title"][5:],
             "url": ii.get("url"),
             "licencia": lic,
@@ -175,7 +253,14 @@ def buscar(consulta, limite=6, max_mb=120, timeout=45, tipo="video"):
             "pagina": ii.get("descriptionurl"),
             "mime": ii.get("mime"),
             "mb": mb,
-        })
+            "descripcion": desc,
+            "categorias": cats,
+        }
+        if exigir and not pertinente(cand, exigir):
+            continue
+        if sin_gente and tiene_gente(cand):
+            continue
+        salida.append(cand)
         if len(salida) >= limite:
             break
     return salida
