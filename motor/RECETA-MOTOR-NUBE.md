@@ -1,4 +1,4 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026** · **v10 un control declara qué parte miró 21/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
@@ -63,14 +63,57 @@ Ya pasó dos veces, con el mismo mecanismo y un control de distancia:
     de la pausa). `uniones()` sin cortes los busca; si no aparece ninguno, **`pasa: False`**.
   - 🔑 **Se acabó el LEAD de 0,5 s** de la regla dura 6: existía solo porque la pausa se buscaba en el mp3 y se
     medía en el mp4. Ahora se detecta y se mide **sobre el mismo archivo**, así que no hay desfase que corregir.
-  - ⚠️ En **REACCIÓN** se le pasa `media_voz` (el mp3 de la voz) y `saltar_primero=True`. Si se le pasa el mp4,
-    el audio del noticiero tapa las pausas, no encuentra empalmes y **bloquea diciéndolo** — que es la conducta
-    correcta, no un falso positivo.
+  - ⚠️ En **REACCIÓN** se le pasa `media_voz` (el mp3 de la voz) y `saltar_primero=True`.
+    ⛔ **Hasta el 21/09 aquí decía que si se le pasa el mp4 "no encuentra empalmes y bloquea diciéndolo — que es
+    la conducta correcta". ESO ES FALSO y estaba escrito sin medirlo.** Medido el 21/09 sobre la **1004**
+    (`17d36226-…`, F15 de reacción): con el mp4 **encuentra 4 empalmes** (5,89 · 13,61 · 18,33 · 26,01 s) y
+    **emite veredicto igual**. La red de seguridad que esta línea prometía no existía: pasarle el mp4 no hace que
+    el control se abstenga, hace que mida otra cosa y no lo diga. Se corrige con la `cobertura` de la 2-quater,
+    y **la obligación sigue siendo pasarle el mp3**.
   - Verificado el 20/09 contra la 1003: encuentra los 4 empalmes (6,41 · 12,94 · 18,31 · 24,60 s), mide
     −42,0 / −40,2 / −40,4 / −40,7 dBFS (tope −35) y deja fuera las 3 pausas de coma de 0,27-0,34 s.
 - 🔑 **La prueba que hay que correrle a todo control nuevo**: llamarlo SIN el dato que necesita. Si contesta que
   sí, está roto. No basta con arreglar el caso concreto — el 19/09 se arregló el del guion mirando la voz en vez
   de la forma del defecto, y por eso el control 4 quedó abierto un día más.
+
+**2-quater. UN CONTROL NO INFORMA SOLO SU VEREDICTO: INFORMA QUÉ PARTE DEL OBJETO MIRÓ (norma del 21/09/2026).**
+La 2-ter cubre el control que se apaga. Este es el escalón siguiente y más difícil de ver: el control que **sí
+corre, sí devuelve un número cierto, y el número es de otro intervalo**. Nadie lo nota, porque un control que
+contesta parece un control que funciona.
+- **Medido el 21/09 sobre la 1004** (`17d36226-…`, alojada, con marca `🔒 TOMANDO` y a un paso de publicarse).
+  `cortes_auto` define el corte como el **centro** de la pausa, y `uniones()` v4 medía `max_volume` en una
+  ventana de **±0,12 s** alrededor de ese centro. Las pausas entre tramos duran **~1,1 s**: el control abría
+  **0,24 s de 1,1 s** y daba veredicto sobre los otros **0,86 s — el 78 % de la pausa — sin haberlos mirado**.
+  En la cuarta pausa de esa pieza (25,43-26,59 s):
+
+  | | intervalo medido | resultado |
+  |---|---|---|
+  | **v4** | 25,89-26,13 (0,24 s) | **−50,1 dBFS** → "empalme limpio" |
+  | **real** | transitorio en 26,43-26,48 | **−33,4 dBFS** → sobre el tope de −35 |
+
+  El número de la v4 **era cierto y era del intervalo equivocado**. Es un **falso PASE**, no un falso positivo:
+  el modo de fallo que deja salir la pieza. Y es precisamente el control que le corresponde al segundo de los
+  tres defectos que salieron al aire — **la pieza con la segunda mitad muda** —, que es un defecto que vive
+  DENTRO de una pausa.
+- ✅ Corregido en **`control.py` v5**: en modo automático `uniones()` barre la **pausa ENTERA** menos
+  `GUARDA_PAUSA` (**0,15 s**) en cada borde, que es donde está la cola del último fonema y el ataque del
+  siguiente (en la 1004 el primer instante bajo −25 dB marca **−24,2 dBFS**: eso es voz, no chasquido, y
+  medirlo daría el falso positivo simétrico). El barrido sube de **0,96 s a 3,25 s** en una pieza de 5 tramos.
+- ✅ El informe ahora trae **`cobertura`**, **`barrido_s`** e **`intervalos`**. Con los cortes dados a mano —un
+  `tramos.json` trae la costura exacta y ahí la ventana ±0,12 s es lo correcto— el informe lo declara:
+  *"PARCIAL: … lo que pase en el resto de la pausa NO está medido"*. Nadie puede volver a leer un barrido
+  parcial como si fuera la pausa completa.
+- ✅ **`auditar()` corre ahora también el control 4.** Hasta el 21/09 la auditoría de una pieza ya publicada ni
+  siquiera miraba las uniones, que es donde vive el defecto de la segunda mitad muda.
+- 🔑 **La prueba que hay que correrle a todo control nuevo, además de la de la 2-ter**: preguntarle **qué
+  fracción del objeto abrió**. Si mide una muestra y reporta como si fuera el todo, está roto aunque su número
+  sea exacto. Un control tiene que poder decir su cobertura, y esa cobertura tiene que ir en el informe, no en
+  la cabeza de quien lo escribió.
+- 🔑 **Tres días, tres defectos, la misma FORMA**: 19/09 plegar la tilde que se busca · 20/09 aprobar sin medir ·
+  21/09 medir una rendija y llamarla el todo. Las tres veces el arreglo anterior se escribió mirando **el caso
+  concreto** en vez de **la forma del defecto**, y por eso el siguiente estaba servido. Cuando se corrija un
+  control, la pregunta no es "¿arreglé esto?" sino **"¿qué otro control tiene esta misma forma?"** — y hay que
+  ir a mirarlo en la misma corrida.
 
 ### 3. AUDIO 48 kHz ESTÉREO, UNIDO CON EL FILTRO `concat` (norma del 11/09/2026)
 Toda la cadena de audio corre a **48000 Hz, 2 canales**, y los tramos se empalman con el **filtro** `concat`
@@ -103,6 +146,10 @@ el defecto estaba a un día seco de salir al aire. La correlación es exacta por
 - 🔑 **Regla general**: cuando se agregue o cambie una regla dura, la misma jugada re-mide TODO el stock alojado
   que pueda publicarse sin pasar por el motor. Si no se re-mide, la corrección solo cubre la producción futura
   y el stock viejo queda como una mina enterrada en la reserva.
+  📌 **Aplicado el 21/09 con la 2-quater**: re-medidas las dos piezas alojadas con `control.py` v5. La **1003**
+  sigue limpia (−35,0 en el peor empalme, justo en el tope); la **1004** —que el 20/09 nadie había medido y que
+  ya tenía marca `🔒 TOMANDO`— **reprueba con −33,4 y −34,9 dBFS**. El re-medido de la reserva es lo que la
+  atajó antes del aire.
 
 **3-ter. LA REGLA 3 VIVE DENTRO DE `motor.py`, ASÍ QUE TODO LO QUE NO PASA POR `motor.py` SE LA SALTA
 (medido el 15/09/2026).**
@@ -266,6 +313,10 @@ del clip debe dejar la frase de impacto dentro de los primeros 2 s. Acreditar si
 `tramos[1:-1]`): ese primer corte cae donde se desvanece el audio del noticiero del gancho, así que mide como voz
 y **reprueba una pieza sana, bloqueando la subida**. Lo hace solo `produce.py` v3 cuando la pieza trae `prensa:true`.
 Por lo mismo, el control 7 de voz escucha el **mp3**, no el mp4.
+⚠️ **Y el control 4 también tiene que escuchar el mp3** (`media_voz=`). Medido el 21/09 sobre la 1004: pasarle el
+mp4 **no** hace que el control se abstenga —encuentra los 4 empalmes igual y emite veredicto—, así que la
+protección no viene de que el control se dé cuenta, viene de que la receta le pase el archivo correcto. Ver la
+regla dura 2-quater.
 
 Formato F11 ENSAYO (videolab/ensayo.py, 05/09; v2 zona segura 11/09): guion de 4 párrafos, voz con `voz.py`,
 karaoke, 26-30 fotos, `python3 ensayo.py pieza.json salida.mp4` (~45 s). Ver videolab/ANALISIS-viral-01.md.
@@ -370,7 +421,7 @@ importándolo, no copiándolo.**
      whisper se equivoca solo: en la 967b escribió "haya impactado" por "hayan pactado" y "Cres" por "Crece".
      Descontando siempre:
      - **cifras**: el guion dice "dieciocho" y whisper escribe "18". Ignorar todo token que sea solo dígitos o puntuación.
-     - **homófonos conocidos** de whisper (`filiación`→`afiliación`, `SOAP`→`swap`, `criar`→`crear`, `golpean`→`colpean`, `bencineras`→`vencineras`): son error del transcriptor, se corrigen en el `.ass` SIN tocar los tiempos.
+     - **homófonos conocidos** de whisper (`filiación`→`afiliación`, `SOAP`→`swap`, `criar`→`crear`, `golpean`→`colpean`, `bencineras`→`vencineras`, `cayó`→`calló`): son error del transcriptor, se corrigen en el `.ass` SIN tocar los tiempos.
      - **cortes de palabra**: whisper a veces parte "a una" en "aun". Si el token de sobra es un pedazo de una palabra del guion y las uniones miden silencio real, es segmentación del transcriptor, no basura de audio.
      - Cualquier otra palabra fuera del guion **no es alucinación hasta que se mida el RMS** (lección de la 917).
    - **3b. SENSIBLE A DIACRÍTICOS — BLOQUEA.** Cada palabra del guion que lleva **ñ** tiene que OÍRSE con ñ.
@@ -393,6 +444,10 @@ importándolo, no copiándolo.**
    Este control 4 se mide **siempre sobre el mp3 de voz**, nunca sobre la mezcla, o reprueba una pieza sana.
    🔑 **Desde el 20/09 (control.py v4) no hay que calcularlos a mano**: `control.cortes_auto()` encuentra los
    empalmes sola y `uniones()` los busca si no se los dan. Si no aparece ninguno, **bloquea**. Ver regla dura 2-ter.
+   🔑 **Desde el 21/09 (control.py v5) se barre la PAUSA COMPLETA**, no una ventana de ±0,12 s en su centro, y el
+   informe declara su `cobertura`, su `barrido_s` y los `intervalos` que abrió. La ventana chica dejaba sin mirar
+   el 78 % de cada pausa y dio un **falso PASE medido** en la 1004 (−50,1 dBFS donde había −33,4). Ver regla dura
+   2-quater. Un informe de uniones sin `cobertura` es de una versión vieja: no vale.
 
 ## Grilla
 6 diarias (D-10 rev. 05/09): 09:00, 12:00, 13:00, 16:00, 18:00, 20:00. Recalcular con `getBestTimeToPostByNetwork` cada lunes.
@@ -420,6 +475,10 @@ v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días 
   `control.py` y no puede bloquear la subida, no es un control: es una intención. Ver regla dura 3-ter.
 - **No dejar que un control se apague porque el llamador no le pasó un dato.** Si le falta lo que necesita para
   medir, falla CERRADA. La prueba: llamarlo SIN ese dato; si contesta que sí, está roto. Ver regla dura 2-ter.
+- **No dejar que un control mida una muestra y la informe como si fuera el todo.** Tiene que declarar su
+  cobertura en el informe. La prueba: preguntarle qué fracción del objeto abrió; si no lo sabe decir, su
+  veredicto no vale. Medido el 21/09: el control 4 abría 0,24 s de una pausa de 1,1 s y dejó pasar −33,4 dBFS
+  reportando −50,1. Ver regla dura 2-quater.
 - **No unir audio con el demuxer `concat` ni entregar mono/44,1 kHz.** Ver regla dura 3.
 - **No publicar de la RESERVA sin re-medir el audio con `ffprobe` justo antes.** El stock renderizado antes de una regla dura no la cumple, y la etiqueta "control de audio limpio" de la bitácora es del día en que se escribió. Ver regla dura 3-bis.
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
@@ -435,7 +494,7 @@ v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días 
 - **No publicar NINGUNA pieza sin control de audio, aunque no la haya hecho `motor.py`.** El supervideo A salió mono y de 60,7 s el 14/09 porque su receta cierra el mux por fuera del motor. Ver regla dura 3-ter.
 - **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
 - **No recortar con `crop` un clip de prensa**: se come el cintillo del medio. Fondo desenfocado + clip centrado.
-- **No medir las uniones de una pieza de reacción sobre el mp4 ni desde el primer corte interior**: reprueba piezas sanas. `tramos[2:-1]` y el mp3.
+- **No medir las uniones de una pieza de reacción sobre el mp4 ni desde el primer corte interior**: reprueba piezas sanas. `tramos[2:-1]` y el mp3. Y ojo: si igual se le pasa el mp4, el control **no se abstiene** — encuentra empalmes y contesta (medido el 21/09 en la 1004). La protección es pasarle el mp3, no esperar que el control se dé cuenta.
 - **No programar en Metricool ni probar si su tope se soltó**, y **no volver a intentar Zernio**. Ver paso 9.
 - **No contar los publicados con `getScheduledPosts` de Metricool**: lo que sale por Higgsfield no aparece ahí y se lee como día vacío. Peor: en Metricool quedaron posts viejos en ERROR cuyas piezas ya salieron por Higgsfield, y "republicar lo que está en ERROR" genera duplicados.
 - **No dar por imposible publicar desde una tarea programada sin haberlo intentado en esa corrida.** Ver paso 9.
