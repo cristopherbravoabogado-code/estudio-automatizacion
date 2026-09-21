@@ -8,8 +8,8 @@
       "slot": 1,
       "hora_chile": "07:00",
       "hora_utc": "2026-09-21T10:00:00Z",
-      "estado": "guion",
-      "intentos": 0,
+      "estado": "fallido",
+      "intentos": 1,
       "historia": [
         {
           "cuando": "2026-09-20T19:33:07-03:00",
@@ -22,6 +22,10 @@
         {
           "cuando": "2026-09-20T19:33:07-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "guion -> fallido: control.py reprobo: voz"
         }
       ],
       "tema": "Balance final de Fiestas Patrias 2026: 18 fallecidos y 282 detenidos",
@@ -37,13 +41,15 @@
         "Lo dice el artículo ciento noventa y seis E de la Ley de Tránsito.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1401"
+      "pieza_id": "1401",
+      "estado_previo": "guion",
+      "motivo": "control.py reprobo: voz"
     },
     {
       "slot": 2,
       "hora_chile": "09:00",
       "hora_utc": "2026-09-21T12:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -57,6 +63,14 @@
         {
           "cuando": "2026-09-20T19:33:07-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "144 detenidos por ebriedad y 85 bajo la influencia del alcohol",
@@ -72,13 +86,93 @@
         "Los primeros arriesgan cárcel. Los segundos, multa y la licencia suspendida un mes.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1402"
+      "pieza_id": "1402",
+      "control": {
+        "pieza": "1402.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 24.41,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.5,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              9.825,
+              13.825,
+              19.975
+            ],
+            "dbfs": [
+              -78.3,
+              -80.8,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "cobertura": "PARCIAL: ventana de +-0.12 s en torno al corte dado; lo que pase en el resto de la pausa NO esta medido",
+            "barrido_s": 0.72,
+            "intervalos": [
+              [
+                9.705,
+                9.945
+              ],
+              [
+                13.705,
+                13.945
+              ],
+              [
+                19.855,
+                20.095
+              ]
+            ],
+            "medido_en": "1402.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1402.mp4\", \"cuadros\": 8, \"palabras_medidas\": 48, \"recall_pantalla_chica\": 0.42, \"cajas_fuera_zona_segura\": 3, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 3, \"der\": 0}, \"cajas_dentro\": 46, \"alto_texto_mediana_px\": 43.0, \"cajas_bajo_80px\": 49, \"seg\": 13.1, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "144 conductores cayeron por manejar borrachos.  Otros 85 por manejar bajo la influencia del alcohol.  No es lo mismo y la diferencia la marca un examen.  Los primeros arriesgan cárcel, los segundos multa y la licencia suspendida un mes.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-21/1402.mp4"
     },
     {
       "slot": 3,
       "hora_chile": "11:00",
       "hora_utc": "2026-09-21T14:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -92,6 +186,14 @@
         {
           "cuando": "2026-09-20T19:33:07-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "37 detenidos por conducir bajo la influencia de drogas",
@@ -107,13 +209,93 @@
         "El narcotest en la calle basta para detenerte y llevarte al tribunal.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1403"
+      "pieza_id": "1403",
+      "control": {
+        "pieza": "1403.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 26.9,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.3,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              11.625,
+              17.425,
+              22.475
+            ],
+            "dbfs": [
+              -78.3,
+              -80.8,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "cobertura": "PARCIAL: ventana de +-0.12 s en torno al corte dado; lo que pase en el resto de la pausa NO esta medido",
+            "barrido_s": 0.72,
+            "intervalos": [
+              [
+                11.505,
+                11.745
+              ],
+              [
+                17.305,
+                17.545
+              ],
+              [
+                22.355,
+                22.595
+              ]
+            ],
+            "medido_en": "1403.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1403.mp4\", \"cuadros\": 9, \"palabras_medidas\": 43, \"recall_pantalla_chica\": 0.7, \"cajas_fuera_zona_segura\": 2, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 2, \"der\": 0}, \"cajas_dentro\": 41, \"alto_texto_mediana_px\": 47.0, \"cajas_bajo_80px\": 43, \"seg\": 14.3, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "37 conductores dieron positivo por drogas este fin de semana largo.  La ley de tránsito prohíbe manejar bajo la influencia de sustancias estupefacientes.  Y no distingue si la droga era legal o no, lo que importa es cómo llegaste al volante.  El narcotest en la calle basta para detenerte y llevarte al tribunal.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-21/1403.mp4"
     },
     {
       "slot": 4,
       "hora_chile": "13:00",
       "hora_utc": "2026-09-21T16:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -127,6 +309,14 @@
         {
           "cuando": "2026-09-20T19:33:16-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "Chile supera los mil fallecidos en siniestros viales en 2026",
@@ -142,13 +332,93 @@
         "Esa demanda es distinta del juicio penal y se puede seguir en paralelo.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1404"
+      "pieza_id": "1404",
+      "control": {
+        "pieza": "1404.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 26.07,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.3,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              9.55,
+              16.475,
+              21.625
+            ],
+            "dbfs": [
+              -78.3,
+              -78.3,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "cobertura": "PARCIAL: ventana de +-0.12 s en torno al corte dado; lo que pase en el resto de la pausa NO esta medido",
+            "barrido_s": 0.72,
+            "intervalos": [
+              [
+                9.43,
+                9.67
+              ],
+              [
+                16.355,
+                16.595
+              ],
+              [
+                21.505,
+                21.745
+              ]
+            ],
+            "medido_en": "1404.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1404.mp4\", \"cuadros\": 9, \"palabras_medidas\": 66, \"recall_pantalla_chica\": 0.52, \"cajas_fuera_zona_segura\": 3, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 1, \"der\": 2}, \"cajas_dentro\": 65, \"alto_texto_mediana_px\": 42.0, \"cajas_bajo_80px\": 65, \"seg\": 15.3, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "Chile ya pasó los mil muertos en siniestros viales en lo que va del año.  Detrás de cada uno queda una familia y casi siempre un juicio.  El artículo 2314 del Código Civil obliga a indemnizar a quien causó el daño.  Esa demanda es distinta del juicio penal y se puede seguir en paralelo.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-21/1404.mp4"
     },
     {
       "slot": 5,
       "hora_chile": "15:00",
       "hora_utc": "2026-09-21T18:00:00Z",
-      "estado": "guion",
+      "estado": "alojado",
       "intentos": 0,
       "historia": [
         {
@@ -162,6 +432,14 @@
         {
           "cuando": "2026-09-20T19:33:07-03:00",
           "que": "derecho -> guion"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "guion -> renderizado"
+        },
+        {
+          "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "renderizado -> alojado"
         }
       ],
       "tema": "267 siniestros viales en el balance de Fiestas Patrias 2026",
@@ -177,7 +455,87 @@
         "Y en un choque, ese cinturón decide quién sale caminando.",
         "Si necesitas asesoría, escríbenos."
       ],
-      "pieza_id": "1405"
+      "pieza_id": "1405",
+      "control": {
+        "pieza": "1405.mp4",
+        "audio": {
+          "ok": true,
+          "valor": "aac,48000,2",
+          "esperado": "aac,48000,2"
+        },
+        "duracion": {
+          "ok": true,
+          "valor": 24.63,
+          "franja": [
+            22.0,
+            34.0
+          ]
+        },
+        "volumen": {
+          "ok": true,
+          "valor": -16.4,
+          "franja": [
+            -21.0,
+            -13.0
+          ]
+        },
+        "uniones": {
+          "ok": true,
+          "valor": {
+            "empalmes": 3,
+            "cortes": [
+              10.275,
+              15.9,
+              20.2
+            ],
+            "dbfs": [
+              -80.8,
+              -78.3,
+              -84.3
+            ],
+            "peor": -78.3,
+            "origen": "dados",
+            "cobertura": "PARCIAL: ventana de +-0.12 s en torno al corte dado; lo que pase en el resto de la pausa NO esta medido",
+            "barrido_s": 0.72,
+            "intervalos": [
+              [
+                10.155,
+                10.395
+              ],
+              [
+                15.78,
+                16.02
+              ],
+              [
+                20.08,
+                20.32
+              ]
+            ],
+            "medido_en": "1405.mp3"
+          },
+          "tope": -35.0
+        },
+        "pantalla_chica": {
+          "ok": null,
+          "valor": "{\"archivo\": \"1405.mp4\", \"cuadros\": 8, \"palabras_medidas\": 50, \"recall_pantalla_chica\": 0.68, \"cajas_fuera_zona_segura\": 3, \"detalle_fuera\": {\"arriba\": 0, \"abajo\": 0, \"izq\": 3, \"der\": 0}, \"cajas_dentro\": 48, \"alto_texto_mediana_px\": 42.0, \"cajas_bajo_80px\": 51, \"seg\": 13.5, \"veredicto\": \"NO PASA\"}"
+        },
+        "texto": {
+          "ok": true,
+          "valor": []
+        },
+        "voz": {
+          "ok": true,
+          "valor": {
+            "enie_perdida": [],
+            "termino_critico_no_oido": [],
+            "fuera_del_guion": [],
+            "dicho": "260 y 7 siniestros viales en 4 días.  El artículo 79 obliga al cinturón también en los asientos de atrás.  No es un detalle, el parte lo paga quien conduce, aunque el que va suelto sea otro.  Y en un choque, ese cinturón decide quién sale caminando.  Si necesitas asesoría, escríbenos."
+          }
+        },
+        "pasa": true,
+        "falla": []
+      },
+      "url": "https://github.com/cristopherbravoabogado-code/estudio-automatizacion/releases/download/piezas-2026-09-21/1405.mp4"
     },
     {
       "slot": 6,
@@ -220,5 +578,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-20T19:33:16-03:00"
+  "actualizado": "2026-09-21T05:21:46-03:00"
 }
