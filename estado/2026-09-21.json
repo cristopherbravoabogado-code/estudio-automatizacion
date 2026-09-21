@@ -9,7 +9,7 @@
       "hora_chile": "07:00",
       "hora_utc": "2026-09-21T10:00:00Z",
       "estado": "fallido",
-      "intentos": 1,
+      "intentos": 2,
       "historia": [
         {
           "cuando": "2026-09-20T19:33:07-03:00",
@@ -25,6 +25,10 @@
         },
         {
           "cuando": "2026-09-21T05:21:46-03:00",
+          "que": "guion -> fallido: control.py reprobo: voz"
+        },
+        {
+          "cuando": "2026-09-21T09:19:57-03:00",
           "que": "guion -> fallido: control.py reprobo: voz"
         }
       ],
@@ -578,5 +582,5 @@
       "historia": []
     }
   ],
-  "actualizado": "2026-09-21T05:21:46-03:00"
+  "actualizado": "2026-09-21T09:19:57-03:00"
 }
