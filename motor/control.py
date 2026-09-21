@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""control.py v4 (20/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
+"""control.py v5 (21/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
 
 POR QUE EXISTE
 --------------
@@ -79,13 +79,41 @@ aire: la pieza con la segunda mitad muda.
     hacer falta: existia solo porque la pausa se buscaba en el mp3 y se media en el mp4.
   - En REACCION se le pasa `media_voz` (el mp3) y `saltar_primero=True`.
 
+v5 (21/09/2026) - EL CONTROL 4 MEDIA UNA RENDIJA Y LA LLAMABA "EL EMPALME". Regla dura 2-quater.
+La v4 dejo de apagarse, pero seguia mirando por el ojo de la cerradura: `cortes_auto` define el
+corte como el CENTRO de la pausa y `uniones()` media `max_volume` en una ventana de +-0,12 s en
+torno a el. Las pausas entre tramos duran ~1,1 s, asi que el control abria 0,24 s y daba
+veredicto sobre los otros 0,86 s -el 78 % de la pausa- sin haberlos mirado. Medido el 21/09
+sobre la 1004 (`17d36226-...`), pausa 25,43-26,59 s:
+
+    v4:   ventana 25,89-26,13   ->  -50,1 dBFS  ->  "empalme limpio"
+    real: transitorio 26,43-26,48  ->  -33,4 dBFS, sobre el tope de -35
+
+El numero de la v4 era cierto y era del intervalo equivocado: un FALSO PASE, no un falso
+positivo. Es la tercera vez seguida que el defecto tiene la misma FORMA -el control contesta una
+pregunta que no tiene con que contestar- y las tres veces el arreglo anterior se escribio mirando
+el caso concreto en vez de la forma. De ahi la regla 2-quater: **un control no informa solo su
+veredicto, informa que parte del objeto miro.**
+
+  - `uniones()` en modo automatico barre la pausa ENTERA menos `GUARDA_PAUSA` (0,15 s) en cada
+    borde, donde vive la cola del ultimo fonema y el ataque del siguiente (-24,2 dBFS en la 1004:
+    es voz, no chasquido). El barrido sube de 0,96 s a 3,25 s en una pieza de 5 tramos.
+  - Con los cortes dados a mano se sigue midiendo la ventana de +-0,12 s -un `tramos.json` trae
+    la costura exacta y ahi la ventana es lo correcto- pero el informe lo DICE en `cobertura`,
+    junto con `barrido_s` y los `intervalos` medidos. Nadie puede volver a leer un barrido
+    parcial como si fuera la pausa completa.
+  - `auditar()` corre ahora tambien el control 4: el defecto de la segunda mitad muda vive
+    DENTRO de una pausa, y la auditoria de una pieza publicada no lo miraba.
+
 LOS CONTROLES
 -------------
  1. AUDIO      ffprobe tiene que decir exactamente aac,48000,2          (regla dura 3)
  2. DURACION   22-34 s por defecto, franja configurable                 (regla dura 5)
  3. VOLUMEN    volumen medio dentro de [-21, -13] dB                    (franja medida del motor)
- 4. UNIONES    RMS de cada empalme <= -35 dBFS                            BLOQUEA
+ 4. UNIONES    pico de cada empalme <= -35 dBFS                           BLOQUEA
                -> si no le dan los cortes los BUSCA; si no aparece ninguno, NO PASA (v4)
+               -> barre la PAUSA ENTERA, no una ventana en su centro, y declara su
+                  `cobertura` y su `barrido_s` en el informe (v5)
  5. PANTALLA   0 cajas de TEXTO PROPIO fuera de x[95,930] y[200,1586]   (regla dura 4)
                -> se delega en videolab/pantalla_chica.py; INFORMA, no bloquea (ver PRODUCIR.md)
  6. TEXTO      el guion, antes del TTS: n-tilde y tildes                (regla dura 2) BLOQUEA
@@ -123,7 +151,13 @@ AUDIO_OK = "aac,48000,2"
 DUR_MIN, DUR_MAX = 22.0, 34.0
 VOL_MIN, VOL_MAX = -21.0, -13.0
 UNION_MAX_DBFS = -35.0
-VENTANA_UNION = 0.12          # s a cada lado del corte que se mide
+VENTANA_UNION = 0.12          # s a cada lado del corte, SOLO cuando los cortes vienen
+                              # dados a mano (un tramos.json trae la costura exacta).
+GUARDA_PAUSA = 0.15           # s que se descartan en CADA borde de la pausa detectada:
+                              # ahi vive la cola del ultimo fonema y el ataque del
+                              # siguiente. Medido el 21/09 en la 1004: el primer
+                              # instante bajo -25 dB marca -24,2 dBFS. Sin guarda, la
+                              # cola de la voz se leeria como chasquido.
 UNION_NOISE_DB = -25.0        # umbral con que se DETECTA la pausa. 10 dB por encima del tope
                               # del control: un chasquido de -30 dB cae DENTRO de la pausa
                               # detectada y el control lo ve; uno mas fuerte parte la pausa en
@@ -222,6 +256,10 @@ def cortes_auto(media, noise=UNION_NOISE_DB, min_pausa=UNION_MIN_PAUSA):
     LEAD de 0,5 s de la regla dura 6: existia solo porque la pausa se buscaba en el mp3 y se
     media en el mp4, y esa diferencia de origen era una fuente de error, no un ajuste.
 
+    ⚠️ El CENTRO de la pausa es una convencion, no la costura. La v4 lo trataba como si fuera
+    el empalme y medio 0,24 s a su alrededor; el chasquido puede caer en cualquier punto de la
+    pausa. Por eso `uniones()` v5 usa `pausas`, no `cortes`: ver su docstring.
+
     Medido el 20/09 sobre la 1003 (`0b199268-...`), guion de 5 tramos: encuentra exactamente los
     4 empalmes (6,41 · 12,94 · 18,31 · 24,60 s) y deja fuera las 3 pausas de coma de 0,27-0,34 s.
     """
@@ -243,26 +281,31 @@ def cortes_auto(media, noise=UNION_NOISE_DB, min_pausa=UNION_MIN_PAUSA):
 
 
 def uniones(mp4, cortes=None, media_voz=None, saltar_primero=False):
-    """Control 4. RMS de cada empalme entre tramos; un chasquido se oye como pico sobre -35 dBFS.
+    """Control 4. Pico de cada empalme entre tramos; un chasquido se oye como pico sobre -35 dBFS.
 
-    20/09/2026 - ESTE CONTROL SE APAGABA SOLO. Medido sobre esta misma funcion, con la 1003
-    (`0b199268-...`) alojada y sin publicar:
+    20/09/2026 - SE APAGABA SOLO: `if not cortes: return True, []` aprobaba una pieza cuyos
+    empalmes nadie habia medido. Cerrado en la v4 con `cortes_auto`.
 
-        >>> control.uniones("1003.mp4", None)          # el llamador no paso los cortes
-        (True, [])
-        >>> control.controlar("1003.mp4", exigir_guion=False)["uniones"]
-        {'ok': True, 'valor': [], 'tope': -35.0}       # ... y 'pasa': True
+    21/09/2026 - MEDIA UNA RENDIJA Y LA LLAMABA "EL EMPALME". La v4 media `max_volume` en una
+    ventana de +-0,12 s centrada en el corte, y `cortes_auto` define el corte como el CENTRO de
+    la pausa. Las pausas entre tramos duran ~1,1 s: el control miraba 0,24 s de 1,1 s y daba
+    veredicto sobre los otros 0,86 s -el 78 % de la pausa- sin haberlos abierto. Medido sobre la
+    1004 (`17d36226-...`), pausa 25,43-26,59 s:
 
-    `if not cortes: return True, []` es palabra por palabra el agujero que la v3 le cerro a los
-    controles 6 y 7 el 19/09, un control mas abajo y sin que nadie lo mirara: la puerta decia
-    `pasa: True` sobre una pieza cuyas uniones nadie habia medido. Y no era hipotetico:
-    `produce.py` pasa `cortes = []` cuando no encuentra el `<id>.mp3.tramos.json`, y
-    `build_sv.py` pasa `t0[1:]`, que puede venir vacio. Los dos caminos entraban por aqui y
-    salian con el control 4 apagado. Es ademas el control que corresponde al segundo de los tres
-    defectos que salieron al aire: la pieza con la segunda mitad muda.
+        v4:  ventana 25,89-26,13  ->  -50,1 dBFS  ->  "empalme limpio"
+        real: hay un transitorio en 26,43-26,48  ->  -33,4 dBFS, sobre el tope de -35
 
-    Desde la v4: sin cortes (None o lista vacia) se los BUSCA con `cortes_auto`; si no encuentra
-    ninguno devuelve False y la pieza no sube. Pasarle los cortes a mano sigue funcionando igual.
+    El numero de la v4 era cierto y era del intervalo equivocado. Es el mismo defecto de FORMA
+    que el del 19/09 (plegar la tilde que se busca) y el del 20/09 (aprobar sin medir): el
+    control contesta una pregunta que no tiene con que contestar. Y es el control que le
+    corresponde al segundo de los tres defectos que salieron al aire -la pieza con la segunda
+    mitad muda-, que es justamente un defecto que vive DENTRO de una pausa.
+
+    Desde la v5, en modo automatico se barre la pausa ENTERA, descontando `GUARDA_PAUSA` en cada
+    borde (ahi esta la cola del ultimo fonema, que marca -24 dBFS y no es un chasquido). Cuando
+    los cortes se pasan a mano se sigue midiendo la ventana de +-0,12 s -un `tramos.json` trae la
+    costura exacta y ahi la ventana es lo correcto- pero el informe lo DICE en `cobertura`:
+    ningun lector puede volver a leer un barrido parcial como si fuera la pausa completa.
 
     media_voz:      en REACCION, el mp3 de la voz. Se detecta Y se mide sobre el, no sobre el
                     mp4: el audio del noticiero tapa las pausas.
@@ -271,25 +314,39 @@ def uniones(mp4, cortes=None, media_voz=None, saltar_primero=False):
     """
     media = media_voz or mp4
     auto = not cortes
+    tramos = []                      # [(ini, fin)] de lo que REALMENTE se mide
     if auto:
-        cortes, _p = cortes_auto(media)
-        if saltar_primero and cortes:
-            cortes = cortes[1:]
-    if not cortes:
+        cortes, pausas = cortes_auto(media)
+        if saltar_primero:
+            cortes, pausas = cortes[1:], pausas[1:]
+        for (a, b) in pausas:
+            ia, ib = a + GUARDA_PAUSA, b - GUARDA_PAUSA
+            if ib > ia:
+                tramos.append((round(ia, 3), round(ib, 3)))
+    else:
+        for t in cortes:
+            tramos.append((round(max(0.0, float(t) - VENTANA_UNION), 3),
+                           round(float(t) + VENTANA_UNION, 3)))
+    if not tramos:
         return False, FALTA_CORTES
-    peor, detalle = -999.0, []
-    for t in cortes:
-        ini = max(0.0, float(t) - VENTANA_UNION)
-        r = _sh(f'ffmpeg -hide_banner -nostats -ss {ini:.3f} -t {VENTANA_UNION * 2:.3f} '
+    peor, detalle, donde = -999.0, [], []
+    for (ia, ib) in tramos:
+        r = _sh(f'ffmpeg -hide_banner -nostats -ss {ia:.3f} -t {ib - ia:.3f} '
                 f'-i "{media}" -af volumedetect -f null - 2>&1')
         m = re.search(r"max_volume:\s*(-?[\d.]+) dB", r.stderr + r.stdout)
         v = float(m.group(1)) if m else -999.0
         detalle.append(round(v, 1))
+        donde.append([ia, ib])
         peor = max(peor, v)
-    return peor <= UNION_MAX_DBFS, {"empalmes": len(cortes), "cortes": cortes, "dbfs": detalle,
-                                    "peor": round(peor, 1),
-                                    "origen": "auto" if auto else "dados",
-                                    "medido_en": os.path.basename(media)}
+    barrido = round(sum(b - a for a, b in tramos), 2)
+    return peor <= UNION_MAX_DBFS, {
+        "empalmes": len(tramos), "cortes": cortes, "dbfs": detalle, "peor": round(peor, 1),
+        "origen": "auto" if auto else "dados",
+        "cobertura": ("pausa completa menos %.2f s por borde" % GUARDA_PAUSA) if auto
+                     else ("PARCIAL: ventana de +-%.2f s en torno al corte dado; lo que pase "
+                           "en el resto de la pausa NO esta medido" % VENTANA_UNION),
+        "barrido_s": barrido, "intervalos": donde,
+        "medido_en": os.path.basename(media)}
 
 
 def pantalla(mp4):
@@ -434,6 +491,10 @@ def auditar(mp4, media_voz=None, modelo="small"):
     formas pegadas (`poranos` = `por` + `anos`). Si la pieza dice "por anos de servicio", aqui
     sale `anos` aunque nadie tenga ya el guion. Es lo que el QC del 19/09 tuvo que escribir a
     mano para poder revisar las tres piezas del 18/09.
+
+    v5 (21/09): la auditoria corre tambien el CONTROL 4 con la cobertura nueva. El segundo de
+    los tres defectos que salieron al aire -la segunda mitad muda- vive DENTRO de una pausa, y
+    hasta hoy la auditoria de una pieza publicada ni siquiera lo miraba.
     """
     dicho, fallo = _transcribir(media_voz or mp4, modelo)
     if fallo:
@@ -447,10 +508,12 @@ def auditar(mp4, media_voz=None, modelo="small"):
     a_ok, a = audio(mp4)
     d_ok, d = duracion(mp4)
     v_ok, v = volumen(mp4)
+    u_ok, u = uniones(mp4, None, media_voz=media_voz)
     return {"pieza": os.path.basename(mp4),
             "audio": {"ok": a_ok, "valor": a, "esperado": AUDIO_OK},
             "duracion": {"ok": d_ok, "valor": d, "franja": [DUR_MIN, DUR_MAX]},
             "volumen": {"ok": v_ok, "valor": v, "franja": [VOL_MIN, VOL_MAX]},
+            "uniones": {"ok": u_ok, "valor": u, "tope": UNION_MAX_DBFS},
             "enie": {"ok": not (sueltas or pegadas), "sueltas": sueltas, "pegadas": pegadas},
             "tildes_oidas": {"ok": not tildes, "valor": tildes},
             "dicho": dicho,
@@ -555,7 +618,8 @@ def main():
     if a.auditar:
         r = auditar(a.mp4, a.voz or None)
         print(json.dumps(r, ensure_ascii=False, indent=1))
-        malo = bool(r.get("error")) or r.get("enie", {}).get("ok") is False
+        malo = (bool(r.get("error")) or r.get("enie", {}).get("ok") is False
+                or r.get("uniones", {}).get("ok") is False)
         if malo:
             print("AUDITORIA CON HALLAZGOS -> anotar el defecto; NO se republica lo que ya salio",
                   file=sys.stderr)
