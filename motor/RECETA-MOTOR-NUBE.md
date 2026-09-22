@@ -1,4 +1,4 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026** · **v10 un control declara qué parte miró 21/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026** · **v10 un control declara qué parte miró 21/09/2026** · **v11 qué nota le pone el control al objeto vacío 22/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
@@ -114,6 +114,61 @@ contesta parece un control que funciona.
   concreto** en vez de **la forma del defecto**, y por eso el siguiente estaba servido. Cuando se corrija un
   control, la pregunta no es "¿arreglé esto?" sino **"¿qué otro control tiene esta misma forma?"** — y hay que
   ir a mirarlo en la misma corrida.
+
+**2-quinquies. UN CONTROL QUE SOLO MIDE TECHOS ES CIEGO A LO QUE FALTA (norma del 22/09/2026).**
+A todo control hay que preguntarle **qué nota le pone al objeto VACÍO**. Si el silencio, el cuadro en negro o el
+texto en blanco sacan su mejor nota, el control mide en una sola dirección y le falta el piso.
+- **Medido el 22/09/2026 sobre la 1003** (`0b199268-…`, limpia en los siete controles) con el audio silenciado a
+  partir del segundo 16 — o sea, el segundo de los tres defectos que salieron al aire, la pieza con la segunda
+  mitad muda, reproducido tal cual contra la puerta v5:
+
+  ```
+  controlar("mudo_cola.mp4", guion=guion) -> pasa: True, falla: []
+  ```
+
+  Los siete controles la aprobaron: audio `aac,48000,2` ok · duración 31,04 s ok · volumen −17,7 dB ok ·
+  uniones ok (2 empalmes, −35,0 / −38,7) · voz ok con `enie_perdida: []`, aunque el guion dice "años" en el
+  tramo 4, que es justamente el que está mudo.
+- **Por qué ninguno lo vio:**
+  - El **control 4** mide el TECHO de la pausa — busca un pico por encima de −35 dBFS — y este defecto es de
+    PISO. El silencio no solo no lo reprueba: en la variante con el hueco en medio, midió los 11,7 s mudos como
+    si fueran un empalme y los puntuó **−91,0 dBFS, la unión más limpia de la pieza**. Los docstrings de la v4 y
+    la v5 afirmaban que a este control le correspondía la segunda mitad muda "porque vive dentro de una pausa":
+    era falso y ya está corregido en el repo.
+  - El **volumen** es un PROMEDIO sobre el archivo entero: media pieza muda solo lo baja de −15,0 a −17,7 dB,
+    adentro de la franja.
+  - El **control 7** bloquea por ñ mal OÍDA, y una palabra que no suena nunca no está mal oída. El recall de la
+    pasada plegada sí lo habría notado, pero informa y no bloquea por decisión expresa.
+- 🔑 **Los siete controles preguntaban si algo SOBRA o suena mal. Ninguno preguntaba si algo FALTA.**
+- ✅ **CONTROL 8 — COBERTURA DE VOZ** (`control.py` v6, `cobertura_voz()`): qué fracción de la LÍNEA DE TIEMPO
+  ENTERA lleva voz y cuánto dura el hueco más largo, la cola incluida. BLOQUEA bajo 65 % de cobertura o con
+  cualquier hueco de más de 3,0 s. Se mide sobre la misma media que el control 4, así que en **REACCIÓN** hay
+  que pasarle el mp3 de la voz: sobre el mp4 el audio del noticiero tapa los huecos y la cobertura da ~100 %
+  aunque la voz se haya caído entera.
+- Calibrado sobre cuatro piezas reales — 1003, 1002, 1004 y 1000: cobertura 81,0 / 81,0 / 84,0 / 75,6 % y mayor
+  hueco 1,52 / 1,51 / 1,10 / 1,54 s — contra las dos mutiladas a propósito: 44,4 % con 15,07 s y 49,3 % con
+  12,01 s. La peor pieza sana queda 10 puntos sobre el piso y el tope de hueco deja el doble de margen.
+- `huecos_voz()` es deliberadamente lo contrario de `cortes_auto()`: aquella descarta la cola de silencio del
+  final porque "no es un empalme", y ahí es exactamente donde se esconde media pieza muda. El control 8 no
+  descarta nada de la línea de tiempo.
+- ✅ `texto("")` devolvía True — cero palabras, cero palabras malas: otro objeto vacío sacando la mejor nota.
+  Ahora un guion en blanco **BLOQUEA**.
+- 🔑 **LA PRUEBA QUE HAY QUE CORRERLE A TODO CONTROL NUEVO**, y a los viejos cada vez que cae uno, son ahora
+  **TRES** preguntas:
+  1. **(2-ter)** Llamarlo SIN el dato que necesita. Si contesta que sí, está roto.
+  2. **(2-quater)** Preguntarle qué fracción del objeto abrió. Si mide una muestra y la reporta como el todo,
+     está roto aunque su número sea exacto.
+  3. **(2-quinquies)** Preguntarle qué nota le pone al objeto VACÍO. Si el silencio saca su mejor nota, le falta
+     el piso.
+- Corrida el 22/09 sobre los ocho controles: `audio` sobre un mp4 sin pista da `""` y bloquea · `duración` da
+  0,0 y bloquea · `volumen` sobre silencio total da −91,0 dB y bloquea, así que su ceguera es al defecto
+  PARCIAL, que es lo que cubre el control 8 · `uniones` sobre silencio TOTAL bloquea pero de rebote, porque no
+  encuentra ningún empalme y cae en la 2-ter, y sobre silencio PARCIAL aprueba y encima puntúa el tramo mudo
+  como la unión más limpia: ese era el agujero · `texto` con guion vacío aprobaba, corregido · `voz` sin guion
+  bloquea desde la v3 · `pantalla_chica` informa y no bloquea, así que no aplica.
+- 🔑 **Tres días, cuatro defectos, y la lección se repite**: el arreglo de cada día se escribió mirando el caso
+  concreto y no la FORMA. Al corregir un control la pregunta no es "¿arreglé esto?" sino **"¿qué otro control
+  tiene esta misma forma?"** — y hay que ir a mirarlo en la misma corrida.
 
 ### 3. AUDIO 48 kHz ESTÉREO, UNIDO CON EL FILTRO `concat` (norma del 11/09/2026)
 Toda la cadena de audio corre a **48000 Hz, 2 canales**, y los tramos se empalman con el **filtro** `concat`
@@ -317,6 +372,8 @@ Por lo mismo, el control 7 de voz escucha el **mp3**, no el mp4.
 mp4 **no** hace que el control se abstenga —encuentra los 4 empalmes igual y emite veredicto—, así que la
 protección no viene de que el control se dé cuenta, viene de que la receta le pase el archivo correcto. Ver la
 regla dura 2-quater.
+⚠️ **Y el control 8 (cobertura de voz) también va sobre el mp3**: sobre el mp4 el audio del noticiero tapa los
+huecos y la cobertura da ~100 % aunque la voz se haya caído entera. Ver la regla dura 2-quinquies.
 
 Formato F11 ENSAYO (videolab/ensayo.py, 05/09; v2 zona segura 11/09): guion de 4 párrafos, voz con `voz.py`,
 karaoke, 26-30 fotos, `python3 ensayo.py pieza.json salida.mp4` (~45 s). Ver videolab/ANALISIS-viral-01.md.
@@ -327,7 +384,7 @@ Lo que NO hacer en v2: no pasar el texto a voz.py sin líneas en blanco; no usar
 - `motor.py` — render (Pillow + ffmpeg). Entrada `pieza.json`; salida mp4 1080x1920 h264 + aac 48k estéreo, 24-33 s
 - `render.sh` — bucle: lee `urls/<n>.voz` y `urls/<n>.hook`, descarga, renderiza a `out/<id>.mp4`
 - `piezas.json` — guiones: `{id, materia, gancho, puntos:[{t,d}x3], cierre, hook_prompt, hashtags, rotulo?}`
-- `control.py` — **LA PUERTA**: los siete controles en un solo lugar. Toda receta lo importa o no sube (regla 3-ter)
+- `control.py` — **LA PUERTA**: los ocho controles en un solo lugar. Toda receta lo importa o no sube (regla 3-ter)
 - `produce.py` — driver de producción de punta a punta; llama a `control.py` y decide nada por su cuenta
 - `videolab/musica.py` — cama musical CC0 con ducking y su control (regla dura 6)
 - ⚠️ `render.sh` NO sirve para el pipeline v2: no inyecta `subs` ni `tramos` en pieza.json. Usar un driver en python sobre el mismo `motor.py`.
@@ -448,6 +505,13 @@ importándolo, no copiándolo.**
    informe declara su `cobertura`, su `barrido_s` y los `intervalos` que abrió. La ventana chica dejaba sin mirar
    el 78 % de cada pausa y dio un **falso PASE medido** en la 1004 (−50,1 dBFS donde había −33,4). Ver regla dura
    2-quater. Un informe de uniones sin `cobertura` es de una versión vieja: no vale.
+   ⛔ **Y este control mide el TECHO de la pausa, no el piso**: un tramo mudo saca su MEJOR nota (−91,0 dBFS en la
+   variante medida el 22/09). El defecto de lo que FALTA lo cubre el control 8, no este. Ver regla dura 2-quinquies.
+5. **Control 8 — cobertura de voz (desde el 22/09/2026, `control.py` v6)**: `control.cobertura_voz(media)` mide qué
+   fracción de la LÍNEA DE TIEMPO ENTERA lleva voz y cuánto dura el hueco más largo, la cola incluida. **BLOQUEA
+   bajo 65 % de cobertura o con cualquier hueco de más de 3,0 s.** En piezas de **reacción** y con cama musical va
+   sobre el **mp3 de voz**: sobre el mp4 el audio del noticiero tapa los huecos y la cobertura da ~100 %. Ver regla
+   dura 2-quinquies.
 
 ## Grilla
 6 diarias (D-10 rev. 05/09): 09:00, 12:00, 13:00, 16:00, 18:00, 20:00. Recalcular con `getBestTimeToPostByNetwork` cada lunes.
@@ -479,6 +543,10 @@ v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días 
   cobertura en el informe. La prueba: preguntarle qué fracción del objeto abrió; si no lo sabe decir, su
   veredicto no vale. Medido el 21/09: el control 4 abría 0,24 s de una pausa de 1,1 s y dejó pasar −33,4 dBFS
   reportando −50,1. Ver regla dura 2-quater.
+- **No dar por controlado un control que solo mide TECHOS.** La prueba: preguntarle qué nota le pone al objeto
+  VACÍO; si el silencio, el cuadro en negro o el guion en blanco sacan su mejor nota, le falta el piso. Medido el
+  22/09: la 1003 con la segunda mitad muda pasaba la puerta v5 completa, y el control 4 puntuó los 11,7 s mudos
+  como **la unión más limpia de la pieza**. De ahí el control 8. Ver regla dura 2-quinquies.
 - **No unir audio con el demuxer `concat` ni entregar mono/44,1 kHz.** Ver regla dura 3.
 - **No publicar de la RESERVA sin re-medir el audio con `ffprobe` justo antes.** El stock renderizado antes de una regla dura no la cumple, y la etiqueta "control de audio limpio" de la bitácora es del día en que se escribió. Ver regla dura 3-bis.
 - **No poner texto con contorno y sin caja, ni fuera de x[95,930] y[200,1586].** Ver regla dura 4.
@@ -490,6 +558,8 @@ v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días 
   música 6 dB MÁS FUERTE que la voz: no distingue nada. El juez es (voz entregada, silencios) en LUFS. Ver regla dura 6.
 - **No medir los huecos entre tramos ni transcribir sobre la MEZCLA con música**: con cama musical los silencios
   miden ≈ −13 LUFS por diseño y reprueban una pieza sana. Esos controles se corren sobre el mp3 de voz.
+- **No correr el control 8 sobre el mp4 en una pieza de reacción**: el audio del noticiero tapa los huecos y la
+  cobertura da ~100 % aunque la voz se haya caído entera. Va sobre el mp3. Ver regla dura 2-quinquies.
 - **No publicar una pista de licencia desconocida, ni una `cc-by` sin acreditar al autor en la descripción.** Ver regla dura 6.
 - **No publicar NINGUNA pieza sin control de audio, aunque no la haya hecho `motor.py`.** El supervideo A salió mono y de 60,7 s el 14/09 porque su receta cierra el mux por fuera del motor. Ver regla dura 3-ter.
 - **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
