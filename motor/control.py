@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""control.py v5 (21/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
+"""control.py v6 (22/09/2026) - LA PUERTA: los controles duros, en UN solo lugar.
 
 POR QUE EXISTE
 --------------
@@ -69,8 +69,7 @@ mirando el caso de la voz en vez de la FORMA del defecto. Medido el 20/09 sobre 
 apagaba con no pasarle los cortes y la pieza pasaba la puerta igual**, igual que el guion apagaba
 los controles 6 y 7 antes de la v3. Y hay dos llamadores que entran por ahi: `produce.py` pasa
 `cortes = []` cuando le falta el `<id>.mp3.tramos.json`, y `build_sv.py` pasa `t0[1:]`, que puede
-venir vacio. Es ademas el control que corresponde al segundo de los tres defectos que salieron al
-aire: la pieza con la segunda mitad muda.
+venir vacio.
 
   - `cortes_auto(media)` encuentra los empalmes sola (silencedetect a -25 dB, pausas >= 0,6 s,
     descartando la cola de silencio del final). Ya nadie tiene que acordarse de calcularlos.
@@ -102,8 +101,56 @@ veredicto, informa que parte del objeto miro.**
     la costura exacta y ahi la ventana es lo correcto- pero el informe lo DICE en `cobertura`,
     junto con `barrido_s` y los `intervalos` medidos. Nadie puede volver a leer un barrido
     parcial como si fuera la pausa completa.
-  - `auditar()` corre ahora tambien el control 4: el defecto de la segunda mitad muda vive
-    DENTRO de una pausa, y la auditoria de una pieza publicada no lo miraba.
+  - `auditar()` corre ahora tambien el control 4.
+
+v6 (22/09/2026) - UNA PUERTA HECHA SOLO DE TECHOS. Regla dura 2-quinquies.
+Medido hoy sobre la 1003 (`0b199268-...`, limpia en los siete controles) con el audio silenciado
+a partir del segundo 16 - o sea, EL SEGUNDO DE LOS TRES DEFECTOS QUE SALIERON AL AIRE, la pieza
+con la segunda mitad muda, reproducido tal cual contra la puerta v5:
+
+    >>> control.controlar("mudo_cola.mp4", guion=guion)["pasa"]
+    True                      # falla: []   los SIETE controles la aprueban
+
+    audio  aac,48000,2  ok  |  duracion 31,04 s  ok  |  volumen -17,7 dB  ok (franja -21/-13)
+    uniones  ok: True   empalmes: 2   dbfs: [-35,0 / -38,7]
+    voz      ok: True   enie_perdida: []      (el guion dice "anos" en el tramo 4... que es mudo)
+
+La v4 y la v5 decian las dos, en este mismo docstring, que el control 4 era "el control que le
+corresponde al segundo de los tres defectos que salieron al aire, la pieza con la segunda mitad
+muda, porque es un defecto que vive DENTRO de una pausa". Es FALSO, y hoy esta medido: el control
+4 mide el TECHO de una pausa -busca un pico por encima de -35 dBFS- y este defecto es de PISO. El
+silencio no solo no lo reprueba: saca la mejor nota que ese control sabe dar. En la variante con
+el hueco en el medio, el control 4 midio los 11,7 s mudos como si fueran un empalme y los puntuo
+-91,0 dBFS, LA UNION MAS LIMPIA DE LA PIEZA. Los demas tampoco lo ven: el volumen es un PROMEDIO
+sobre el archivo entero y media pieza muda solo lo baja de -15,0 a -17,7 dB, adentro de la
+franja; el control 7 bloquea por n-tilde OIDA MAL, y una palabra que no suena nunca no esta mal
+oida -"anos" desaparecio con el tramo 4 y `enie_perdida` volvio vacia-; el recall de la pasada 3a,
+que si lo habria notado, INFORMA y no bloquea por decision expresa. Los siete controles preguntan
+si algo SOBRA o suena mal. Ninguno preguntaba si algo FALTA.
+
+  - CONTROL 8, `cobertura_voz()`: que fraccion de la LINEA DE TIEMPO ENTERA lleva voz y cuanto
+    dura el hueco mas largo, la cola incluida. BLOQUEA bajo 65 % de cobertura o con cualquier
+    hueco de mas de 3,0 s. Calibrado el 22/09 sobre cuatro piezas reales -1003, 1002, 1004 y
+    1000: cobertura 81,0 / 81,0 / 84,0 / 75,6 % y mayor hueco 1,52 / 1,51 / 1,10 / 1,54 s- contra
+    las dos mutiladas: 44,4 % con 15,07 s y 49,3 % con 12,01 s. Las dos ahora NO PASAN.
+  - `huecos_voz()` es deliberadamente lo contrario de `cortes_auto()`: aquella descarta la cola
+    de silencio del final porque "no es un empalme", y ahi es exactamente donde se esconde media
+    pieza muda. El control 8 no descarta nada de la linea de tiempo.
+  - `texto()` con un guion vacio devolvia True: cero palabras, cero palabras malas. Otro objeto
+    vacio sacando la mejor nota. Ahora un guion en blanco BLOQUEA como si no existiera.
+  - LA REGLA (2-quinquies de la receta): **a todo control hay que preguntarle que nota le pone al
+    objeto VACIO.** Si el silencio, el cuadro en negro o el texto en blanco sacan su mejor nota,
+    el control mide en una sola direccion y le falta el piso. Es la pregunta hermana de la 2-ter
+    (llamarlo SIN el dato que necesita: si contesta que si, esta roto) y de la 2-quater (que
+    parte del objeto miro). Las tres se le corren a todo control nuevo, y a los viejos cuando
+    cae uno.
+  - Corrida hoy sobre los ocho, con la 1003 silenciada entera y por partes: `audio` sobre un mp4
+    sin pista da "" y bloquea; `duracion` da 0,0 y bloquea; `volumen` sobre silencio total da
+    -91,0 dB y bloquea, asi que su ceguera es al defecto PARCIAL -que es justo lo que cubre el
+    control 8-; `uniones` sobre silencio TOTAL bloquea pero DE REBOTE (no encuentra ningun
+    empalme y cae en la 2-ter), y sobre silencio PARCIAL aprueba y encima puntua el tramo mudo
+    como la union mas limpia: ese era el agujero; `texto` con guion vacio aprobaba (corregido
+    aqui); `voz` sin guion bloquea desde la v3.
 
 LOS CONTROLES
 -------------
@@ -119,6 +166,10 @@ LOS CONTROLES
  6. TEXTO      el guion, antes del TTS: n-tilde y tildes                (regla dura 2) BLOQUEA
  7. VOZ        lo que se OYE contra el guion, n-tilde sensible          (regla dura 2) BLOQUEA
                solo por n-tilde; lo demas informa.
+ 8. COBERTURA  >= 65 % de la linea de tiempo con voz, ningun hueco > 3,0 s  BLOQUEA (v6)
+               -> es el PISO del control 4: aquel caza el pico que SOBRA dentro de una pausa,
+                  este la voz que FALTA. Cuenta la cola del final, que `cortes_auto` descarta
+                  por no ser un empalme, que es donde se escondio la pieza medio muda
  -> Los controles 6 y 7 YA NO SE OMITEN: sin guion, `controlar()` devuelve `pasa: False`
     (regla dura 2-ter). Para mirar una pieza sin guion existe `auditar()`, que no sube.
 
@@ -169,6 +220,20 @@ UNION_MIN_PAUSA = 0.60        # s - solo los empalmes ENTRE TRAMOS. Las pausas d
                               # rechaza una pieza sana (medido el 18/09 con la 1002).
 ZONA = (95, 930, 200, 1586)   # x0, x1, y0, y1 - zona segura de TikTok
 
+# --- Control 8 (v6). Calibrado el 22/09/2026 sobre cuatro piezas reales de F15 -------------
+#   1003 81,0 % / mayor hueco 1,52 s | 1002 81,0 % / 1,51 s | 1004 84,0 % / 1,10 s
+#   1000 75,6 % / 1,54 s   <- la peor pieza real queda 10 puntos por encima del piso
+# y contra la 1003 mutilada a proposito: cola muda 44,4 % / 15,07 s y hueco interior
+# 49,3 % / 12,01 s. Las dos reprueban. El hueco mas largo de una pieza sana es SIEMPRE la
+# cola del cierre (~1,5 s), asi que el tope de 3,0 s deja el doble de margen.
+COBERTURA_MIN = 0.65          # fraccion minima de la pieza que tiene que llevar voz
+VOZ_HUECO_MAX = 3.0           # s - ningun tramo sin voz puede durar mas, ni en medio ni al final
+VOZ_NOISE_DB = -35.0          # umbral con el que se decide "aqui no hay voz". Mas bajo que el
+                              # -25 dB de `cortes_auto`: aquel quiere encontrar la pausa entera,
+                              # este quiere no contar como muda una respiracion o la cola de un
+                              # fonema (-24,2 dBFS en la 1004)
+VOZ_MIN_HUECO = 0.30          # s - por debajo de esto es respiracion, no es un hueco
+
 # Regla dura 2-ter: lo que dice la puerta cuando le falta el guion. No es un aviso, es un NO.
 FALTA_GUION = ("SIN GUION: los controles 6 y 7 (contenido de la voz) NO se pueden correr, "
                "asi que la pieza NO SE SUBE. Regla dura 2-ter. Para mirar una pieza ya "
@@ -178,6 +243,8 @@ FALTA_CORTES = ("SIN EMPALMES MEDIBLES: el control 4 no encontro ninguna pausa e
                 "SUBE. Regla dura 2-ter. En una pieza de REACCION esto es lo esperable si se "
                 "le pasa el mp4: el audio del noticiero tapa las pausas. Hay que darle el mp3 "
                 "de la voz en `media_voz`.")
+FALTA_MEDIA = ("MEDIA ILEGIBLE: no se pudo leer la duracion, asi que el control 8 no puede decir "
+               "que fraccion de la pieza lleva voz y la pieza NO SE SUBE. Regla dura 2-ter.")
 FALTA_WHISPER = ("faster-whisper NO esta instalado: el control 7 no se puede correr, asi que "
                  "la pieza NO SE SUBE. `pip install -q faster-whisper`. Regla dura 2-ter.")
 
@@ -260,6 +327,10 @@ def cortes_auto(media, noise=UNION_NOISE_DB, min_pausa=UNION_MIN_PAUSA):
     el empalme y medio 0,24 s a su alrededor; el chasquido puede caer en cualquier punto de la
     pausa. Por eso `uniones()` v5 usa `pausas`, no `cortes`: ver su docstring.
 
+    ⚠️ Y descarta la cola de silencio del final, que es CORRECTO para buscar empalmes y es
+    exactamente donde se esconde una pieza con la segunda mitad muda. Ese hueco lo mide el
+    control 8 (`huecos_voz`), que no descarta nada de la linea de tiempo. Ver el v6 de arriba.
+
     Medido el 20/09 sobre la 1003 (`0b199268-...`), guion de 5 tramos: encuentra exactamente los
     4 empalmes (6,41 · 12,94 · 18,31 · 24,60 s) y deja fuera las 3 pausas de coma de 0,27-0,34 s.
     """
@@ -297,9 +368,14 @@ def uniones(mp4, cortes=None, media_voz=None, saltar_primero=False):
 
     El numero de la v4 era cierto y era del intervalo equivocado. Es el mismo defecto de FORMA
     que el del 19/09 (plegar la tilde que se busca) y el del 20/09 (aprobar sin medir): el
-    control contesta una pregunta que no tiene con que contestar. Y es el control que le
-    corresponde al segundo de los tres defectos que salieron al aire -la pieza con la segunda
-    mitad muda-, que es justamente un defecto que vive DENTRO de una pausa.
+    control contesta una pregunta que no tiene con que contestar.
+
+    ⚠️ 22/09/2026 - ESTE CONTROL NO ES EL DE LA SEGUNDA MITAD MUDA. La v4 y la v5 decian que si,
+    "porque ese defecto vive DENTRO de una pausa". Medido: es falso. Este control mide el TECHO
+    de la pausa -un pico que SOBRA- y la segunda mitad muda es un defecto de PISO. El silencio
+    saca aqui la mejor nota posible: con un hueco mudo de 11,7 s en el medio de la 1003, este
+    control lo midio como un empalme y lo puntuo -91,0 dBFS, la union mas limpia de la pieza.
+    Ese defecto lo caza el CONTROL 8 (`cobertura_voz`), no este. Regla dura 2-quinquies.
 
     Desde la v5, en modo automatico se barre la pausa ENTERA, descontando `GUARDA_PAUSA` en cada
     borde (ahi esta la cola del ultimo fonema, que marca -24 dBFS y no es un chasquido). Cuando
@@ -349,6 +425,65 @@ def uniones(mp4, cortes=None, media_voz=None, saltar_primero=False):
         "medido_en": os.path.basename(media)}
 
 
+def huecos_voz(media, noise=VOZ_NOISE_DB, dmin=VOZ_MIN_HUECO):
+    """Todos los tramos SIN voz de la pieza, LA COLA INCLUIDA. Devuelve (huecos, duracion).
+
+    Es a proposito lo contrario de `cortes_auto()`: aquella busca los empalmes ENTRE tramos y por
+    eso tira dos cosas a la basura -las pausas cortas y el silencio que toca el final del
+    archivo-. El hueco que le importa al control 8 es justamente el que aquella descarta: la
+    pieza con la segunda mitad muda termina en un silencio de 15 s que `cortes_auto` lee como
+    "cola" y por eso ni siquiera devuelve.
+    """
+    r = _sh(f'ffmpeg -hide_banner -nostats -i "{media}" '
+            f'-af silencedetect=noise={noise}dB:d={dmin} -f null - 2>&1')
+    txt = r.stderr + r.stdout
+    ds = _sh(f'ffprobe -v error -show_entries format=duration -of csv=p=0 "{media}"').stdout
+    total = float(ds.strip()) if ds.strip() else 0.0
+    hue, ini = [], None
+    for m in re.finditer(r"silence_(start|end):\s*(-?[\d.]+)", txt):
+        if m.group(1) == "start":
+            ini = float(m.group(2))
+        elif ini is not None:
+            hue.append((round(ini, 2), round(float(m.group(2)), 2)))
+            ini = None
+    if ini is not None:              # hueco que nunca cierra = llega hasta el final del archivo
+        hue.append((round(ini, 2), round(total, 2)))
+    return hue, total
+
+
+def cobertura_voz(mp4, media_voz=None):
+    """Control 8 - CUANTA pieza lleva voz. BLOQUEA. Es el PISO del control 4.
+
+    22/09/2026 - LOS SIETE CONTROLES MEDIAN TECHOS. La 1003 con el audio silenciado del segundo
+    16 en adelante -el defecto de la segunda mitad muda, el segundo de los tres que salieron al
+    aire- pasaba la puerta v5 entera, con `pasa: True` y `falla: []`. El control 4 no lo ve
+    porque busca un PICO por encima de -35 dBFS dentro de una pausa, y el silencio saca su mejor
+    nota: en la variante con el hueco en el medio puntuo los 11,7 s mudos como la union mas
+    limpia de la pieza, -91,0 dBFS. El volumen no lo ve porque es un promedio sobre el archivo
+    entero. El control 7 no lo ve porque bloquea por n-tilde mal OIDA, y una palabra que no suena
+    nunca no esta mal oida. Este control hace la pregunta que faltaba: no si algo suena mal, sino
+    si la voz esta DONDE TIENE QUE ESTAR, a lo largo de toda la linea de tiempo.
+
+    Mide sobre la misma media que el control 4 (`media_voz or mp4`), asi que en REACCION hay que
+    pasarle el mp3 de la voz: sobre el mp4 el audio del noticiero tapa los huecos y la cobertura
+    da ~100 % aunque la voz se haya caido entera.
+    """
+    media = media_voz or mp4
+    hue, total = huecos_voz(media)
+    if total <= 0:                                        # regla dura 2-ter: falla CERRADA
+        return False, FALTA_MEDIA
+    mudo = round(sum(b - a for a, b in hue), 2)
+    cob = round((total - mudo) / total, 3)
+    mayor = round(max((b - a for a, b in hue), default=0.0), 2)
+    cola = round(total - hue[-1][0], 2) if hue and hue[-1][1] >= total - 0.05 else 0.0
+    return (cob >= COBERTURA_MIN and mayor <= VOZ_HUECO_MAX), {
+        "cobertura_voz": cob, "minimo": COBERTURA_MIN,
+        "mudo_s": mudo, "mayor_hueco_s": mayor, "tope_hueco_s": VOZ_HUECO_MAX,
+        "cola_muda_s": cola, "huecos": hue, "duracion_s": round(total, 2),
+        "cobertura": "la LINEA DE TIEMPO ENTERA, de 0 a la duracion, sin descartar la cola",
+        "medido_en": os.path.basename(media)}
+
+
 def pantalla(mp4):
     """Regla dura 4. INFORMA, no bloquea: pantalla_chica.py no distingue el texto propio del
     texto que trae el clip del gancho, y contar cajas a ciegas lleva a re-renderizar piezas
@@ -369,7 +504,13 @@ def texto(guion):
     La regla -cion / -sion es dura: en español el singular SIEMPRE va acentuado
     ("indemnizacion" mal, "indemnización" bien), mientras que el plural NO la lleva
     ("indemnizaciones", "acciones"), asi que el plural no se toca.
+
+    22/09/2026: un guion VACIO devolvia True -cero palabras, cero palabras malas-, o sea el
+    objeto vacio sacaba la mejor nota que este control sabe dar. Regla dura 2-quinquies: ahora
+    bloquea igual que si no lo hubieran pasado.
     """
+    if not (guion or "").strip():      # objeto vacio, mejor nota: cero palabras, cero malas.
+        return False, FALTA_GUION      # regla dura 2-quinquies (v6)
     malas = []
     for w in set(_tok(guion)):
         if w in SIN_ENIE:
@@ -439,6 +580,12 @@ def voz(media, guion, modelo="small"):
     ⚠️ En piezas de REACCION hay que pasarle el **mp3 de la voz**, no el mp4: el mp4 lleva a
     proposito el audio del noticiero durante el gancho y su texto no esta en el guion.
 
+    ⚠️ 22/09/2026 - LO QUE ESTE CONTROL NO PUEDE VER: bloquea por n-tilde mal OIDA, y una
+    palabra que NO SUENA NUNCA no esta mal oida. Con la 1003 silenciada desde el segundo 16,
+    "años" desaparecio junto con el tramo 4 y `enie_perdida` volvio vacia. El recall de la
+    pasada plegada lo habria notado, pero INFORMA por decision expresa (bloquear por el
+    re-renderiza piezas sanas). La voz que FALTA es del control 8, no de aqui.
+
     v3: sin guion o sin faster-whisper devuelve False (BLOQUEA). Antes devolvia True y None
     respectivamente, y en los dos casos la pieza subia con el control de voz apagado.
     """
@@ -492,9 +639,11 @@ def auditar(mp4, media_voz=None, modelo="small"):
     sale `anos` aunque nadie tenga ya el guion. Es lo que el QC del 19/09 tuvo que escribir a
     mano para poder revisar las tres piezas del 18/09.
 
-    v5 (21/09): la auditoria corre tambien el CONTROL 4 con la cobertura nueva. El segundo de
-    los tres defectos que salieron al aire -la segunda mitad muda- vive DENTRO de una pausa, y
-    hasta hoy la auditoria de una pieza publicada ni siquiera lo miraba.
+    v5 (21/09): la auditoria corre tambien el CONTROL 4 con la cobertura nueva.
+
+    v6 (22/09): y el CONTROL 8, que es el que de verdad caza la segunda mitad muda. La v5 sumo
+    el control 4 creyendo que era ese; medido, no lo es -el control 4 mide el techo de la pausa
+    y ese defecto es de piso-. Una pieza medio muda YA PUBLICADA se detecta aqui.
     """
     dicho, fallo = _transcribir(media_voz or mp4, modelo)
     if fallo:
@@ -509,11 +658,13 @@ def auditar(mp4, media_voz=None, modelo="small"):
     d_ok, d = duracion(mp4)
     v_ok, v = volumen(mp4)
     u_ok, u = uniones(mp4, None, media_voz=media_voz)
+    c_ok, c = cobertura_voz(mp4, media_voz=media_voz)
     return {"pieza": os.path.basename(mp4),
             "audio": {"ok": a_ok, "valor": a, "esperado": AUDIO_OK},
             "duracion": {"ok": d_ok, "valor": d, "franja": [DUR_MIN, DUR_MAX]},
             "volumen": {"ok": v_ok, "valor": v, "franja": [VOL_MIN, VOL_MAX]},
             "uniones": {"ok": u_ok, "valor": u, "tope": UNION_MAX_DBFS},
+            "cobertura_voz": {"ok": c_ok, "valor": c, "minimo": COBERTURA_MIN},
             "enie": {"ok": not (sueltas or pegadas), "sueltas": sueltas, "pegadas": pegadas},
             "tildes_oidas": {"ok": not tildes, "valor": tildes},
             "dicho": dicho,
@@ -535,6 +686,7 @@ def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_vo
     d_ok, d = duracion(mp4, dmin, dmax)
     v_ok, v = volumen(mp4)
     u_ok, u = uniones(mp4, cortes, media_voz=media_voz, saltar_primero=saltar_primero)
+    c_ok, c = cobertura_voz(mp4, media_voz=media_voz)
     _, p = pantalla(mp4)
     if guion:
         t_ok, t = texto(guion)
@@ -550,11 +702,13 @@ def controlar(mp4, dmin=DUR_MIN, dmax=DUR_MAX, cortes=None, guion=None, media_vo
          "duracion": {"ok": d_ok, "valor": d, "franja": [dmin, dmax]},
          "volumen": {"ok": v_ok, "valor": v, "franja": [VOL_MIN, VOL_MAX]},
          "uniones": {"ok": u_ok, "valor": u, "tope": UNION_MAX_DBFS},
+         "cobertura_voz": {"ok": c_ok, "valor": c, "minimo": COBERTURA_MIN},
          "pantalla_chica": {"ok": None, "valor": p},
          "texto": {"ok": t_ok, "valor": t},
          "voz": {"ok": z_ok, "valor": z},
-         "pasa": bool(a_ok and d_ok and v_ok and u_ok and t_ok and z_ok)}
-    r["falla"] = [k for k in ("audio", "duracion", "volumen", "uniones", "texto", "voz")
+         "pasa": bool(a_ok and d_ok and v_ok and u_ok and c_ok and t_ok and z_ok)}
+    r["falla"] = [k for k in ("audio", "duracion", "volumen", "uniones", "cobertura_voz",
+                              "texto", "voz")
                   if r[k]["ok"] is False]
     return r
 
@@ -619,7 +773,8 @@ def main():
         r = auditar(a.mp4, a.voz or None)
         print(json.dumps(r, ensure_ascii=False, indent=1))
         malo = (bool(r.get("error")) or r.get("enie", {}).get("ok") is False
-                or r.get("uniones", {}).get("ok") is False)
+                or r.get("uniones", {}).get("ok") is False
+                or r.get("cobertura_voz", {}).get("ok") is False)
         if malo:
             print("AUDITORIA CON HALLAZGOS -> anotar el defecto; NO se republica lo que ya salio",
                   file=sys.stderr)
