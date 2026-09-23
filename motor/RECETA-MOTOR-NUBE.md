@@ -1,13 +1,13 @@
-# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026** · **v10 un control declara qué parte miró 21/09/2026** · **v11 qué nota le pone el control al objeto vacío 22/09/2026**)
+# RECETA — Motor de video 100% nube (v1 05/09/2026 · v2 05/09/2026 · voz Eleven por tramos 08/09/2026 · **v3 audio 11/09/2026** · **v4 pantalla chica 11/09/2026** · **v5 zona segura medida + canal único 12/09/2026** · **v6 control de stock 15/09/2026** · **v7 control de voz 16/09/2026** · **v8 cama musical con ducking 18/09/2026** · **v9 ningún control se apaga por omisión 20/09/2026** · **v10 un control declara qué parte miró 21/09/2026** · **v11 qué nota le pone el control al objeto vacío 22/09/2026** · **v12 movimiento real sobre foto fija 23/09/2026**)
 
 Produce y publica TikToks del Estudio Jurídico San Bernardo sin tocar el Mac ni Drive.
 Probada de punta a punta con el lote 09 (901-908): 8 videos generados, alojados y programados en ~40 minutos.
 
-**Para PUBLICAR (y para fijar una hora) ver `motor/PUBLICAR.md`. Para el encuadre medido ver `motor/ZONA-SEGURA-v5.md`. Para la cama musical ver `motor/REGLA-6-MUSICA.md`.**
+**Para PUBLICAR (y para fijar una hora) ver `motor/PUBLICAR.md`. Para el encuadre medido ver `motor/ZONA-SEGURA-v5.md`. Para la cama musical ver `motor/REGLA-6-MUSICA.md`. Para el movimiento de las fotos ver `motor/REGLA-7-MOVIMIENTO.md`.**
 
 ---
 
-## ⛔ LAS SEIS REGLAS DURAS (si se rompe una, la pieza no sale)
+## ⛔ LAS SIETE REGLAS DURAS (si se rompe una, la pieza no sale)
 
 ### 1. NUNCA una etiqueta `<break>` en el texto que va a ElevenLabs
 `eleven_multilingual_v2` a veces **vocaliza** la etiqueta en vez de callar. Detalle y medición en "Lo que NO hacer".
@@ -305,6 +305,22 @@ Medición completa, tabla de 9 mezclas y comandos en **`motor/REGLA-6-MUSICA.md`
 - Costo real de punta a punta: **≈ 8 s y US$0 por pieza** (búsqueda 0,7 s, descarga 4,0 s, mezcla 1,0 s, control 2,3 s),
   y la salida es `48000, 2` — cumple la regla dura 3.
 
+### 7. NINGUNA FOTO QUIETA SALE CON KEN BURNS (norma del 23/09/2026 — M6 corrida 3)
+El supervídeo A quedó en **3,99 de movimiento** con la banda de los virales en **4,6–9,9**, y el culpable era el
+plano nacido de foto: `zoompan` da **1,14 de media** (medido sobre 5 fotos reales, clips de 6 s a 1080x1920).
+Medición completa y tabla en **`motor/REGLA-7-MOVIMIENTO.md`**. Lo que manda:
+- **Todo plano que nace de una foto se mueve con `videolab/movimiento.py clip`** (parallax 2.5D: profundidad
+  MiDaS-small en ONNX sobre CPU + órbita de cámara ×3). **4,85 de media**, US$0, 5,1 s por clip de 6 s.
+- Eso es **4,25× el Ken Burns** que reemplaza y **más que la animación de pago** que veníamos usando
+  (ltx-v2-fast de ElevenLabs, 4,67 a **US$0,26 el plano**). Una pieza de 9 planos pasa de US$2,34 a **US$0**.
+- ⛔ **La profundidad suave está descartada con número**: amplitud 0,045 y 1 órbita dan **0,86**, o sea PEOR que
+  Ken Burns. Lo que mueve la métrica es la velocidad del recorrido (3 órbitas), no el mapa de profundidad.
+- ⛔ **Zoom rápido puro descartado**: 1,00→1,75 da 3,76 de media, deja 2 de 3 fotos bajo la banda y se come el
+  43 % del encuadre, que además choca con la zona segura de la regla dura 4.
+- ✅ **Control obligatorio antes de armar**: `python3 videolab/movimiento.py control <plano.mp4>` →
+  `MOVIMIENTO_OK`. Bloquea (código 1) cualquier plano bajo **4,0**.
+- Nitidez sin pérdida: laplaciano 28/8/14 contra 30/9/14 del Ken Burns. El warp no borronea.
+
 ---
 
 ## ⭐ PIPELINE v2 (VIDEO LAB, 05/09/2026) — voz gratis + subtítulos karaoke. ES EL VIGENTE.
@@ -561,6 +577,9 @@ v1 (brazo A): voz ~350 créditos ≈ US$0,08; foto nueva ~818 solo cada 3 días 
 - **No correr el control 8 sobre el mp4 en una pieza de reacción**: el audio del noticiero tapa los huecos y la
   cobertura da ~100 % aunque la voz se haya caído entera. Va sobre el mp3. Ver regla dura 2-quinquies.
 - **No publicar una pista de licencia desconocida, ni una `cc-by` sin acreditar al autor en la descripción.** Ver regla dura 6.
+- **No mover una foto fija con `zoompan`.** Medido el 23/09 sobre 5 fotos: 1,14 de movimiento contra 4,85 del
+  parallax 2.5D, con la banda viral en 4,6–9,9 y el mismo costo cero. Y **no "suavizar" el parallax**: con
+  amplitud baja cae a 0,86, peor que el Ken Burns que vino a reemplazar. Ver regla dura 7.
 - **No publicar NINGUNA pieza sin control de audio, aunque no la haya hecho `motor.py`.** El supervideo A salió mono y de 60,7 s el 14/09 porque su receta cierra el mux por fuera del motor. Ver regla dura 3-ter.
 - **No volver a probar "subir el tamaño de la fuente" para que se lea mejor**: medido el 11/09, 78 px y 96 px dan exactamente lo mismo (0,29) sin caja. Lo que decide es el fondo detrás de la letra.
 - **No recortar con `crop` un clip de prensa**: se come el cintillo del medio. Fondo desenfocado + clip centrado.
