@@ -40,6 +40,13 @@ El warp por profundidad **no borronea**: la diferencia está dentro del ruido.
 - 🔑 `cv2.remap` **rechaza mapas float64**: si un escalar de numpy se cuela, el mapa cambia de tipo, el render
   muere y ffmpeg deja un mp4 de 262 bytes que parece válido. Todo el camino va en float32 (así está en el script).
 
+## Fotos planas: el script se corrige solo
+Verificado el 23/09 con una **sexta foto** que no estaba en la muestra: con los ajustes base dio **2,89** y el
+control la **bloqueó** (código 1) — el control funciona. Subir el recorrido de cámara la levanta de forma
+monótona: **3,0 → 2,89 · 4,5 → 4,00 · 6,0 → 4,97 · 8,0 → 6,14**. Por eso `clip` ahora **escala solo** por esa
+escalera hasta pasar **4,6** (piso de la banda viral); cada reintento cuesta ~4,5 s y US$0. Si ni con 8 órbitas
+llega, bloquea y hay que cambiar la foto.
+
 ## Cómo se usa
 ```bash
 pip install onnxruntime opencv-python-headless           # ~20 s, una vez por sandbox
