@@ -39,6 +39,12 @@ Nitidez sin pérdida: **28 / 8 / 14** contra **30 / 9 / 14** del Ken Burns (vari
 Comparación lado a lado renderizada (izquierda Ken Burns, derecha parallax):
 https://d2ol7oe51mr4n9.cloudfront.net/user_3IkWukwrqRk5HTPle6Rx8WbYgS3/a3ddbb10-c437-48cc-8b46-17e15b898d0c.mp4
 
+## Verificación del script tal como quedó en el repo
+Se bajó `movimiento.py` desde GitHub a un sandbox limpio y se corrió sobre una **foto que no estaba en la
+muestra**: instaló, descargó el modelo, renderizó y el control **bloqueó con 2,89** (código de salida 1). Subir
+las órbitas la levanta de forma monótona — **3,0 → 2,89 · 4,5 → 4,00 · 6,0 → 4,97 · 8,0 → 6,14** — así que el
+script ahora **escala solo** hasta pasar 4,6 antes de entregar el plano.
+
 ## Descartes con número (para no repetirlos)
 - ⛔ **Parallax suave: 0,86** — peor que el Ken Burns que venía a reemplazar. **La profundidad no da movimiento;
   lo da la velocidad del recorrido de cámara.** La profundidad es lo que permite esa velocidad sin deformar el
