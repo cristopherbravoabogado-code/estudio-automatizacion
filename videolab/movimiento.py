@@ -22,6 +22,9 @@ Ken Burns — el warp NO degrada el detalle.
 
 Costo US$0. Tiempo: 0,3 s de profundidad + 4,8 s de render por clip de 6 s en 8 núcleos.
 
+Hay fotos planas que con los ajustes base se quedan cortas (una de las probadas dio 2,89):
+`clip` sube las órbitas solo hasta pasar 4,6 — medido 3,0 → 2,89 · 4,5 → 4,00 · 6,0 → 4,97 · 8,0 → 6,14.
+
 Uso:
     python3 movimiento.py clip foto.jpg salida.mp4 [segundos]
     python3 movimiento.py control salida.mp4        # BLOQUEA si el movimiento < 4,0
@@ -48,6 +51,8 @@ AMP = 0.14        # amplitud de la órbita (fracción del ancho)
 ORBITAS = 3.0     # vueltas completas en todo el clip  <-- la variable que decide
 Z0, Z1 = 1.20, 1.02   # el zoom retrocede; el movimiento no viene del zoom
 PISO = 4.0        # umbral del control
+OBJETIVO = 4.6    # piso de la banda viral: si no se llega, el script sube las órbitas solo
+ESCALERA = (3.0, 4.5, 6.0, 8.0)   # medido el 23/09 sobre una foto plana: 2,89 → 4,00 → 4,97 → 6,14
 
 _SESION = None
 
@@ -86,6 +91,23 @@ def encuadrar(img, W, H):
         nh = int(iw / tr)
         img = img[(ih - nh) // 2:(ih - nh) // 2 + nh, :]
     return cv2.resize(img, (W, H), interpolation=cv2.INTER_AREA)
+
+
+def clip_auto(src, out, dur=6.0, objetivo=OBJETIVO, **kw):
+    """Renderiza y, si la foto queda bajo el objetivo, vuelve a renderizar con más órbitas.
+
+    Hay fotos planas (poca textura, poco fondo) que con 3 órbitas se quedan en 2,89. Subir el
+    recorrido de cámara las levanta de forma monótona — medido el 23/09 sobre una de ellas:
+    3,0 → 2,89 · 4,5 → 4,00 · 6,0 → 4,97 · 8,0 → 6,14. Cada reintento cuesta ~4,5 s y US$0.
+    """
+    ultimo = 0.0
+    for orb in ESCALERA:
+        td, tr = clip(src, out, dur=dur, orbitas=orb, **kw)
+        ultimo = medir(out)
+        print(f"  intento órbitas={orb} → movimiento {ultimo:.2f}")
+        if ultimo >= objetivo:
+            return ultimo, orb
+    return ultimo, ESCALERA[-1]
 
 
 def clip(src, out, dur=6.0, fps=30, W=1080, H=1920, amp=AMP, orbitas=ORBITAS, z0=Z0, z1=Z1):
@@ -147,11 +169,12 @@ if __name__ == "__main__":
     modo = sys.argv[1]
     if modo == "clip":
         dur = float(sys.argv[4]) if len(sys.argv) > 4 else 6.0
-        td, tr = clip(sys.argv[2], sys.argv[3], dur=dur)
-        m = medir(sys.argv[3])
-        print(f"CLIP {sys.argv[3]} movimiento={m:.2f} profundidad={td:.2f}s render={tr:.2f}s costo=US$0")
+        t0 = time.time()
+        m, orb = clip_auto(sys.argv[2], sys.argv[3], dur=dur)
+        print(f"CLIP {sys.argv[3]} movimiento={m:.2f} órbitas={orb} tiempo={time.time()-t0:.1f}s costo=US$0")
         if m < PISO:
-            print(f"AVISO: {m:.2f} < {PISO} — subir ORBITAS antes de publicar")
+            print(f"BLOQUEA {sys.argv[3]}: {m:.2f} < {PISO} ni con {ESCALERA[-1]} órbitas — cambiar la foto")
+            sys.exit(1)
     elif modo == "control":
         malos = []
         for v in sys.argv[2:]:
